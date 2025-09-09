@@ -1,0 +1,37 @@
+src/
+├── assets/                     # Images, fonts, icons, etc.
+├── components/                 
+│   ├── Navbar/                 # Navbar has two parts, so split components here
+│   │   ├── NavbarTop.jsx
+│   │   ├── NavbarBottom.jsx
+│   │   └── Navbar.css
+│   ├── Footer/                 # Footer component
+│   │   └── Footer.jsx
+│   ├── HomeSections/           # 5 sections for the Home page
+│   │   ├── Section1.jsx
+│   │   ├── Section2.jsx
+│   │   ├── Section3.jsx
+│   │   ├── Section4.jsx
+│   │   └── Section5.jsx
+│   └── common/                 # Shared UI components (buttons, inputs, etc.)
+│       └── ...
+├── pages/
+│   ├── Home.jsx                # Home page (uses 5 sections)
+│   ├── ViewAll.jsx             # ViewAll page with filter
+│   ├── ViewOne.jsx             # View One detail page
+│   ├── About.jsx               # About page
+│   ├── PrivacyPolicy.jsx       # Privacy Policy page
+│   ├── Terms.jsx               # Terms & Conditions page
+│   ├── Contact.jsx             # Contact page
+│   └── UserDashboard/          # User dashboard with nested routes
+│       ├── DashboardHome.jsx   # Default dashboard page or summary
+│       ├── OrderHistory.jsx
+│       ├── TrackOrder.jsx
+│       └── Profile.jsx
+├── context/                    # React context or state management (optional)
+├── hooks/                      # Custom hooks
+├── services/                   # API calls and utilities
+├── styles/                     # Global styles, variables, themes
+├── utils/                      # Utility functions
+├── App.jsx
+└── main.jsx                    # Vite entry point

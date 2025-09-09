@@ -1,0 +1,32 @@
+# Node.js
+node_modules/
+dist/
+.env
+.env.*.local
+
+# Vite
+.vitepress/
+.vite/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor settings
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Optional: lock files (choose based on your package manager)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
