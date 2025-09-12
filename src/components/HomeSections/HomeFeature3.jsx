@@ -26,7 +26,7 @@ function HomeFeature3() {
 
   {/* Responsive Product Grid */}
   <div className="w-full bg-whitesmoke-700 px-4 py-6">
-    <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       {/* Product Card */}
       {[1, 2, 3, 4].map((_, index) => (
         <div key={index} className="bg-white shadow-md rounded-lg p-4">

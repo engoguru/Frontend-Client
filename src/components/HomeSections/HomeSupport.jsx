@@ -60,7 +60,7 @@ function HomeSupport() {
 
       <div className="flex flex-wrap justify-center gap-6">
         {supportItems.map((item, index) => (
-          <div key={index} className="flex items-start bg-white shadow-md rounded-lg p-5 w-full sm:w-[300px] gap-4 hover:shadow-lg transition-shadow">
+          <div key={index} className="flex items-center bg-white shadow-md rounded-lg p-5 w-full sm:w-[300px] gap-4 hover:shadow-lg transition-shadow">
             <div>{item.icon}</div>
             <div>
               <h3 className="text-md font-semibold text-gray-800">{item.title}</h3>
