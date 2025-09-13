@@ -21,7 +21,7 @@ function HomePopular() {
   ];
 
   return (
-    <div className="w-full px-6 py-10">
+    <div className="w-full py-10">
       {/* Heading */}
       <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-8 text-center">
         Popular Products

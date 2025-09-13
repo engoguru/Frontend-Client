@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 const images = [
   "https://red-parts.react.themeforest.scompiler.ru/themes/red/images/slides/slide-3.jpg",
@@ -10,10 +10,12 @@ const images = [
 
 function HomeBanner() {
 
-     const [currentSlide, setCurrentSlide] = useState(0);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const intervalRef = useRef(null);
 
   const goToSlide = (index) => {
     setCurrentSlide(index);
+    startAutoSlide(); // Restart the timer after manual navigation
   };
 
   const goToPrev = () => {
@@ -24,23 +26,37 @@ function HomeBanner() {
     setCurrentSlide((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
-  // Optional: Auto-slide
+  const startAutoSlide = () => {
+    stopAutoSlide(); // Clear any existing interval
+    intervalRef.current = setInterval(goToNext, 5000);
+  };
+
+  const stopAutoSlide = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+  };
+
   useEffect(() => {
-    const interval = setInterval(goToNext, 5000);
-    return () => clearInterval(interval);
+    startAutoSlide();
+    return () => stopAutoSlide(); // Cleanup on unmount
   }, []);
- return (
+  return (
     // <div className="relative w-full  max-w-4xl mx-auto overflow-hidden rounded-lg">
-    <div className="relative w-full overflow-hidden rounded-none">
+    <div
+      className="relative w-full overflow-hidden rounded-none bg-gray-100"
+      onMouseEnter={stopAutoSlide}
+      onMouseLeave={startAutoSlide}
+    >
 
       {/* Slides */}
-      <div className="flex transition-transform duration-700 ease-in-out" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
+      <div className="flex transition-transform duration-700 ease-in-out w-full h-48 sm:h-64 md:h-80 lg:h-96 xl:h-[400px]" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
         {images.map((src, index) => (
           <img
             key={index}
             src={src}
             alt={`Slide ${index + 1}`}
-            className="w-full  object-cover"
+            className="w-full h-full flex-shrink-0 object-cover"
           />
         ))}
       </div>
@@ -48,13 +64,13 @@ function HomeBanner() {
       {/* Indicators */}
       <div className="absolute  bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
         {images.map((_, index) => (
-          <p
+          <button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`w-3 h-3 rounded-full ${
-              currentSlide === index ? "bg-red-600" : "bg-gray-400"
-            }`}
-          ></p>
+            aria-label={`Go to slide ${index + 1}`}
+            className={`w-3 h-3 rounded-full cursor-pointer ${currentSlide === index ? "bg-red-600" : "bg-gray-400"
+              }`}
+          ></button>
         ))}
       </div>
 
@@ -82,11 +98,3 @@ function HomeBanner() {
 }
 
 export default HomeBanner
-
-
-
-
-
-
-
-

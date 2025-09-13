@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
-import {Routes , Route} from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import viteLogo from '/vite.svg'
 import './App.css'
 import Home from './pages/Home'
@@ -18,19 +18,19 @@ function App() {
 
   return (
     <>
-    {/* <Home/> */}
-<Routes>
-  <Route path="/" element={<Home/>}/>
-  <Route path="/about" element={<AboutUs/>}/>
-  <Route path="/contact" element={<ContactUs/>}/>
-  <Route path="/privacy-policy" element={<PrivacyPolicy/>}/>
-  <Route path="/TermCondition" element={<TermCondition/>}/>
-  <Route path="/productViewAll" element={<ProductViewAll/>}/>
-  <Route path="/user" element={<UserDashboard/>}/>
+      {/* <Home/> */}
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<AboutUs />} />
+        <Route path="/contact" element={<ContactUs />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/TermCondition" element={<TermCondition />} />
+        <Route path="/productViewAll" element={<ProductViewAll />} />
+        <Route path="/user" element={<UserDashboard />} />
 
-  <Route path="/productDetail/:id" element={<ProductDetailView/>}/>
- 
-</Routes>
+        <Route path="/productDetail/:id" element={<ProductDetailView />} />
+
+      </Routes>
 
     </>
   )
