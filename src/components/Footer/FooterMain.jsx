@@ -2,9 +2,8 @@ import React from 'react';
 
 function FooterMain() {
   return (
-    // The #root element in App.css has padding: 2rem so that's why here given -ve margin-left: 8px(-mx-8)
-    <footer className="bg-gray-900 text-gray-400 py-10 -mx-8 px-8">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+    <footer className="bg-gray-900 text-gray-400 pt-10">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 px-6">
         {/* 1. Contact Us */}
         <div>
           <h3 className="text-lg text-white font-semibold mb-4">Contact Us</h3>
@@ -65,8 +64,10 @@ function FooterMain() {
       </div>
 
       {/* Footer Bottom */}
-      <div className="mt-10 text-center text-sm text-gray-400 border-t border-gray-700 pt-4">
-        &copy; {new Date().getFullYear()} YourCompany. All rights reserved.
+      <div className="mt-12 border-t border-gray-800">
+        <div className="px-6 py-6 text-center text-sm">
+          <p className="text-gray-500">&copy; {new Date().getFullYear()} SPORTDUNIYA. All rights reserved.</p>
+        </div>
       </div>
     </footer>
   );

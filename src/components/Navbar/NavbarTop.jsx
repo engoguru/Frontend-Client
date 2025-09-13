@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function NavbarTop() {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -21,10 +22,10 @@ export default function NavbarTop() {
         <nav className="w-full py-2 bg-white fixed top-0 left-0 right-0 z-10 border-b border-red-700">
             <div className="flex justify-between items-center px-4 md:px-8">
                 {/* Logo */}
-                <div className="flex-shrink-0 text-black font-bold text-base md:text-lg lg:text-xl">
+                <Link to="/" className="flex-shrink-0 text-black font-bold text-base md:text-lg lg:text-xl no-underline transition-all duration-300" onClick={() => window.scrollTo(0, 0)}>
                     <span className="text-black">SPORT</span>
                     <span className="text-red-700">DUNIYA</span>
-                </div>
+                </Link>
 
                 {/* Mobile Search + Hamburger */}
                 <div className="md:hidden flex items-center space-x-2 ml-4">

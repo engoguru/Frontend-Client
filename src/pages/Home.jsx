@@ -10,15 +10,18 @@ import HomeSupport from '../components/HomeSections/HomeSupport';
 import FooterMain from '../components/Footer/FooterMain';
 function Home() {
   return (
-    <div>
+    <div className="pt-28"> {/* Added padding-top to account for fixed navbars */}
         <NavbarTop/>
         <NavbarBottom/>
         <HomeBanner/>
-        <HomePopular/>
-        <HomeFeature/>
-        <HomeFeature2/>
-        <HomeFeature3/>
-        <HomeSupport/>
+        {/* Main content wrapper with horizontal padding */}
+        <div className="px-6">
+          <HomePopular/>
+          <HomeFeature/>
+          <HomeFeature2/>
+          <HomeFeature3/>
+          <HomeSupport/>
+        </div>
         <FooterMain/>
         </div>
   )
