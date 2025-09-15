@@ -1,9 +1,70 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
 export default function NavbarTop() {
     const [menuOpen, setMenuOpen] = useState(false);
     const [openSubMenu, setOpenSubMenu] = useState(null);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [suggestions, setSuggestions] = useState([]); // This will hold what's currently shown
+    const [showSuggestions, setShowSuggestions] = useState(false);
+    const mobileSearchRef = useRef(null);
+    const desktopSearchRef = useRef(null);
+
+    // Static list of all possible suggestions for filtering
+    const allPossibleSuggestions = ['Protein Powder', 'Running Shoes', 'Yoga Mat', 'Dumbbells', 'T-shirts', 'Track Pants', 'Vitamins', 'Gym Gloves', 'Shaker Bottle'];
+    // State for recent searches, which can be modified
+    const [recentSearches, setRecentSearches] = useState(['Running Shoes', 'Yoga Mat', 'Dumbbells']);
+
+    const handleSearchChange = (e) => {
+        const query = e.target.value;
+        setSearchQuery(query);
+        if (query.length > 0) {
+            const filteredSuggestions = allPossibleSuggestions.filter(suggestion =>
+                suggestion.toLowerCase().includes(query.toLowerCase())
+            );
+            setSuggestions(filteredSuggestions);
+        } else {
+            // If input is cleared, show recent searches
+            setSuggestions(recentSearches);
+        }
+        setShowSuggestions(true);
+    };
+
+    const handleSuggestionClick = (suggestion) => {
+        setSearchQuery(suggestion);
+        setShowSuggestions(false);
+    };
+
+    const handleFocus = () => {
+        // On focus, show recent searches if the input is empty
+        if (searchQuery.length === 0) {
+            setSuggestions(recentSearches);
+        }
+        setShowSuggestions(true);
+    };
+
+    const handleRemoveSuggestion = (e, suggestionToRemove) => {
+        e.stopPropagation(); // Prevent suggestion from being selected
+        const updatedRecent = recentSearches.filter(s => s !== suggestionToRemove);
+        setRecentSearches(updatedRecent);
+
+        // If the search query is empty, update the visible suggestions list as well
+        if (searchQuery.length === 0) {
+            setSuggestions(updatedRecent);
+        }
+    };
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (mobileSearchRef.current && !mobileSearchRef.current.contains(event.target) && desktopSearchRef.current && !desktopSearchRef.current.contains(event.target)) {
+                setShowSuggestions(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []); // Empty dependency array is correct here
 
     const toggleSubMenu = (menuName) => {
         setOpenSubMenu(openSubMenu === menuName ? null : menuName);
@@ -19,7 +80,7 @@ export default function NavbarTop() {
     ];
 
     return (
-        <nav className="w-full py-2 bg-white fixed top-0 left-0 right-0 z-10 border-b border-red-700">
+        <nav className="w-full py-2 bg-white fixed top-0 left-0 right-0 z-20 border-b border-red-700">
             <div className="flex justify-between items-center px-4 md:px-8">
                 {/* Logo */}
                 <Link to="/" className="flex-shrink-0 text-black font-bold text-base md:text-lg lg:text-xl no-underline transition-all duration-300" onClick={() => window.scrollTo(0, 0)}>
@@ -29,12 +90,48 @@ export default function NavbarTop() {
 
                 {/* Mobile Search + Hamburger */}
                 <div className="md:hidden flex items-center space-x-2 ml-4">
-                    <div className="relative">
+                    <div ref={mobileSearchRef} className="relative">
                         <input
                             type="text"
                             placeholder="Search..."
-                            className="w-full px-3 py-1 bg-[#d5baba3b] rounded-md border border-white placeholder:text-black placeholder:opacity-50 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 pr-8"
+                            className={`w-full px-3 py-1 bg-[#d5baba3b] border border-transparent placeholder:text-black placeholder:opacity-50 text-sm focus:outline-none pr-8 transition-all ${showSuggestions ? 'rounded-b-none bg-gray-50 shadow-lg' : 'rounded-md'}`}
+                            value={searchQuery}
+                            onChange={handleSearchChange}
+                            onFocus={handleFocus}
                         />
+                        {showSuggestions && (
+                            <ul className="absolute top-full left-0 w-full bg-gray-50 border border-gray-200 rounded-b-md shadow-lg z-20 max-h-60 overflow-y-auto">
+                                {suggestions.length > 0 ? (
+                                    suggestions.map((suggestion, index) => (
+                                        <li
+                                            key={index}
+                                            className="group px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer flex items-center justify-between"
+                                            onClick={() => handleSuggestionClick(suggestion)}
+                                        >
+                                            <div className="flex items-center">
+                                                <svg className="w-4 h-4 mr-3 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                </svg>
+                                                <span>{suggestion}</span>
+                                            </div>
+                                            {recentSearches.includes(suggestion) && (
+                                                <button
+                                                    onClick={(e) => handleRemoveSuggestion(e, suggestion)}
+                                                    className="text-gray-400 hover:text-gray-700 p-1"
+                                                    title="Remove"
+                                                >
+                                                    <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                                    </svg>
+                                                </button>
+                                            )}
+                                        </li>
+                                    ))
+                                ) : (
+                                    <li className="px-3 py-2 text-sm text-gray-500 italic">No results found</li>
+                                )}
+                            </ul>
+                        )}
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             className="absolute right-2 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-700 pointer-events-none"
@@ -67,7 +164,7 @@ export default function NavbarTop() {
 
                 {/* Desktop Search */}
                 <div className="hidden md:flex flex-1 items-center justify-center px-6">
-                    <div className="flex items-center w-full max-w-xl space-x-2">
+                    <div ref={desktopSearchRef} className="flex items-center w-full max-w-xl space-x-2">
                         <select className="bg-[#ffd226] text-black font-semibold text-sm px-1 py-2 rounded-md focus:outline-none">
                             <option value="all">All</option>
                             <option value="sports">Sports</option>
@@ -78,8 +175,44 @@ export default function NavbarTop() {
                             <input
                                 type="text"
                                 placeholder="Enter Your Search Keywords"
-                                className="w-full px-4 py-2 bg-[#d5baba3b] rounded-md border border-white placeholder:text-black placeholder:opacity-50 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10"
+                                className={`w-full px-4 py-2 bg-[#d5baba3b] border border-transparent placeholder:text-black placeholder:opacity-50 text-sm focus:outline-none pr-10 transition-all ${showSuggestions ? 'rounded-b-none bg-gray-50 shadow-lg' : 'rounded-md'}`}
+                                value={searchQuery}
+                                onChange={handleSearchChange}
+                                onFocus={handleFocus}
                             />
+                            {showSuggestions && (
+                                <ul className="absolute top-full left-0 w-full bg-gray-50 border border-gray-200 rounded-b-md shadow-lg z-20 max-h-60 overflow-y-auto">
+                                    {suggestions.length > 0 ? (
+                                        suggestions.map((suggestion, index) => (
+                                            <li
+                                                key={index}
+                                                className="group px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer flex items-center justify-between"
+                                                onClick={() => handleSuggestionClick(suggestion)}
+                                            >
+                                                <div className="flex items-center">
+                                                    <svg className="w-4 h-4 mr-3 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                    </svg>
+                                                    <span>{suggestion}</span>
+                                                </div>
+                                                {recentSearches.includes(suggestion) && (
+                                                    <button
+                                                        onClick={(e) => handleRemoveSuggestion(e, suggestion)}
+                                                        className="hidden group-hover:block text-gray-400 hover:text-gray-700 p-1"
+                                                        title="Remove"
+                                                    >
+                                                        <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                                        </svg>
+                                                    </button>
+                                                )}
+                                            </li>
+                                        ))
+                                    ) : (
+                                        <li className="px-4 py-2 text-sm text-gray-500 italic">No results found</li>
+                                    )}
+                                </ul>
+                            )}
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-700 pointer-events-none"

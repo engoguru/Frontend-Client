@@ -22,9 +22,9 @@ function HomeFeature3() {
         {/* Header */}
         <div className="flex bg-red-100 border-b border-gray-500 justify-between items-center w-full py-4">
           <div>
-            <p className="text-[21px] font-semibold text-black">Featured Equipment Products</p>
+            <p className="text-[21px] font-semibold text-black px-2">Featured Equipment Products</p>
           </div>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 px-2">
             <button onClick={() => scroll('prev')} aria-label="Previous Products" className="bg-red-600 p-1 rounded-full text-white hover:bg-red-700 transition-colors">
               <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
