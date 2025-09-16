@@ -5,7 +5,7 @@ export default function NavbarTop() {
     const [menuOpen, setMenuOpen] = useState(false);
     const [openSubMenu, setOpenSubMenu] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
-    const [suggestions, setSuggestions] = useState([]); // This will hold what's currently shown
+    const [suggestions, setSuggestions] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const mobileSearchRef = useRef(null);
     const desktopSearchRef = useRef(null);
@@ -64,7 +64,7 @@ export default function NavbarTop() {
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, []); // Empty dependency array is correct here
+    }, []);
 
     const toggleSubMenu = (menuName) => {
         setOpenSubMenu(openSubMenu === menuName ? null : menuName);

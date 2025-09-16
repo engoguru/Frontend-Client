@@ -18,7 +18,7 @@ const NavbarBottom = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []); // Empty dependency array ensures this runs only once
+  }, []); 
 
   const menuItems = [
     { label: "Apparel", subItems: ["Shirts", "Shorts", "Shoes"] },
