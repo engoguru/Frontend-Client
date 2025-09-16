@@ -22,11 +22,11 @@ const FilterViewAllMobile = () => {
   };
 
   const colorMap = {
-    Red: '#dc2626',    // red-600
-    Blue: '#2563eb',   // blue-600
-    Black: '#000000',  // actual black
-    White: '#ffffff',  // actual white
-    Green: '#16a34a',  // green-600
+    Red: '#dc2626',   
+    Blue: '#2563eb',   
+    Black: '#000000',  
+    White: '#ffffff',  
+    Green: '#16a34a', 
   };
 
   const handleSizeToggle = (size) => {

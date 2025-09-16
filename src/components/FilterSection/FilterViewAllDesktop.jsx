@@ -42,13 +42,13 @@ const FilterViewAllDesktop = () => {
   };
 
 
-const colorMap = {
-  Red: '#dc2626',    // red-600
-  Blue: '#2563eb',   // blue-600
-  Black: '#000000',  // actual black
-  White: '#ffffff',  // actual white
-  Green: '#16a34a',  // green-600
-};
+  const colorMap = {
+    Red: '#dc2626',
+    Blue: '#2563eb',
+    Black: '#000000',
+    White: '#ffffff',
+    Green: '#16a34a',
+  };
 
 
 
@@ -69,7 +69,7 @@ const colorMap = {
         </div>
 
         {/* Price Range */}
-        <div>
+        <div className='text-left'>
           <label className="block mb-1 font-medium text-left">Price Range ($)</label>
 
           <div className="relative h-5 my-4">
@@ -155,11 +155,10 @@ const colorMap = {
                 <button
                   key={size}
                   onClick={() => handleSizeToggle(size)}
-                  className={`border px-2 py-0 rounded text-xs transition-colors duration-150 ${
-                    isSelected
+                  className={`border px-2 py-0 rounded text-xs transition-colors duration-150 ${isSelected
                       ? 'bg-blue-600 text-white border-blue-600'
                       : 'border-gray-300 hover:bg-gray-100'
-                  } focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                    } focus:outline-none focus:ring-2 focus:ring-blue-500`}
                 >
                   {size}
                 </button>

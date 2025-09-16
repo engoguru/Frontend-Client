@@ -1,5 +1,7 @@
 @import "tailwindcss";
-
+:root{
+  text-align: center;
+}
 @layer base {
   input[type="range"] {
     -webkit-appearance: none;
