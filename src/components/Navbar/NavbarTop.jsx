@@ -71,13 +71,39 @@ export default function NavbarTop() {
     };
 
     const menuItems = [
-        { label: "Menu", subItems: [] },
-        { label: "Apparel", subItems: ["Shirts", "Shorts", "Shoes"] },
-        { label: "Equipment", subItems: ["Balls", "Bats", "Gloves"] },
-        { label: "Nutrition", subItems: ["Protein", "Vitamins", "Snacks"] },
-        { label: "Pages", subItems: ["About-US", "Contact-US", "Privacy Policy", "Term-Conditions"] },
-        { label: "Account", subItems: ["Dashboard", "Profile", "Privacy", "Track"] },
-    ];
+        {
+            label: "Apparel",
+            subItems: [
+                { name: "Shirts", path: "/productViewAll?category=shirts" },
+                { name: "Shorts", path: "/productViewAll?category=shorts" },
+                { name: "Shoes", path: "/productViewAll?category=shoes" },
+            ]
+        },
+        {
+            label: "Equipment",
+            subItems: [
+                { name: "Balls", path: "/productViewAll?category=balls" },
+                { name: "Bats", path: "/productViewAll?category=bats" },
+                { name: "Gloves", path: "/productViewAll?category=gloves" },
+            ]
+        },
+        {
+            label: "Nutrition", subItems: [
+                { name: "Protein", path: "/productViewAll?category=protein" },
+                { name: "Vitamins", path: "/productViewAll?category=vitamins" },
+                { name: "Snacks", path: "/productViewAll?category=snacks" },
+            ]
+        },
+        {
+            label: "Pages", subItems: [
+                { name: "About Us", path: "/about" },
+                { name: "Contact Us", path: "/contact" },
+                { name: "Privacy Policy", path: "/privacy-policy" },
+                { name: "Terms & Conditions", path: "/TermCondition" }
+            ]
+        },
+        { label: "Account", subItems: [{ name: "Dashboard", path: "/user" }, { name: "Profile", path: "/user" }, { name: "Track Order", path: "/user" }] },
+    ];    
 
     return (
         <nav className="w-full py-2 bg-white fixed top-0 left-0 right-0 z-20 border-b border-red-700">
@@ -149,7 +175,7 @@ export default function NavbarTop() {
                     </div>
 
                     {/* Hamburger Button */}
-                    <p onClick={() => setMenuOpen(!menuOpen)} className="ml-2 text-black focus:outline-none">
+                    <button onClick={() => setMenuOpen(!menuOpen)} className="ml-2 text-black focus:outline-none" aria-label="Open menu">
                         <svg
                             className="w-6 h-6"
                             fill="none"
@@ -159,7 +185,7 @@ export default function NavbarTop() {
                         >
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                         </svg>
-                    </p>
+                    </button>
                 </div>
 
                 {/* Desktop Search */}
@@ -237,106 +263,107 @@ export default function NavbarTop() {
             </div>
 
             {/* Mobile Sidebar */}
-            {menuOpen && (
-                <div className="fixed inset-0 z-30  bg-opacity-50 md:hidden">
-                    <div className="fixed top-0 left-0 w-3/5 max-w-xs h-full bg-white shadow-lg p-6 overflow-y-auto">
-                        {/* Close Button */}
-                        <p
-                            onClick={() => setMenuOpen(false)}
-                            className="absolute top-4 right-4 text-black font-bold text-xl cursor-pointer"
-                        >
-                            ✕
-                        </p>
+            <div
+                className={`fixed inset-0 z-30 md:hidden transition-opacity duration-300 ease-in-out ${menuOpen ? 'bg-gray-900/50' : 'bg-transparent pointer-events-none'
+                    }`}
+                onClick={() => setMenuOpen(false)}
+            >
+                <div
+                    className={`fixed top-0 left-0 w-2/3 max-w-[280px] h-full bg-white shadow-lg p-6 overflow-y-auto transform transition-transform duration-300 ease-in-out flex flex-col ${menuOpen ? 'translate-x-0' : '-translate-x-full'
+                        }`}
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <div>
+                        {/* Header with Logo and Close Button */}
+                        <div className="flex justify-between items-center pb-4 border-b border-gray-300 mb-4 -mx-6 px-6">
+                            <Link to="/" className="text-black font-bold text-lg" onClick={() => setMenuOpen(false)}>
+                                <span className="text-black">SPORT</span>
+                                <span className="text-red-700">DUNIYA</span>
+                            </Link>
+                            <button
+                                onClick={() => setMenuOpen(false)}
+                                className="text-gray-500 hover:text-black"
+                                aria-label="Close menu"
+                            >
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
 
-                        <div className="space-y-4">
-                            {/* Top: "Menu" item with dropdown */}
-                            {menuItems[0] && (
-                                <div>
-                                    <div
-                                        onClick={() => toggleSubMenu(menuItems[0].label)}
-                                        className="flex justify-between items-center text-black font-semibold hover:text-red-700 transition cursor-pointer"
-                                    >
-                                        <span>{menuItems[0].label}</span>
-
-                                        {/* Only show arrow if subItems exist */}
-                                        {menuItems[0].subItems.length > 0 && (
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                className="h-4 w-4 text-gray-600"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke="currentColor"
-                                                strokeWidth={2}
-                                            >
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                                            </svg>
-                                        )}
-                                    </div>
-
-                                    {/* Dropdown if open */}
-                                    {openSubMenu === menuItems[0].label && menuItems[0].subItems.length > 0 && (
-                                        <ul className="pl-2 mt-2 space-y-2">
-                                            {menuItems[0].subItems.map((subItem, idx) => (
-                                                <li
-                                                    key={idx}
-                                                    className="text-sm text-gray-700 hover:text-red-600 cursor-pointer"
-                                                >
-                                                    {subItem}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    )}
-                                </div>
-                            )}
-
-                            {/* Other menu items */}
-                            {menuItems.slice(1).map((item, index) => (
+                        <div className="space-y-2">
+                            {menuItems.map((item, index) => (
                                 <div key={index}>
                                     <div
                                         onClick={() => toggleSubMenu(item.label)}
-                                        className="flex justify-between items-center text-black font-semibold hover:text-red-700 transition cursor-pointer"
+                                        className="flex justify-between items-center py-2 text-black font-semibold hover:text-red-700 transition cursor-pointer"
                                     >
                                         <span>{item.label}</span>
-
-                                        {/* Only show arrow if subItems exist */}
                                         {item.subItems?.length > 0 && (
                                             <svg
                                                 xmlns="http://www.w3.org/2000/svg"
-                                                className="h-4 w-4 text-gray-600"
+                                                className={`h-5 w-5 text-gray-500 transform transition-transform duration-200 ${openSubMenu === item.label ? 'rotate-180' : ''
+                                                    }`}
                                                 fill="none"
                                                 viewBox="0 0 24 24"
                                                 stroke="currentColor"
                                                 strokeWidth={2}
                                             >
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                                             </svg>
                                         )}
                                     </div>
 
-                                    {openSubMenu === item.label && item.subItems?.length > 0 && (
-                                        <ul className="pl-2 mt-2 space-y-2">
-                                            {item.subItems.map((subItem, idx) => (
-                                                <li
-                                                    key={idx}
-                                                    className="text-sm text-gray-700 hover:text-red-600 cursor-pointer"
-                                                >
-                                                    {subItem}
-                                                </li>
-                                            ))}
-                                        </ul>
+                                    {item.subItems?.length > 0 && (
+                                        <div
+                                            className={`overflow-hidden transition-all duration-300 ease-in-out ${openSubMenu === item.label ? 'max-h-96' : 'max-h-0'
+                                                }`}
+                                        >
+                                            <ul className="pl-4 mt-1 space-y-1">
+                                                {item.subItems.map((subItem, idx) => (
+                                                    <li key={idx}>
+                                                        <Link
+                                                            to={subItem.path}
+                                                            onClick={() => setMenuOpen(false)}
+                                                            className="block text-sm text-gray-600 hover:text-red-700 hover:bg-red-50 rounded-md py-1.5 px-2"
+                                                        >
+                                                            {subItem.name}
+                                                        </Link>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
                                     )}
                                 </div>
                             ))}
                         </div>
 
-
-                        {/* Contact Section */}
-                        <div className="mt-10 border-t pt-4">
-                            <p className="text-black font-semibold">Call Us - 1122334455</p>
+                        {/* Login/Logout Section */}
+                        <div className="mt-8 border-t border-gray-300 pt-4 -mx-6 px-6">
+                            <Link
+                                to="/login" // Assuming a login route
+                                onClick={() => setMenuOpen(false)}
+                                className="flex items-center py-2 text-black font-semibold hover:text-red-700 transition cursor-pointer"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                </svg>
+                                Login
+                            </Link>
                         </div>
                     </div>
+
+                    {/* Contact Section */}
+                    <div className="mt-auto pt-6 border-t border-gray-300 -mx-6 px-6">
+                        <a
+                            href="tel:1122334455"
+                            className='text-red-700 font-bold whitespace-nowrap transition-transform duration-300 ease-in-out animate-pulse hover:scale-110 hover:animate-none'
+                        >
+                            Call Us - 1122334455
+                        </a>
+                    </div>
                 </div>
-            )}
+            </div>
         </nav>
     );
 }

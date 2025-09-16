@@ -78,7 +78,7 @@ function ProductViewAll() {
       <NavbarTop />
       <NavbarBottom />
       {/* Main content wrapper with top padding for navbars and consistent horizontal padding */}
-      <div className="w-full flex flex-col md:flex-row md:items-start px-6 pt-28 pb-8 gap-6">
+      <div className="w-full flex flex-col md:flex-row md:items-start px-6 pt-16 md:pt-28 pb-8 gap-6">
 
         {/* Sidebar for desktop */}
         <div className="hidden md:block md:w-1/5">
