@@ -84,8 +84,13 @@ const NavbarBottom = () => {
         ))}
       </div>
 
-      <div className="w-1/5 py-4">
-        <p className='text-black font-semibold'>Call US - 1122334455</p>
+      <div className="flex-shrink-0 py-4">
+        <a
+          href="tel:1122334455"
+          className='text-red-700 font-bold whitespace-nowrap transition-transform duration-300 ease-in-out animate-pulse hover:scale-110 hover:animate-none'
+        >
+          Call Us - 1122334455
+        </a>
       </div>
     </div>
   );
