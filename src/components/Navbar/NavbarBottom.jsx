@@ -1,12 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
 const NavbarBottom = () => {
   const [openMenu, setOpenMenu] = useState(null);
+  const navRef = useRef(null);
 
-  const toggleMenu = (menuName) => {
-    setOpenMenu(openMenu === menuName ? null : menuName);
-  };
+  // Effect to handle clicks outside the navbar
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // If the click is outside the nav container, close the menu
+      if (navRef.current && !navRef.current.contains(event.target)) {
+        setOpenMenu(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []); 
 
   const menuItems = [
     { label: "Apparel", subItems: ["Shirts", "Shorts", "Shoes"] },
@@ -24,10 +36,18 @@ const NavbarBottom = () => {
   ];
 
   return (
-    <div className="hidden md:flex w-full bg-white shadow-md fixed top-14 left-0 right-0 z-5 md:px-6 lg:px-10">
+    <div
+      ref={navRef}
+      onMouseLeave={() => setOpenMenu(null)} // Close menu when mouse leaves the navbar area
+      className="hidden md:flex w-full bg-white shadow-md fixed top-14 left-0 right-0 z-10 md:px-6 lg:px-10"
+    >
       <div className="flex w-4/5 mx-auto py-4 space-x-8">
         {menuItems.map((item, index) => (
-          <div key={index} className="relative">
+          <div
+            key={index}
+            className="relative"
+            onMouseEnter={() => setOpenMenu(item.label)}
+          >
             <p
               onClick={() => toggleMenu(item.label)}
             className={`text-black font-semibold hover:text-red-700 transition cursor-pointer ${
@@ -67,8 +87,13 @@ const NavbarBottom = () => {
         ))}
       </div>
 
-      <div className="w-1/5 py-4">
-        <p className='text-black font-semibold'>Call US - 1122334455</p>
+      <div className="flex-shrink-0 py-4">
+        <a
+          href="tel:1122334455"
+          className='text-red-700 font-bold whitespace-nowrap transition-transform duration-300 ease-in-out animate-pulse hover:scale-110 hover:animate-none'
+        >
+          Call Us - 1122334455
+        </a>
       </div>
     </div>
   );

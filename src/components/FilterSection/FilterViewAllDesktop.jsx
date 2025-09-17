@@ -1,16 +1,66 @@
 // src/components/FilterViewAllDesktop.jsx
-import React from 'react';
+import React, { useState } from 'react';
 
 const FilterViewAllDesktop = () => {
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(1000);
+  const [selectedSizes, setSelectedSizes] = useState([]);
+  const priceGap = 50;
+  const maxRange = 1000;
+
+  // Ensure price logic is kept valid
+  const handleMinChange = (e) => {
+    const value = Math.min(Number(e.target.value), maxPrice - priceGap);
+    setMinPrice(value);
+  };
+
+  const handleMaxChange = (e) => {
+    const value = Math.max(Number(e.target.value), minPrice + priceGap);
+    setMaxPrice(value);
+  };
+
+  const handleMinInputChange = (e) => {
+    const value = Number(e.target.value);
+    if (value >= 0 && value <= maxPrice - priceGap) {
+      setMinPrice(value);
+    }
+  };
+
+  const handleMaxInputChange = (e) => {
+    const value = Number(e.target.value);
+    if (value <= maxRange && value >= minPrice + priceGap) {
+      setMaxPrice(value);
+    }
+  };
+
+  const handleSizeToggle = (size) => {
+    setSelectedSizes((prev) =>
+      prev.includes(size)
+        ? prev.filter((s) => s !== size)
+        : [...prev, size]
+    );
+  };
+
+
+  const colorMap = {
+    Red: '#dc2626',
+    Blue: '#2563eb',
+    Black: '#000000',
+    White: '#ffffff',
+    Green: '#16a34a',
+  };
+
+
+
   return (
-    <aside className="w-full  bg-white shadow-lg p-6 rounded-md h-fit sticky top-20">
-      <h2 className="text-xl font-semibold mb-4 text-gray-800">Filters</h2>
+    <aside className="w-full text-left bg-white shadow-lg p-6 rounded-md">
+      <h2 className="text-xl font-semibold mb-4 text-gray-800 text-left">Filters</h2>
 
       <div className="space-y-6 text-sm text-gray-700">
         {/* Category */}
         <div>
-          <label className="block mb-1 font-medium">Category</label>
-          <select className="w-full border px-3 py-2 rounded">
+          <label className="block mb-1 font-medium text-left">Category</label>
+          <select className="w-full border border-gray-300 px-3 py-0.5 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-center">
             <option>All</option>
             <option>Apparel</option>
             <option>Nutrition</option>
@@ -19,18 +69,61 @@ const FilterViewAllDesktop = () => {
         </div>
 
         {/* Price Range */}
-        <div>
-          <label className="block mb-1 font-medium">Price Range ($)</label>
-          <div className="flex space-x-2">
-            <input type="number" placeholder="Min" className="w-1/2 border px-2 py-1 rounded" />
-            <input type="number" placeholder="Max" className="w-1/2 border px-2 py-1 rounded" />
+        <div className='text-left'>
+          <label className="block mb-1 font-medium text-left">Price Range ($)</label>
+
+          <div className="relative h-5 my-4">
+            <div className="absolute top-1/2 -translate-y-1/2 w-full h-1 bg-gray-200 rounded-full"></div>
+            <div
+              className="absolute top-1/2 -translate-y-1/2 h-1 bg-blue-600 rounded-full"
+              style={{
+                left: `${(minPrice / maxRange) * 100}%`,
+                right: `${100 - (maxPrice / maxRange) * 100}%`,
+              }}
+            ></div>
+
+            <input
+              type="range"
+              min="0"
+              max={maxRange}
+              step="10"
+              value={minPrice}
+              onChange={handleMinChange}
+              className="absolute mt-0.75 w-full h-1 top-1/2 -translate-y-1/2 appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-moz-range-thumb]:pointer-events-auto"
+            />
+            <input
+              type="range"
+              min="0"
+              max={maxRange}
+              step="10"
+              value={maxPrice}
+              onChange={handleMaxChange}
+              className="absolute mt-0.75 w-full h-1 top-1/2 -translate-y-1/2 appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-moz-range-thumb]:pointer-events-auto"
+            />
+          </div>
+
+          <div className="flex flex-col lg:flex-row items-center justify-between mt-2 gap-2">
+            <input
+              type="number"
+              value={minPrice}
+              onChange={handleMinInputChange}
+              className="w-full border border-gray-300 px-2 py-0.5 rounded text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <span className="text-gray-400 hidden lg:block">-</span>
+            <input
+              type="number"
+              value={maxPrice}
+              onChange={handleMaxInputChange}
+              className="w-full border border-gray-300 px-2 py-0.5 rounded text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
           </div>
         </div>
 
+
         {/* Brand */}
         <div>
-          <label className="block mb-1 font-medium">Brand</label>
-          <select className="w-full border px-3 py-2 rounded">
+          <label className="block mb-1 font-medium text-left">Brand</label>
+          <select className="w-full border border-gray-300 px-3 py-0.5 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-center">
             <option>All</option>
             <option>Nike</option>
             <option>Adidas</option>
@@ -40,33 +133,52 @@ const FilterViewAllDesktop = () => {
 
         {/* Rating */}
         <div>
-          <label className="block mb-1 font-medium">Rating</label>
+          <label className="block mb-1 font-medium text-left">Rating</label>
           {[5, 4, 3, 2, 1].map((star) => (
-            <label key={star} className="flex items-center space-x-2">
-              <input type="checkbox" />
-              <span>{star} Stars & up</span>
+            <label key={star} className="flex items-center space-x-2 cursor-pointer hover:text-blue-600">
+              <input type="checkbox" className="h-2.5 w-2.5 text-blue-600 border-gray-300 rounded focus:ring-blue-500" />
+              <span className="flex items-center">
+                {Array.from({ length: star }).map((_, i) => <span key={i} className="text-yellow-400">★</span>)}
+                {Array.from({ length: 5 - star }).map((_, i) => <span key={i} className="text-gray-300">★</span>)}
+              </span>
             </label>
           ))}
         </div>
 
         {/* Size */}
         <div>
-          <label className="block mb-1 font-medium">Size</label>
+          <label className="block mb-1 font-medium text-left">Size</label>
           <div className="flex flex-wrap gap-2">
-            {['S', 'M', 'L', 'XL'].map((size) => (
-              <button key={size} className="border px-2 py-1 rounded text-sm">{size}</button>
-            ))}
+            {['S', 'M', 'L', 'XL', 'XXL'].map((size) => {
+              const isSelected = selectedSizes.includes(size);
+              return (
+                <button
+                  key={size}
+                  onClick={() => handleSizeToggle(size)}
+                  className={`border px-2 py-0 rounded text-xs transition-colors duration-150 ${isSelected
+                      ? 'bg-blue-600 text-white border-blue-600'
+                      : 'border-gray-300 hover:bg-gray-100'
+                    } focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                >
+                  {size}
+                </button>
+              );
+            })}
           </div>
         </div>
 
         {/* Colors */}
         <div>
-          <label className="block mb-1 font-medium">Color</label>
+          <label className="block mb-1 font-medium text-left">Color</label>
           <div className="flex flex-wrap gap-2">
-            {['Red', 'Blue', 'Black', 'White'].map((color) => (
-              <label key={color} className="flex items-center gap-2">
-                <input type="checkbox" />
-                <span>{color}</span>
+            {Object.entries(colorMap).map(([name, colorValue]) => (
+              <label key={name} className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="h-2.5 w-2.5 border-gray-300 rounded focus:ring-blue-500"
+                  style={{ accentColor: colorValue }}
+                />
+                <span>{name}</span>
               </label>
             ))}
           </div>
@@ -74,17 +186,17 @@ const FilterViewAllDesktop = () => {
 
         {/* Stock */}
         <div>
-          <label className="block mb-1 font-medium">Availability</label>
-          <label className="flex items-center space-x-2">
-            <input type="checkbox" />
+          <label className="block mb-1 font-medium text-left">Availability</label>
+          <label className="flex items-center space-x-2 cursor-pointer">
+            <input type="checkbox" className="h-2.5 w-2.5 text-blue-600 border-gray-300 rounded focus:ring-blue-500" />
             <span>In Stock Only</span>
           </label>
         </div>
 
         {/* Discount */}
         <div>
-          <label className="block mb-1 font-medium">Discount</label>
-          <select className="w-full border px-3 py-2 rounded">
+          <label className="block mb-1 font-medium text-left">Discount</label>
+          <select className="w-full border border-gray-300 px-3 py-0.5 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-center">
             <option>Any</option>
             <option>10% or more</option>
             <option>25% or more</option>
@@ -93,7 +205,7 @@ const FilterViewAllDesktop = () => {
         </div>
 
         {/* Clear Button */}
-        <button className="mt-4 w-full bg-red-600 text-white py-2 rounded hover:bg-red-700">
+        <button className="mt-4 w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500">
           Clear Filters
         </button>
       </div>

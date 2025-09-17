@@ -58,7 +58,7 @@ function ContactUs() {
       <NavbarBottom />
 
       {/* Hero Header */}
-      <section className="bg-gray-100 py-12 mt-20">
+      <section className="bg-gray-100 py-8 mt-16 md:mt-28">
         <div className="max-w-6xl mx-auto px-6 text-center">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-800">Contact Us</h1>
           <p className="text-gray-600 mt-4 text-sm md:text-base">
@@ -68,7 +68,7 @@ function ContactUs() {
       </section>
 
       {/* Contact Section */}
-      <section className="max-w-6xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+      <section className="max-w-6xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
         {/* Left: Map + Address */}
         <div className="space-y-6">
           <div className="w-full h-64 md:h-72">
@@ -144,7 +144,7 @@ function ContactUs() {
             ></textarea>
             <button
               type="submit"
-              className="w-full mt-4 bg-red-600 text-white py-3 rounded-md hover:bg-red-700 transition"
+              className="w-1/3 mt-4 bg-red-600 text-white py-2 rounded-md hover:bg-red-700 transition"
             >
               Submit Message
             </button>

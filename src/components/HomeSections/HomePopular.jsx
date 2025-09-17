@@ -21,7 +21,7 @@ function HomePopular() {
   ];
 
   return (
-    <div className="w-full px-6 py-10">
+    <div className="w-full py-10">
       {/* Heading */}
       <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-8 text-center">
         Popular Products
@@ -29,7 +29,7 @@ function HomePopular() {
 
       {/* Cards Grid */}
       <Link to={"/productViewAll"}>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {popularCategories.map((item, index) => (
           <div key={index} className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300">
             <img

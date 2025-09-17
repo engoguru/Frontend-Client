@@ -21,42 +21,74 @@ function ProductViewAll() {
 
   return (
 
-       <>
-    <NavbarTop />
+    <div className='pt-4'>
+      <NavbarTop />
       <NavbarBottom />
-    <div className="w-full flex flex-col md:flex-row px-4 md:px-10 py-8 gap-6">
+      {/* Main content wrapper with top padding for navbars and consistent horizontal padding */}
+      <div className="w-full flex flex-col md:flex-row md:items-start px-6 pt-16 md:pt-28 pb-8 gap-6">
 
-      {/* Sidebar for desktop */}
-      <div className="hidden md:block">
-        <FilterViewAllDesktop />
-      </div>
-
-      {/* Main Content */}
-      <section className="w-full md:w-3/4">
-        {/* Mobile Filter Trigger */}
-        <div className="block md:hidden">
-          <FilterViewAllMobile />
+        {/* Sidebar for desktop */}
+        <div className="hidden md:block md:w-1/5">
+          <FilterViewAllDesktop />
         </div>
 
-        {/* Header */}
-        <div className="hidden md:flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-gray-800">All</h2>
-          <div className="flex items-center gap-2">
-            <label htmlFor="sort" className="text-gray-600 font-medium">Sort by:</label>
-            <select
-              id="sort"
-              className="border rounded px-3 py-1 text-sm focus:outline-none focus:ring"
-            >
-              <option value="default">Default</option>
-              <option value="low-to-high">Price: Low to High</option>
-              <option value="high-to-low">Price: High to Low</option>
-            </select>
+        {/* Main Content */}
+        <section className="w-full md:w-4/5">
+          {/* Mobile Controls Header */}
+          <div className="flex flex-col gap-y-4 sm:flex-row sm:justify-between items-center md:hidden mb-4">
+            <div className="w-auto">
+              <FilterViewAllMobile />
+            </div>
+            <div className="w-auto flex justify-end items-center gap-2">
+              <label htmlFor="sort-mobile" className="text-gray-600 font-medium text-sm">Sort by:</label>
+              <select
+                id="sort-mobile"
+                className="border rounded px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-center accent-blue-600"
+              >
+                <option value="default">Default</option>
+                <option value="low-to-high">Price: Low to High</option>
+                <option value="high-to-low">Price: High to Low</option>
+              </select>
+            </div>
           </div>
-        </div>
 
-        {/* Product Grid */}
-           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      {products.map((product) => {
+          {/* Desktop Header */}
+          <div className="hidden md:flex justify-between items-center mb-6">
+            <h2 className="text-xl font-bold text-gray-800">All</h2>
+            <div className="flex items-center gap-2">
+              <label htmlFor="sort" className="text-gray-600 font-medium">Sort by:</label>
+              <select
+                id="sort"
+                className="border rounded px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-center accent-blue-600"
+              >
+                <option value="default">Default</option>
+                <option value="low-to-high">Price: Low to High</option>
+                <option value="high-to-low">Price: High to Low</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Product Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {/* {Array.from({ length: 30 }).map((_, index) => (
+              <div key={index} className="bg-white shadow-md rounded-lg p-4">
+                <img
+                  src="https://via.placeholder.com/300x200"
+                  alt="Product"
+                  className="w-full h-40 object-cover rounded-md"
+                />
+                <h2 className="text-lg font-semibold mt-3">Product Name</h2>
+                <p className="text-gray-600 text-sm mt-1">Short product description goes here.</p>
+                <p className="text-red-600 font-bold mt-2">$29.99</p>
+                <Link to="/productDetail/1" className="mt-3 block focus:outline-none">
+                  <button className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 text-sm">
+                    Buy Now
+                  </button>
+                </Link>
+              </div>
+            ))} */}
+
+            {products.map((product) => {
         const firstVariant = product.productVarient?.[0];
         const firstImage = product.productImages?.[0]?.url || 'https://via.placeholder.com/300x200';
 
@@ -81,15 +113,16 @@ function ProductViewAll() {
           </div>
         );
       })}
-    </div>
-    
-      </section>
-    </div>
+          </div>
+        </section>
+      </div>
 
+      {/* Main Content */}
+     
+  
       <FooterMain />
-    </>
+    </div>
   );
 }
 
 export default ProductViewAll;
-

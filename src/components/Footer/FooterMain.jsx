@@ -2,11 +2,11 @@ import React from 'react';
 
 function FooterMain() {
   return (
-    <footer className="bg-gray-900 text-white px-6 py-10">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+    <footer className="bg-gray-900 text-gray-400 pt-10">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 px-6">
         {/* 1. Contact Us */}
         <div>
-          <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
+          <h3 className="text-lg text-white font-semibold mb-4">Contact Us</h3>
           <p className="text-sm">123 Fitness St, Gym City, USA</p>
           <p className="text-sm mt-2">Email: support@example.com</p>
           <p className="text-sm mt-2">Phone: (123) 456-7890</p>
@@ -14,7 +14,7 @@ function FooterMain() {
 
         {/* 2. Information */}
         <div>
-          <h3 className="text-lg font-semibold mb-4">Information</h3>
+          <h3 className="text-lg text-white font-semibold mb-4">Information</h3>
           <ul className="space-y-2 text-sm">
             <li><a href="/" className="hover:text-red-500">Home</a></li>
             <li><a href="/shop" className="hover:text-red-500">Shop</a></li>
@@ -25,7 +25,7 @@ function FooterMain() {
 
         {/* 3. Account */}
         <div>
-          <h3 className="text-lg font-semibold mb-4">Account</h3>
+          <h3 className="text-lg text-white  font-semibold mb-4">Account</h3>
           <ul className="space-y-2 text-sm">
             <li><a href="/profile" className="hover:text-red-500">Profile</a></li>
             <li><a href="/orders" className="hover:text-red-500">Order History</a></li>
@@ -36,11 +36,11 @@ function FooterMain() {
 
         {/* 4. Description + Social Media */}
         <div>
-          <h3 className="text-lg font-semibold mb-4">About Us</h3>
+          <h3 className="text-lg text-white  font-semibold mb-4">About Us</h3>
           <p className="text-sm mb-4">
             We provide high-quality fitness products and services to help you reach your goals. Stay strong, live long!
           </p>
-          <div className="flex space-x-4">
+          <div className="flex justify-center space-x-4 ">
             {/* Facebook */}
             <a href="#" className="hover:text-red-500" aria-label="Facebook">
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -64,8 +64,10 @@ function FooterMain() {
       </div>
 
       {/* Footer Bottom */}
-      <div className="mt-10 text-center text-sm text-gray-400 border-t border-gray-700 pt-4">
-        &copy; {new Date().getFullYear()} YourCompany. All rights reserved.
+      <div className="mt-12 border-t border-gray-800">
+        <div className="px-6 py-6 text-center text-sm">
+          <p className="text-gray-500">&copy; {new Date().getFullYear()} SPORTDUNIYA. All rights reserved.</p>
+        </div>
       </div>
     </footer>
   );
