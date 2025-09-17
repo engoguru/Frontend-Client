@@ -18,7 +18,7 @@ const NavbarBottom = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []); 
+  }, []);
 
   const menuItems = [
     { label: "Apparel", subItems: ["Shirts", "Shorts", "Shoes"] },
@@ -39,7 +39,7 @@ const NavbarBottom = () => {
     <div
       ref={navRef}
       onMouseLeave={() => setOpenMenu(null)} // Close menu when mouse leaves the navbar area
-      className="hidden md:flex w-full bg-white shadow-md fixed top-14 left-0 right-0 z-10 md:px-6 lg:px-10"
+      className="text-center hidden md:flex w-full bg-white shadow-md fixed top-14 left-0 right-0 z-10 md:px-6 lg:px-10"
     >
       <div className="flex w-4/5 mx-auto py-4 space-x-8">
         {menuItems.map((item, index) => (
@@ -50,22 +50,21 @@ const NavbarBottom = () => {
           >
             <p
               onClick={() => toggleMenu(item.label)}
-            className={`text-black font-semibold hover:text-red-700 transition cursor-pointer ${
-    openMenu ===item.label ? 'border-b-1 border-red-500' : ''
-  }`}
+              className={`text-black font-semibold hover:text-red-700 transition cursor-pointer ${openMenu === item.label ? 'border-b-1 border-red-500' : ''
+                }`}
             >
               {item.label}
             </p>
 
             {openMenu === item.label && (
-              <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-200 shadow-lg rounded-md z-20">
+              <div className="absolute top-full -left-10 mt-2 w-48 bg-white border border-gray-200 shadow-lg rounded-md z-20">
                 <ul>
                   {item.label === "Pages"
                     ? item.subItems.map((subItem, idx) => (
                       <li key={idx}>
                         <Link
                           to={subItem.path}
-                          className="block px-4 py-2 text-black hover:bg-gray-100 cursor-pointer text-semibold border-b border-gray-200"
+                          className="block px-4 py-2 text-black hover:bg-gray-100 cursor-pointer text-sm border-b border-gray-200"
                         >
                           {subItem.name}
                         </Link>
@@ -74,7 +73,7 @@ const NavbarBottom = () => {
                     : item.subItems.map((subItem, idx) => (
                       <li
                         key={idx}
-                        className="px-4 py-2 text-black hover:bg-gray-100 cursor-pointer text-semibold border-b border-gray-200"
+                        className="px-4 py-2 text-black hover:bg-gray-100 cursor-pointer text-sm border-b border-gray-200"
                       >
                         {subItem}
                       </li>

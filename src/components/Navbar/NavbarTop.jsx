@@ -1,39 +1,74 @@
-import React, { useState,useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import LoginModal from '../UserSection/Login';
 import Register from '../UserSection/Register';
 import { Link } from 'react-router-dom';
 import ForgetPassword from '../UserSection/ForgetPassword';
 
 export default function NavbarTop() {
-   const desktopSearchRef=useRef(); 
-    const mobileSearchRef = useRef();
+    const desktopSearchRef = useRef(null);
+    const mobileSearchRef = useRef(null);
     const [menuOpen, setMenuOpen] = useState(false);
     const [openSubMenu, setOpenSubMenu] = useState(null);
     const [activeModal, setActiveModal] = useState(null); // null, 'login', or 'register'
-    const[showSuggestions,setShowSuggestions]=useState(false);  
-  const [searchQuery, setSearchQuery] = useState('');
-  const [recentSearches, setRecentSearches] = useState(() => {
-    const storedSearches = localStorage.getItem('recentSearches');
-    return storedSearches ? JSON.parse(storedSearches) : [];
-  });
+    const [suggestions, setSuggestions] = useState([]);
+    const [showSuggestions, setShowSuggestions] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    // Static list of all possible suggestions for filtering
+    const allPossibleSuggestions = ['Protein Powder', 'Running Shoes', 'Yoga Mat', 'Dumbbells', 'T-shirts', 'Track Pants', 'Vitamins', 'Gym Gloves', 'Shaker Bottle'];
+    // State for recent searches, which can be modified
+    const [recentSearches, setRecentSearches] = useState(['Running Shoes', 'Yoga Mat', 'Dumbbells']);
 
-  const handleSearchChange = (e) => {
-    const query = e.target.value;
-    setSearchQuery(query);
-    if (query.length > 0) {
+    const handleSearchChange = (e) => {
+        const query = e.target.value;
+        setSearchQuery(query);
+        if (query.length > 0) {
+            const filteredSuggestions = allPossibleSuggestions.filter(suggestion =>
+                suggestion.toLowerCase().includes(query.toLowerCase())
+            );
+            setSuggestions(filteredSuggestions);
+        } else {
+            // If input is cleared, show recent searches
+            setSuggestions(recentSearches);
+        }
         setShowSuggestions(true);
-    } else {
+    };
+
+    const handleSuggestionClick = (suggestion) => {
+        setSearchQuery(suggestion);
         setShowSuggestions(false);
-    }
     };
 
     const handleFocus = () => {
-        if (searchQuery.length > 0) {
-            setShowSuggestions(true);
+        // On focus, show recent searches if the input is empty
+        if (searchQuery.length === 0) {
+            setSuggestions(recentSearches);
+        }
+        setShowSuggestions(true);
+    };
+
+    const handleRemoveSuggestion = (e, suggestionToRemove) => {
+        e.stopPropagation(); // Prevent suggestion from being selected
+        const updatedRecent = recentSearches.filter(s => s !== suggestionToRemove);
+        setRecentSearches(updatedRecent);
+
+        // If the search query is empty, update the visible suggestions list as well
+        if (searchQuery.length === 0) {
+            setSuggestions(updatedRecent);
         }
     };
 
-    // Retrieve recent searches from localStorage or initialize as empty array  
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (mobileSearchRef.current && !mobileSearchRef.current.contains(event.target) && desktopSearchRef.current && !desktopSearchRef.current.contains(event.target)) {
+                setShowSuggestions(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
     const toggleSubMenu = (menuName) => {
         setOpenSubMenu(openSubMenu === menuName ? null : menuName);
     };
@@ -346,35 +381,35 @@ export default function NavbarTop() {
                         </a>
                     </div>
                 </div>
-                
+
             </div>
-                {isAccount && (
-                    <ul className="absolute top-15 right-10 bg-white shadow-lg rounded-md w-40 z-100">
-                        <Link to="/user">
-                            <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-semibold border-b border-gray-200">Profile</li>
-                        </Link>
-                        <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-semibold border-b border-gray-200" onClick={() => setActiveModal('login')}>
-                            Login
-                        </li>
-                        <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-semibold border-b border-gray-200"
-                            onClick={() => setActiveModal('register')} >Register
-                        </li>
-                        <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-semibold border-b border-gray-200">Cart</li>
-                        <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-semibold border-b border-gray-200" onClick={() => setActiveModal('forgetPasswword')}>Forget Passwword</li>
-                        <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-semibold border-b border-gray-200">Logout</li>
-                    </ul>
-                )}
-                {activeModal === 'login' && (
-                    <LoginModal isOpen={true} setIsOpen={() => setActiveModal(null)} />
-                )}
-                {activeModal === 'register' && (
-                    <Register isOpen={true} setIsOpen={() => setActiveModal(null)} />
-                )}
-                {
-                    activeModal === "forgetPasswword" && (
-                        <ForgetPassword isOpen={true} setIsOpen={() => setActiveModal(null)} />
-                    )
-                }
+            {isAccount && (
+                <ul className="absolute top-15 right-10 bg-white shadow-lg rounded-md w-40 z-100">
+                    <Link to="/user">
+                        <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-semibold border-b border-gray-200">Profile</li>
+                    </Link>
+                    <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-semibold border-b border-gray-200" onClick={() => setActiveModal('login')}>
+                        Login
+                    </li>
+                    <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-semibold border-b border-gray-200"
+                        onClick={() => setActiveModal('register')} >Register
+                    </li>
+                    <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-semibold border-b border-gray-200">Cart</li>
+                    <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-semibold border-b border-gray-200" onClick={() => setActiveModal('forgetPasswword')}>Forget Passwword</li>
+                    <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-semibold border-b border-gray-200">Logout</li>
+                </ul>
+            )}
+            {activeModal === 'login' && (
+                <LoginModal isOpen={true} setIsOpen={() => setActiveModal(null)} />
+            )}
+            {activeModal === 'register' && (
+                <Register isOpen={true} setIsOpen={() => setActiveModal(null)} />
+            )}
+            {
+                activeModal === "forgetPasswword" && (
+                    <ForgetPassword isOpen={true} setIsOpen={() => setActiveModal(null)} />
+                )
+            }
 
         </nav>
     );

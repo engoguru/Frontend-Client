@@ -12,18 +12,23 @@ function ProductDetailView() {
       <NavbarTop />
       <NavbarBottom />
 
-      {/* Product Detail and Payment Card (Desktop View) */}
-      <div className="w-full h-full flex-col flex-row flex justify-center items-start mt-20 ">
-        {/* Left: Product Detail */}
-        <div className="w-full md:w-8/12">
-          <ProductDetail />
-        </div>
+      <main className="pt-16 md:pt-28">
+        {/* Page container with max-width and centering */}
+        <div className="max-w-[1200px] mx-auto">
+          {/* Product Detail and Payment Card */}
+          <div className="flex flex-col lg:flex-row items-start">
+            {/* Left: Product Detail */}
+            <div className="w-full lg:w-8/12">
+              <ProductDetail />
+            </div>
 
-        {/* Right: Payment Card */}
-        <div className="hidden md:block md:w-4/12">
-          <ProductDetailPayment />
+            {/* Right: Payment Card */}
+            <div className="hidden lg:block w-full lg:w-4/12 p-4 md:p-5 lg:pl-2">
+              <ProductDetailPayment />
+            </div>
+          </div>
         </div>
-      </div>
+      </main>
 
       <FooterMain />
     </>

@@ -18,7 +18,7 @@ function HomeFeature3() {
   return (
     <>
 
-      <div className="w-full">
+      <div className="w-full text-center">
         {/* Header */}
         <div className="flex bg-red-100 border-b border-gray-500 justify-between items-center w-full py-4">
           <div>
