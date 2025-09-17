@@ -11,6 +11,7 @@ import TermCondition from './pages/TermCondition'
 import ProductViewAll from './pages/ProductViewAll'
 import UserDashboard from './pages/UserDashboard'
 import ProductDetailView from './pages/ProductDetailView'
+import ProtectedRoutes from './utils/ProtectedRoutes'
 
 function App() {
 
@@ -26,9 +27,16 @@ function App() {
   <Route path="/privacy-policy" element={<PrivacyPolicy/>}/>
   <Route path="/TermCondition" element={<TermCondition/>}/>
   <Route path="/productViewAll" element={<ProductViewAll/>}/>
-  <Route path="/user" element={<UserDashboard/>}/>
+  {/* <Route path="/user" element={<UserDashboard/>}/> */}
 
   <Route path="/productDetail/:id" element={<ProductDetailView/>}/>
+
+  {/* Protected routes */}
+  <Route element={<ProtectedRoutes />}>
+        <Route path="/user" element={<UserDashboard />} />
+        {/* Add more protected routes here */}
+      </Route>
+
  
 </Routes>
 

@@ -1,53 +1,123 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { orderGetByUser } from '../../store/slice/orderSlice';
+import { getMeDetails } from '../../store/slice/userSlice';
 
 function OrderHistory() {
-  // Sample data - you can replace this with real API data later
-  const orders = [
-    { id: '#101', item: 'iPhone 14', status: 'Completed', date: '2025-08-01' },
-    { id: '#102', item: 'AirPods Pro', status: 'Failed', date: '2025-08-05' },
-    { id: '#103', item: 'MacBook Air', status: 'Completed', date: '2025-08-10' },
-    { id: '#104', item: 'Apple Watch', status: 'Failed', date: '2025-08-15' },
-  ];
+  const dispatch = useDispatch();
 
+  const { meDetails, loading: userLoading } = useSelector((state) => state.user);
+  const {
+    orderUserSpecific,
+    loading: orderLoading,
+    error: orderError,
+  } = useSelector((state) => state.order);
+
+
+  // Fetch orders when user ID is available
+  useEffect(() => {
+    if (meDetails?.id) {
+
+      dispatch(orderGetByUser(meDetails.id));
+    }
+  }, [ meDetails]);
+
+  console.log(orderUserSpecific,"dghjghrodhvvo9irtj")
   return (
-    <div className="w-full min-h-screen bg-gray-50 p-6">
-      <div className=" mx-auto bg-white shadow rounded-lg p-6">
-        <h2 className="text-2xl font-semibold text-gray-700 mb-4">Order History</h2>
+   <div className="w-full min-h-screen bg-gray-50 p-6">
+  <div className="mx-auto max-w-4xl">
+    <h2 className="text-2xl font-semibold text-gray-700 mb-6">Your Order History</h2>
 
-        <div className="">
-          <table className=" table-auto text-sm text-left">
-            <thead className="bg-gray-100 text-gray-600 uppercase tracking-wider">
-              <tr>
-                <th className="px-2 py-2">Order ID</th>
-                <th className="px-2 py-2">Item</th>
-                <th className="px-2 py-2">Status</th>
-                <th className="px-2 py-2">Date</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {orders.map((order) => (
-                <tr key={order.id}>
-                  <td className="px-4 py-2">{order.id}</td>
-                  <td className="px-4 py-2">{order.item}</td>
-                  <td className="px-4 py-2">
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        order.status === 'Completed'
-                          ? 'bg-green-100 text-green-700'
-                          : 'bg-red-100 text-red-700'
-                      }`}
-                    >
-                      {order.status}
-                    </span>
-                  </td>
-                  <td className="px-4 py-2">{order.date}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+    {orderLoading ? (
+      <p>Loading orders...</p>
+    ) : orderError ? (
+      <p className="text-red-500">Error: {orderError}</p>
+    ) : orderUserSpecific?.length === 0 ? (
+      <p>No orders found.</p>
+    ) : (
+      <div className="space-y-6">
+        {orderUserSpecific.map((order) => (
+          <div
+            key={order._id}
+            className="bg-white shadow-md rounded-lg p-6 border border-gray-100"
+          >
+            <div className="flex justify-between items-center mb-4">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-800">
+                  Order ID: <span className="text-gray-600">{order._id}</span>
+                </h3>
+                <p className="text-sm text-gray-500">
+                  Placed on {new Date(order.createdAt).toLocaleDateString()}
+                </p>
+              </div>
+              <div>
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-medium ${
+                    order.orderStatus === 'Completed'
+                      ? 'bg-green-100 text-green-700'
+                      : 'bg-yellow-100 text-yellow-700'
+                  }`}
+                >
+                  {order.orderStatus}
+                </span>
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <p className="text-sm text-gray-600">
+                <strong>Delivery Address:</strong> {order.deliveryAddress}
+              </p>
+              <p className="text-sm text-gray-600">
+                <strong>Payment Method:</strong> {order.paymentMethod} |{' '}
+                <strong>Status:</strong>{' '}
+                <span
+                  className={`font-medium ${
+                    order.paymentStatus === 'Paid' ? 'text-green-600' : 'text-red-500'
+                  }`}
+                >
+                  {order.paymentStatus}
+                </span>
+              </p>
+              <p className="text-sm text-gray-600">
+                <strong>Total Paid:</strong> ${order.totalPrice.toFixed(2)}
+              </p>
+            </div>
+
+            <div>
+              <h4 className="text-sm font-semibold text-gray-700 mb-2">Items:</h4>
+              <ul className="divide-y divide-gray-200">
+                {order.items?.map((item, index) => (
+                  <li key={index} className="py-2 flex justify-between items-start">
+                    <div>
+                      <p className="font-medium text-gray-800">
+                        {item.productDetails?.productName || 'Unknown Product'}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        Quantity: {item.quantity} | Price: ${item.price.toFixed(2)}
+                      </p>
+                      <p className="text-xs text-gray-400 italic">
+                        Brand: {item.productDetails?.productBrand} | Category:{' '}
+                        {item.productDetails?.productCategory}
+                      </p>
+                    </div>
+                    {item.productDetails?.productImages?.[0]?.url && (
+                      <img
+                        src={item.productDetails.productImages[0].url}
+                        alt={item.productDetails.productName}
+                        className="w-16 h-16 object-cover rounded-md border"
+                      />
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        ))}
       </div>
-    </div>
+    )}
+  </div>
+</div>
+
   );
 }
 

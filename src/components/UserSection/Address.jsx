@@ -1,8 +1,11 @@
-import React from 'react';
+import React,{useState,useEffect} from 'react';
 // import { FaCheckCircle } from 'react-icons/fa'; // For green tick icon
-
+import { useSelector,useDispatch } from 'react-redux';
 function Address() {
   // Sample address data (replace with API data if needed)
+  const dispatch=useDispatch();
+  const{meDetails, loading, error}=useSelector((state)=>state.user)
+
   const addresses = [
     {
       id: 1,
@@ -30,7 +33,7 @@ function Address() {
         <h2 className="text-xl font-semibold text-gray-700 mb-6">Saved Addresses</h2>
 
         <div className="space-y-4">
-          {addresses.map((address) => (
+          {meDetails?.address?.map((address) => (
             <div
               key={address.id}
               className={`flex items-start justify-between border rounded p-2 ${

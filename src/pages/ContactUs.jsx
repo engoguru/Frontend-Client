@@ -1,9 +1,57 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import NavbarTop from '../components/Navbar/NavbarTop';
 import NavbarBottom from '../components/Navbar/NavbarBottom';
 import FooterMain from '../components/Footer/FooterMain';
+import { useSelector, useDispatch } from 'react-redux';
+import { submitContact } from '../store/slice/contactSlice';
+import { getMeDetails } from '../store/slice/userSlice';
 
 function ContactUs() {
+  const dispatch = useDispatch();
+  const { meDetails } = useSelector((state) => state.user);
+
+  const [formdata, setFormdata] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+
+  // Sync form data when meDetails changes
+  useEffect(() => {
+    if (meDetails) {
+      setFormdata((prev) => ({
+        ...prev,
+        name: meDetails?.name || '',
+        phone: meDetails?.contactNumber || '',
+        email: meDetails?.email || ''
+      }));
+    }
+  }, [meDetails]);
+
+  useEffect(() => {
+    dispatch(getMeDetails());
+  }, [dispatch]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormdata((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log('Submitting formdata:', formdata);
+
+    // Validate before submitting (optional)
+    if (!formdata.name || !formdata.email || !formdata.message) {
+      alert("Please fill in all requiregrttrrtd fields.");
+      return;
+    }
+
+    dispatch(submitContact(formdata));
+  };
+
   return (
     <>
       <NavbarTop />
@@ -51,35 +99,45 @@ function ContactUs() {
         {/* Right: Form */}
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold text-gray-800 mb-6">Send Us a Message</h2>
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input
+                onChange={handleChange}
                 name="name"
                 type="text"
+                value={formdata.name}
                 placeholder="Your Name"
                 className="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
               />
               <input
+                onChange={handleChange}
                 name="phone"
                 type="tel"
+                value={formdata.phone}
                 placeholder="Phone Number"
                 className="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
               />
             </div>
             <input
+              onChange={handleChange}
               name="email"
               type="email"
+              value={formdata.email}
               placeholder="Email Address"
               className="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
             />
             <input
+              onChange={handleChange}
               name="subject"
               type="text"
+              value={formdata.subject}
               placeholder="Subject"
               className="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
             />
             <textarea
+              onChange={handleChange}
               name="message"
+              value={formdata.message}
               rows="5"
               placeholder="Your Message"
               className="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"

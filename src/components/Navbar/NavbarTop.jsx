@@ -1,12 +1,24 @@
 import React, { useState } from 'react';
+import LoginModal from '../UserSection/Login';
+import Register from '../UserSection/Register';
+import { Link } from 'react-router-dom';
+import ForgetPassword from '../UserSection/ForgetPassword';
 
 export default function NavbarTop() {
     const [menuOpen, setMenuOpen] = useState(false);
     const [openSubMenu, setOpenSubMenu] = useState(null);
+const [activeModal, setActiveModal] = useState(null); // null, 'login', or 'register'
+
 
     const toggleSubMenu = (menuName) => {
         setOpenSubMenu(openSubMenu === menuName ? null : menuName);
     };
+
+
+ const [isAccount,setIsAcount]=useState(false)
+      const AccountDropdown = () => {
+    setIsAcount(prev => !prev);
+  }
 
     const menuItems = [
         { label: "Menu", subItems: [] },
@@ -95,10 +107,19 @@ export default function NavbarTop() {
                 </div>
 
                 {/* Desktop Profile */}
+                {/*  */}
                 <div className="hidden md:flex items-center w-1/4 justify-end">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32">
+                  <div onClick={AccountDropdown} className="cursor-pointer" >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32">
                         <path d="M16 18C9.4 18 4 23.4 4 30H2c0-6.2 4-11.5 9.6-13.3C9.4 15.3 8 12.8 8 10c0-4.4 3.6-8 8-8s8 3.6 8 8c0 2.8-1.5 5.3-3.6 6.7C26 18.5 30 23.8 30 30h-2c0-6.6-5.4-12-12-12zm6-8c0-3.3-2.7-6-6-6s-6 2.7-6 6 2.7 6 6 6 6-2.7 6-6z"></path>
                     </svg>
+
+
+
+     
+                    
+                  </div>
+
                     <p className="ml-2 text-black text-sm">sportDuniya...</p>
                 </div>
             </div>
@@ -204,6 +225,34 @@ export default function NavbarTop() {
                     </div>
                 </div>
             )}
+ {isAccount && (
+        <ul className="absolute top-15 right-10 bg-white shadow-lg rounded-md w-40 z-100">
+        <Link to="/user">
+          <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-semibold border-b border-gray-200">Profile</li>
+        </Link>
+          <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-semibold border-b border-gray-200"   onClick={() => setActiveModal('login')}>
+            Login
+            </li>
+           <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-semibold border-b border-gray-200"
+           onClick={() => setActiveModal('register')} >Register
+           </li>
+            <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-semibold border-b border-gray-200">Cart</li>
+              <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-semibold border-b border-gray-200"   onClick={() => setActiveModal('forgetPasswword')}>Forget Passwword</li>
+          <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-semibold border-b border-gray-200">Logout</li>
+        </ul>
+      )}
+          {activeModal === 'login' && (
+  <LoginModal isOpen={true} setIsOpen={() => setActiveModal(null)} />
+)}
+{activeModal === 'register' && (
+  <Register isOpen={true} setIsOpen={() => setActiveModal(null)} />
+)}
+{
+    activeModal==="forgetPasswword" &&(
+        <ForgetPassword isOpen={true} setIsOpen={()=>setActiveModal(null)}/>
+    )
+}
+
         </nav>
     );
 }

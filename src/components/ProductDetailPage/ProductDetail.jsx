@@ -10,15 +10,15 @@ function ProductDetail() {
   const [mainImage, setMainImage] = useState(productImages[0]);
 
   return (
-    <div className="p-4 md:p-10">
+    <div className="p-4 md:p-5">
       {/* Product Card */}
-      <div className="flex flex-col md:flex-row gap-8 bg-white shadow-md rounded-lg p-6">
+      <div className="flex flex-col md:flex-row gap-5 bg-white shadow-md rounded-lg p-4">
         {/* Left - Images */}
         <div className="md:w-1/2">
           <img
             src={mainImage}
             alt="Main Product"
-            className="w-full h-[400px] object-cover rounded-lg"
+            className="w-full h-[300px] object-cover rounded-lg"
           />
           <div className="flex gap-3 mt-4">
             {productImages.map((img, idx) => (
@@ -35,15 +35,15 @@ function ProductDetail() {
 
         {/* Right - Details */}
         <div className="md:w-1/2 space-y-4">
-          <h2 className="text-2xl font-bold text-gray-800">Awesome Product Name</h2>
+          <h2 className="md:text-lg lg:text-2xl font-bold text-gray-800 ">Awesome Product Name</h2>
           <div className="flex items-center gap-4">
-            <p className="text-red-600 text-xl font-bold">₹1,499</p>
-            <p className="text-gray-500 line-through">₹1,999</p>
-            <p className="text-green-600 font-semibold">(25% OFF)</p>
+            <p className="text-red-600 md:text-sm lg:text-lg font-bold">₹1,499</p>
+            <p className="text-gray-500 line-through md:text-md lg:text-lg ">₹1,999</p>
+            <p className="text-green-600 font-semibold md:text-md lg:text-lg ">(25% OFF)</p>
           </div>
 
           <div>
-            <h4 className="font-semibold mb-1 text-gray-800">Color</h4>
+            <h4 className="font-semibold mb-1 text-gray-800 md:text-sm lg:text-md">Color</h4>
             <div className="flex gap-3">
               <span className="w-6 h-6 rounded-full bg-red-600 border-2 border-gray-300 cursor-pointer"></span>
               <span className="w-6 h-6 rounded-full bg-blue-600 border-2 border-gray-300 cursor-pointer"></span>
@@ -53,11 +53,11 @@ function ProductDetail() {
 
           <div>
             <h4 className="font-semibold mb-1 mt-3">Size</h4>
-            <div className="flex gap-2">
+            <div className="flex gap-1  md:text-sm">
               {['S', 'M', 'L', 'XL'].map((size) => (
                 <button
                   key={size}
-                  className="border text-gray-800 border-gray-300 px-3 py-1 rounded hover:border-red-600"
+                  className="border text-gray-800 border-gray-300 px-1 py-1 rounded hover:border-red-600"
                 >
                   {size}
                 </button>

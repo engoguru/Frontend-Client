@@ -24,13 +24,15 @@ const NavbarBottom = () => {
   ];
 
   return (
-    <div className="hidden md:flex w-full bg-white shadow-md fixed top-14 left-0 right-0 z-10 md:px-6 lg:px-10">
+    <div className="hidden md:flex w-full bg-white shadow-md fixed top-14 left-0 right-0 z-5 md:px-6 lg:px-10">
       <div className="flex w-4/5 mx-auto py-4 space-x-8">
         {menuItems.map((item, index) => (
           <div key={index} className="relative">
             <p
               onClick={() => toggleMenu(item.label)}
-              className="text-black font-semibold hover:text-red-700 transition cursor-pointer"
+            className={`text-black font-semibold hover:text-red-700 transition cursor-pointer ${
+    openMenu ===item.label ? 'border-b-1 border-red-500' : ''
+  }`}
             >
               {item.label}
             </p>
@@ -43,7 +45,7 @@ const NavbarBottom = () => {
                       <li key={idx}>
                         <Link
                           to={subItem.path}
-                          className="block px-4 py-2 text-black hover:bg-gray-100 text-sm"
+                          className="block px-4 py-2 text-black hover:bg-gray-100 cursor-pointer text-semibold border-b border-gray-200"
                         >
                           {subItem.name}
                         </Link>
@@ -52,7 +54,7 @@ const NavbarBottom = () => {
                     : item.subItems.map((subItem, idx) => (
                       <li
                         key={idx}
-                        className="px-4 py-2 text-black hover:bg-gray-100 cursor-pointer text-sm"
+                        className="px-4 py-2 text-black hover:bg-gray-100 cursor-pointer text-semibold border-b border-gray-200"
                       >
                         {subItem}
                       </li>

@@ -72,7 +72,7 @@ function UserDashboard() {
     <>
     <NavbarTop/>
     <NavbarBottom/>
-    <div className=" w-[100%] min-h-screen bg-white">
+    <div className=" w-[100%] min-h-screen bg-white mt-25">
       {/* Flex Layout: Column on mobile, Row on desktop */}
       <div className="flex flex-col md:flex-row w-full h-full">
         
