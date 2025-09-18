@@ -3,6 +3,14 @@ import LoginModal from '../UserSection/Login';
 import Register from '../UserSection/Register';
 import { Link } from 'react-router-dom';
 import ForgetPassword from '../UserSection/ForgetPassword';
+import {
+    FaUserCircle,
+    FaSignInAlt,
+    FaUserPlus,
+    FaShoppingCart,
+    FaKey,
+    FaSignOutAlt,
+} from 'react-icons/fa';
 
 export default function NavbarTop() {
     const desktopSearchRef = useRef(null);
@@ -13,10 +21,17 @@ export default function NavbarTop() {
     const [suggestions, setSuggestions] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const [isAccount, setIsAcount] = useState(false);
     // Static list of all possible suggestions for filtering
     const allPossibleSuggestions = ['Protein Powder', 'Running Shoes', 'Yoga Mat', 'Dumbbells', 'T-shirts', 'Track Pants', 'Vitamins', 'Gym Gloves', 'Shaker Bottle'];
     // State for recent searches, which can be modified
+    const accountDropdownRef = useRef(null);
+    const accountIconRef = useRef(null);
     const [recentSearches, setRecentSearches] = useState(['Running Shoes', 'Yoga Mat', 'Dumbbells']);
+
+    const AccountDropdown = () => {
+        setIsAcount(prev => !prev);
+    };
 
     const handleSearchChange = (e) => {
         const query = e.target.value;
@@ -59,25 +74,28 @@ export default function NavbarTop() {
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (mobileSearchRef.current && !mobileSearchRef.current.contains(event.target) && desktopSearchRef.current && !desktopSearchRef.current.contains(event.target)) {
+            // Close search suggestions if click is outside
+            if (showSuggestions && mobileSearchRef.current && !mobileSearchRef.current.contains(event.target) && desktopSearchRef.current && !desktopSearchRef.current.contains(event.target)) {
                 setShowSuggestions(false);
             }
+
+            // Close account dropdown if click is outside
+            if (isAccount && accountIconRef.current && !accountIconRef.current.contains(event.target) && accountDropdownRef.current && !accountDropdownRef.current.contains(event.target)) {
+                setIsAcount(false);
+            }
         };
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, []);
+
+        // Add listener only when a dropdown is open
+        if (showSuggestions || isAccount) {
+            document.addEventListener("mousedown", handleClickOutside);
+        }
+
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, [showSuggestions, isAccount]);
 
     const toggleSubMenu = (menuName) => {
         setOpenSubMenu(openSubMenu === menuName ? null : menuName);
     };
-
-
-    const [isAccount, setIsAcount] = useState(false)
-    const AccountDropdown = () => {
-        setIsAcount(prev => !prev);
-    }
 
     const menuItems = [
         {
@@ -264,8 +282,8 @@ export default function NavbarTop() {
 
                 {/* Desktop Profile */}
                 {/*  */}
-                <div className="hidden md:flex items-center w-1/4 justify-end">
-                    <div onClick={AccountDropdown} className="cursor-pointer" >
+                <div className="hidden md:flex items-center w-1/4 justify-end" >
+                    <div onClick={AccountDropdown} className="cursor-pointer" ref={accountIconRef}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32">
                             <path d="M16 18C9.4 18 4 23.4 4 30H2c0-6.2 4-11.5 9.6-13.3C9.4 15.3 8 12.8 8 10c0-4.4 3.6-8 8-8s8 3.6 8 8c0 2.8-1.5 5.3-3.6 6.7C26 18.5 30 23.8 30 30h-2c0-6.6-5.4-12-12-12zm6-8c0-3.3-2.7-6-6-6s-6 2.7-6 6 2.7 6 6 6 6-2.7 6-6z"></path>
                         </svg>
@@ -383,22 +401,39 @@ export default function NavbarTop() {
                 </div>
 
             </div>
-            {isAccount && (
-                <ul className="absolute top-15 right-10 bg-white shadow-lg rounded-md w-40 z-100">
-                    <Link to="/user">
-                        <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-semibold border-b border-gray-200">Profile</li>
-                    </Link>
-                    <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-semibold border-b border-gray-200" onClick={() => setActiveModal('login')}>
-                        Login
+            {/* Account Dropdown */}
+            <ul
+                ref={accountDropdownRef}
+                className={`absolute top-16 right-10 bg-white shadow-lg rounded-md w-48 z-50 origin-top-right transition-all duration-200 ease-out hidden md:block ${isAccount ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}
+            >
+                    <li className="border-b border-gray-200">
+                        <Link to="/user" className="flex items-center w-full px-4 py-2 hover:bg-gray-100 cursor-pointer font-semibold text-gray-800">
+                            <FaUserCircle className="mr-3 text-gray-500" />
+                            <span>Profile</span>
+                        </Link>
                     </li>
-                    <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-semibold border-b border-gray-200"
-                        onClick={() => setActiveModal('register')} >Register
+                    <li className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer font-semibold border-b border-gray-200 text-gray-800" onClick={() => setActiveModal('login')}>
+                        <FaSignInAlt className="mr-3 text-gray-500" />
+                        <span>Login</span>
                     </li>
-                    <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-semibold border-b border-gray-200">Cart</li>
-                    <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-semibold border-b border-gray-200" onClick={() => setActiveModal('forgetPasswword')}>Forget Passwword</li>
-                    <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-semibold border-b border-gray-200">Logout</li>
-                </ul>
-            )}
+                    <li className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer font-semibold border-b border-gray-200 text-gray-800"
+                        onClick={() => setActiveModal('register')} >
+                        <FaUserPlus className="mr-3 text-gray-500" />
+                        <span>Register</span>
+                    </li>
+                    <li className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer font-semibold border-b border-gray-200 text-gray-800">
+                        <FaShoppingCart className="mr-3 text-gray-500" />
+                        <span>Cart</span>
+                    </li>
+                    <li className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer font-semibold border-b border-gray-200 text-gray-800" onClick={() => setActiveModal('forgetPassword')}>
+                        <FaKey className="mr-3 text-gray-500" />
+                        <span>Forget Password</span>
+                    </li>
+                    <li className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer font-semibold text-gray-800">
+                        <FaSignOutAlt className="mr-3 text-gray-500" />
+                        <span>Logout</span>
+                    </li>
+            </ul>
             {activeModal === 'login' && (
                 <LoginModal isOpen={true} setIsOpen={() => setActiveModal(null)} />
             )}
@@ -406,7 +441,7 @@ export default function NavbarTop() {
                 <Register isOpen={true} setIsOpen={() => setActiveModal(null)} />
             )}
             {
-                activeModal === "forgetPasswword" && (
+                activeModal === "forgetPassword" && (
                     <ForgetPassword isOpen={true} setIsOpen={() => setActiveModal(null)} />
                 )
             }

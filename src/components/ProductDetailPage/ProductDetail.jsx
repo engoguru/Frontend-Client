@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import ProductDetailPayment from './ProductDetailPayment';
 
 function ProductDetail() {
   const productImages = [
@@ -17,6 +16,7 @@ function ProductDetail() {
 
   const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedSize, setSelectedSize] = useState(null);
+  const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('Description');
   const thumbnailContainerRef = useRef(null);
   const [canScrollUp, setCanScrollUp] = useState(false);
@@ -97,9 +97,9 @@ function ProductDetail() {
   const tabs = ['Description', 'Specifications', 'Reviews'];
 
   return (
-    <div className="p-4 md:p-5">
+  <div className="p-4 md:p-5 px-between-480-768">
       {/* Product Card */}
-      <div className="flex flex-col md:flex-row gap-5 bg-white shadow-md rounded-lg p-4">
+  <div className="flex flex-col md:flex-row gap-5 bg-white shadow-md rounded-lg py-4 px-6 md:p-4 card-px-between-480-768">
         {/* Images Section (Left on Desktop) */}
         <div className="md:w-1/2 lg:w-7/12">
           {/* Mobile Slider */}
@@ -137,7 +137,7 @@ function ProductDetail() {
           </div>
 
           {/* Desktop View */}
-          <div className="hidden md:grid grid-cols-[auto_1fr] gap-4">
+          <div className="hidden md:grid grid-cols-[auto_1fr] gap-4 card-px-between-480-768">
             {/* Thumbnails */}
             <div className="flex flex-col items-center justify-center">
               <button
@@ -185,7 +185,7 @@ function ProductDetail() {
         </div>
 
         {/* Details Section (Right on Desktop) */}
-        <div className="md:w-1/2 lg:w-5/12 space-y-4">
+  <div className="md:w-1/2 lg:w-5/12 space-y-4 card-px-between-480-768">
           <h2 className="md:text-lg lg:text-2xl font-bold text-gray-800 ">Awesome Product Name</h2>
           <div className="flex items-center gap-4">
             <p className="text-red-600 md:text-sm lg:text-lg font-bold">₹1,499</p>
@@ -222,18 +222,36 @@ function ProductDetail() {
           </div>
 
           {/* Action Buttons */}
-          {/* Mobile & Tablet View: Two buttons */}
-          <div className="mt-6 md:mt-8 flex gap-3 lg:hidden">
-            <button className="flex-1 bg-red-600 text-white px-3 py-1.5 md:px-4 md:py-2 rounded hover:bg-red-700 font-semibold text-sm md:text-base">
+          {/* Mobile & Tablet View: Quantity + Add to Cart */}
+          <div className="mt-6 md:mt-8 flex items-center gap-3 lg:hidden">
+            <div className="w-36 h-11 flex justify-between items-center border rounded overflow-hidden">
+              <button
+                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                className="px-4 h-full text-lg text-gray-700 hover:bg-gray-100"
+                aria-label="Decrease quantity"
+              >
+                -
+              </button>
+              <div className="text-lg">{quantity}</div>
+              <button
+                onClick={() => setQuantity((q) => q + 1)}
+                className="px-4 h-full text-lg text-gray-700 hover:bg-gray-100"
+                aria-label="Increase quantity"
+              >
+                +
+              </button>
+            </div>
+            <button className="w-36 h-11 flex items-center justify-center bg-red-600 text-white rounded hover:bg-red-700 font-semibold text-sm md:text-base">
               Add to Cart
-            </button>
-            <button className="flex-1 bg-orange-500 text-white px-3 py-1.5 md:px-4 md:py-2 rounded hover:bg-orange-600 font-semibold text-sm md:text-base">
-              Buy Now
             </button>
           </div>
 
-          {/* Desktop View: One button */}
-          <div className="hidden lg:block mt-6">
+          {/* Desktop View: Quantity + Add to Cart */}
+          {/* Desktop View: show quantity read-only because payment summary handles edits */}
+          <div className="hidden lg:flex items-center gap-4 mt-6">
+            <div className="flex items-center border rounded overflow-hidden px-4 py-1">
+              <span className="text-lg text-gray-700">Qty: {quantity}</span>
+            </div>
             <button className="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700 font-semibold">
               Add to Cart
             </button>

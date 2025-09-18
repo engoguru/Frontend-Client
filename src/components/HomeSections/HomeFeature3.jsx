@@ -44,7 +44,7 @@ function HomeFeature3() {
           <div ref={scrollContainerRef} className="flex overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-hide -mx-3">
             {/* Product Card */}
             {Array.from({ length: 20 }).map((_, index) => (
-              <div key={index} className="snap-start w-full sm:w-1/2 md:w-1/3 lg:w-1/4 flex-shrink-0 px-3">
+              <div key={index} className="snap-start w-full xs:w-1/2 md:w-1/3 lg:w-1/4 flex-shrink-0 px-3">
                 <div className="bg-white shadow-md rounded-lg p-4 transition-transform duration-300 hover:scale-105 hover:shadow-xl h-full flex flex-col">
                   <img
                     src="https://via.placeholder.com/300x200"

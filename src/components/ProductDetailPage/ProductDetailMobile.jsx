@@ -61,3 +61,5 @@ function ProductDetailMobile() {
 }
 
 export default ProductDetailMobile
+
+//for medium screen product image width becoming too big but height is same as large screen so increase height for medium screen
