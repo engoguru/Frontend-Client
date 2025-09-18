@@ -30,10 +30,10 @@ function App() {
   {/* <Route path="/user" element={<UserDashboard/>}/> */}
 
   <Route path="/productDetail/:id" element={<ProductDetailView/>}/>
-
+ <Route path="/user" element={<UserDashboard />} />
   {/* Protected routes */}
   <Route element={<ProtectedRoutes />}>
-        <Route path="/user" element={<UserDashboard />} />
+       
         {/* Add more protected routes here */}
       </Route>
 
