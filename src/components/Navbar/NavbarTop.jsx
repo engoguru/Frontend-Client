@@ -3,6 +3,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import LoginModal from '../UserSection/Login';
 import Register from '../UserSection/Register';
 import ForgetPassword from '../UserSection/ForgetPassword';
+import {
+    FaUserCircle,
+    FaSignInAlt,
+    FaUserPlus,
+    FaShoppingCart,
+    FaKey,
+    FaSignOutAlt,
+} from 'react-icons/fa';
 
 export default function NavbarTop() {
     const desktopSearchRef = useRef();
@@ -39,8 +47,21 @@ export default function NavbarTop() {
     };
 
     const handleFocus = () => {
-        if (searchQuery.length > 0) {
-            setShowSuggestions(true);
+        // On focus, show recent searches if the input is empty
+        if (searchQuery.length === 0) {
+            setSuggestions(recentSearches);
+        }
+        setShowSuggestions(true);
+    };
+
+    const handleRemoveSuggestion = (e, suggestionToRemove) => {
+        e.stopPropagation(); // Prevent suggestion from being selected
+        const updatedRecent = recentSearches.filter(s => s !== suggestionToRemove);
+        setRecentSearches(updatedRecent);
+
+        // If the search query is empty, update the visible suggestions list as well
+        if (searchQuery.length === 0) {
+            setSuggestions(updatedRecent);
         }
     };
 

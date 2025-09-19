@@ -18,7 +18,7 @@ function HomeFeature() {
   return (
     <>
 
-      <div className="w-full">
+      <div className="w-full text-center">
         {/* Header */}
         <div className="flex bg-red-100 border-b border-gray-500 justify-between items-center w-full py-4">
           <div>
@@ -47,7 +47,7 @@ function HomeFeature() {
               <div key={index} className="snap-start w-full sm:w-1/2 md:w-1/3 lg:w-1/4 flex-shrink-0 px-3">
                 <div className="bg-white shadow-md rounded-lg p-4 transition-transform duration-300 hover:scale-105 hover:shadow-xl h-full flex flex-col">
                   <img
-                    src="https://via.placeholder.com/300x200"
+                    src="https://m.media-amazon.com/images/I/71FCgsSTYLL._UF1000,1000_QL80_.jpg"
                     alt="Product"
                     className="w-full h-40 object-cover rounded-md"
                   />

@@ -9,8 +9,8 @@ function ProductDetailPayment() {
   const total = productPrice * quantity + shipping;
 
   return (
-    <div className="max-w-xl mx-auto  bg-white shadow-lg rounded-lg p-6 space-y-6 leading-[83px]">
-      <h2 className="text-xl font-bold text-gray-800 mb-4">Payment Summary</h2>
+    <div className="max-w-xl mx-auto bg-white shadow-lg rounded-lg p-6 space-y-6">
+      <h2 className="text-xl font-bold text-gray-800 mb-4 text-left">Payment Summary</h2>
 
       {/* Product Summary */}
       <div className="flex items-center gap-4">
@@ -27,7 +27,7 @@ function ProductDetailPayment() {
       </div>
 
       {/* Quantity */}
-      <div className="flex justify-between items-center border-t pt-4">
+      <div className="flex justify-between items-center border-t border-gray-200 pt-4">
         <span className="font-medium text-gray-700">Quantity</span>
         <div className="flex items-center gap-2">
           <button
@@ -47,7 +47,7 @@ function ProductDetailPayment() {
       </div>
 
       {/* Price Breakdown */}
-      <div className="border-t pt-4 space-y-2 text-sm text-gray-700">
+      <div className="border-t border-gray-200 pt-4 space-y-2 text-sm text-gray-700">
         <div className="flex justify-between text-gray-800">
           <span>Subtotal</span>
           <span>₹{productPrice * quantity}</span>
@@ -56,14 +56,14 @@ function ProductDetailPayment() {
           <span>Shipping</span>
           <span>₹{shipping}</span>
         </div>
-        <div className="flex justify-between font-bold text-lg text-gray-900 pt-2 border-t text-gray-800">
+        <div className="flex justify-between font-bold text-lg text-gray-900 pt-2 border-t border-gray-200">
           <span>Total</span>
           <span>₹{total}</span>
         </div>
       </div>
 
       {/* Payment Method */}
-      <div className="border-t pt-4">
+      <div className="border-t border-gray-200 pt-4">
         <h3 className="font-semibold mb-2 text-gray-800">Choose Payment Method</h3>
         <div className="space-y-2 text-gray-800">
           <label className="flex items-center gap-2">
@@ -100,15 +100,7 @@ function ProductDetailPayment() {
       </div>
 
       {/* Proceed Button */}
-      <button className="w-full bg-red-600 
-      
-      
-
-      
-      
-      
-      
-      py-3 rounded hover:bg-red-700 font-semibold transition text-gray-800">
+      <button className="w-full bg-red-600 py-3 rounded hover:bg-red-700 font-semibold transition text-white">
         Proceed to Pay ₹{total}
       </button>
     </div>

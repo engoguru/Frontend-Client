@@ -1,48 +1,119 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 function EditUser() {
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    phone: '',
+    address: '',
+  });
+
+  const [errors, setErrors] = useState({});
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const validate = () => {
+    const newErrors = {};
+    if (!formData.fullName.trim()) {
+      newErrors.fullName = 'Full Name is required';
+    }
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Email address is invalid';
+    }
+    if (!formData.phone.trim()) {
+      newErrors.phone = 'Phone number is required';
+    } else if (!/^\d{10}$/.test(formData.phone)) {
+      newErrors.phone = 'Phone number must be 10 digits';
+    }
+    return newErrors;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const validationErrors = validate();
+    setErrors(validationErrors);
+    if (Object.keys(validationErrors).length === 0) {
+      console.log('Form Submitted:', formData);
+      // TODO: Add logic to save data to the backend
+      alert('Profile updated successfully!');
+    }
+  };
+
   return (
-    <div className=" w-full min-h-screen bg-gray-50 flex items-center justify-center p-4">
+    // Add a wrapper to control margin on smaller screens
+    <div className="w-full min-h-screen bg-gray-50 p-6 space-y-10">
       <div className="w-full max-w-2xl bg-white shadow-md rounded-lg p-6">
         <h2 className="text-2xl font-semibold text-gray-700 mb-6">Edit Profile</h2>
-        <form className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6" noValidate>
           {/* Name Field */}
-          <div className="flex flex-col md:flex-row md:items-center md:gap-4">
-            <label className="w-full md:w-1/4 text-gray-600 font-medium">Full Name</label>
-            <input
-              type="text"
-              placeholder="Enter full name"
-              className="w-full md:w-3/4 border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+          <div>
+            <div className="flex flex-col md:flex-row md:items-center md:gap-4">
+              <label htmlFor="fullName" className="w-full md:w-1/4 text-gray-600 font-medium mb-1 md:mb-0">Full Name</label>
+              <input
+                id="fullName"
+                name="fullName"
+                type="text"
+                placeholder="Enter full name"
+                value={formData.fullName}
+                onChange={handleChange}
+                className={`w-full md:w-3/4 border rounded px-4 py-2 focus:outline-none focus:ring-2 ${errors.fullName ? 'border-red-500 ring-red-500' : 'border-gray-300 focus:ring-blue-500'}`}
+              />
+            </div>
+            {errors.fullName && <p className="text-red-500 text-sm mt-1 md:ml-[25%] md:px-1">{errors.fullName}</p>}
           </div>
 
           {/* Email Field */}
-          <div className="flex flex-col md:flex-row md:items-center md:gap-4">
-            <label className="w-full md:w-1/4 text-gray-600 font-medium">Email</label>
-            <input
-              type="email"
-              placeholder="Enter email"
-              className="w-full md:w-3/4 border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+          <div>
+            <div className="flex flex-col md:flex-row md:items-center md:gap-4">
+              <label htmlFor="email" className="w-full md:w-1/4 text-gray-600 font-medium mb-1 md:mb-0">Email</label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="Enter email"
+                value={formData.email}
+                onChange={handleChange}
+                className={`w-full md:w-3/4 border rounded px-4 py-2 focus:outline-none focus:ring-2 ${errors.email ? 'border-red-500 ring-red-500' : 'border-gray-300 focus:ring-blue-500'}`}
+              />
+            </div>
+            {errors.email && <p className="text-red-500 text-sm mt-1 md:ml-[25%] md:px-1">{errors.email}</p>}
           </div>
 
           {/* Phone Field */}
-          <div className="flex flex-col md:flex-row md:items-center md:gap-4">
-            <label className="w-full md:w-1/4 text-gray-600 font-medium">Phone</label>
-            <input
-              type="tel"
-              placeholder="Enter phone number"
-              className="w-full md:w-3/4 border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+          <div>
+            <div className="flex flex-col md:flex-row md:items-center md:gap-4">
+              <label htmlFor="phone" className="w-full md:w-1/4 text-gray-600 font-medium mb-1 md:mb-0">Phone</label>
+              <input
+                id="phone"
+                name="phone"
+                type="tel"
+                placeholder="Enter 10-digit phone number"
+                value={formData.phone}
+                onChange={handleChange}
+                className={`w-full md:w-3/4 border rounded px-4 py-2 focus:outline-none focus:ring-2 ${errors.phone ? 'border-red-500 ring-red-500' : 'border-gray-300 focus:ring-blue-500'}`}
+              />
+            </div>
+            {errors.phone && <p className="text-red-500 text-sm mt-1 md:ml-[25%] md:px-1">{errors.phone}</p>}
           </div>
 
           {/* Address Field */}
-          <div className="flex flex-col md:flex-row md:items-start md:gap-4">
-            <label className="w-full md:w-1/4 text-gray-600 font-medium mt-2">Address</label>
-            <textarea
-              placeholder="Enter address"
-              className="w-full md:w-3/4 border border-gray-300 rounded px-4 py-2 resize-none h-24 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            ></textarea>
+          <div>
+            <div className="flex flex-col md:flex-row md:items-start md:gap-4">
+              <label htmlFor="address" className="w-full md:w-1/4 text-gray-600 font-medium mt-2 mb-1 md:mb-0">Address</label>
+              <textarea
+                id="address"
+                name="address"
+                placeholder="Enter address"
+                value={formData.address}
+                onChange={handleChange}
+                className="w-full md:w-3/4 border border-gray-300 rounded px-4 py-2 resize-none h-24 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              ></textarea>
+            </div>
           </div>
 
           {/* Submit Button */}
