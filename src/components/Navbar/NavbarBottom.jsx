@@ -76,7 +76,10 @@ const NavbarBottom = () => {
                         key={idx}
                         className="px-4 py-2 text-black hover:bg-gray-100 cursor-pointer text-semibold border-b border-gray-200"
                       >
+                        <Link   to={`/productViewAll?category=${encodeURIComponent(subItem)}`} >
                         {subItem}
+                        </Link>
+                        
                       </li>
                     ))
                   }

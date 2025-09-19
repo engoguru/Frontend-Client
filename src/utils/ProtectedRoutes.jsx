@@ -20,7 +20,7 @@ function ProtectedRoutes() {
   useEffect(() => {
     // If not logged in or error, open the login modal
     if ((!meDetails?.email || error) && !activeModal) {
-    alert("First login")
+    // alert("First login")
       setActiveModal('login');
     }
   }, [meDetails, error, activeModal]);

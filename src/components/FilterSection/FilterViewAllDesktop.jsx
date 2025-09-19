@@ -1,46 +1,60 @@
-// src/components/FilterViewAllDesktop.jsx
 import React, { useState } from 'react';
 
-const FilterViewAllDesktop = () => {
-  const [minPrice, setMinPrice] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(1000);
-  const [selectedSizes, setSelectedSizes] = useState([]);
-  const priceGap = 50;
+const FilterViewAllDesktop = ({ onFilterChange }) => {
   const maxRange = 1000;
+  const priceGap = 50;
 
-  // Ensure price logic is kept valid
-  const handleMinChange = (e) => {
-    const value = Math.min(Number(e.target.value), maxPrice - priceGap);
-    setMinPrice(value);
+  const [filters, setFilters] = useState({
+    productName: '',
+    productTags: [],
+    productCategory: '',
+    productBrand: '',
+    servingSize: [],
+    weight: '',
+    material: '',
+    gender: '',
+    fit: '',
+    color: [],
+    minPrice: 0,
+    maxPrice: 1000,
+  });
+
+  const updateFilter = (key, value) => {
+    const updated = { ...filters, [key]: value };
+    setFilters(updated);
+    onFilterChange(updated);
   };
 
-  const handleMaxChange = (e) => {
-    const value = Math.max(Number(e.target.value), minPrice + priceGap);
-    setMaxPrice(value);
-  };
-
-  const handleMinInputChange = (e) => {
+  // Min/Max Price Handlers
+  const handleMinPriceChange = (e) => {
     const value = Number(e.target.value);
-    if (value >= 0 && value <= maxPrice - priceGap) {
-      setMinPrice(value);
+    if (value >= 0 && value <= filters.maxPrice - priceGap) {
+      updateFilter('minPrice', value);
     }
   };
 
-  const handleMaxInputChange = (e) => {
+  const handleMaxPriceChange = (e) => {
     const value = Number(e.target.value);
-    if (value <= maxRange && value >= minPrice + priceGap) {
-      setMaxPrice(value);
+    if (value <= maxRange && value >= filters.minPrice + priceGap) {
+      updateFilter('maxPrice', value);
     }
   };
 
+  // Size Toggle (servingSize)
   const handleSizeToggle = (size) => {
-    setSelectedSizes((prev) =>
-      prev.includes(size)
-        ? prev.filter((s) => s !== size)
-        : [...prev, size]
-    );
+    const currentSizes = filters.servingSize.includes(size)
+      ? filters.servingSize.filter((s) => s !== size)
+      : [...filters.servingSize, size];
+    updateFilter('servingSize', currentSizes);
   };
 
+  // Color Toggle
+  const handleColorToggle = (color) => {
+    const currentColors = filters.color.includes(color)
+      ? filters.color.filter((c) => c !== color)
+      : [...filters.color, color];
+    updateFilter('color', currentColors);
+  };
 
   const colorMap = {
     Red: '#dc2626',
@@ -49,100 +63,111 @@ const FilterViewAllDesktop = () => {
     White: '#ffffff',
     Green: '#16a34a',
   };
-
-
-
+console.log(filters,"filters");
   return (
     <aside className="w-full text-left bg-white shadow-lg p-6 rounded-md">
       <h2 className="text-xl font-semibold mb-4 text-gray-800 text-left">Filters</h2>
 
       <div className="space-y-6 text-sm text-gray-700">
+
+        {/* Product Name */}
+        <div>
+          <label className="block mb-1 font-medium text-left">Product Name</label>
+          <input
+            type="text"
+            onChange={(e) => updateFilter('productName', e.target.value)}
+            className="w-full border border-gray-300 px-3 py-0.5 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        {/* Product Tags */}
+        <div>
+          <label className="block mb-1 font-medium text-left">Product Tags</label>
+          <input
+            type="text"
+            placeholder="Comma-separated"
+            onChange={(e) =>
+              updateFilter('productTags', e.target.value.split(',').map(tag => tag.trim()))
+            }
+            className="w-full border border-gray-300 px-3 py-0.5 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
         {/* Category */}
         <div>
           <label className="block mb-1 font-medium text-left">Category</label>
-          <select className="w-full border border-gray-300 px-3 py-0.5 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-center">
-            <option>All</option>
+          <select
+            onChange={(e) => updateFilter('productCategory', e.target.value)}
+            className="w-full border border-gray-300 px-3 py-0.5 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-center"
+          >
+            <option value="">All</option>
             <option>Apparel</option>
             <option>Nutrition</option>
             <option>Equipment</option>
           </select>
         </div>
 
-        {/* Price Range */}
-        <div className='text-left'>
-          <label className="block mb-1 font-medium text-left">Price Range ($)</label>
-
-          <div className="relative h-5 my-4">
-            <div className="absolute top-1/2 -translate-y-1/2 w-full h-1 bg-gray-200 rounded-full"></div>
-            <div
-              className="absolute top-1/2 -translate-y-1/2 h-1 bg-blue-600 rounded-full"
-              style={{
-                left: `${(minPrice / maxRange) * 100}%`,
-                right: `${100 - (maxPrice / maxRange) * 100}%`,
-              }}
-            ></div>
-
-            <input
-              type="range"
-              min="0"
-              max={maxRange}
-              step="10"
-              value={minPrice}
-              onChange={handleMinChange}
-              className="absolute mt-0.75 w-full h-1 top-1/2 -translate-y-1/2 appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-moz-range-thumb]:pointer-events-auto"
-            />
-            <input
-              type="range"
-              min="0"
-              max={maxRange}
-              step="10"
-              value={maxPrice}
-              onChange={handleMaxChange}
-              className="absolute mt-0.75 w-full h-1 top-1/2 -translate-y-1/2 appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-moz-range-thumb]:pointer-events-auto"
-            />
-          </div>
-
-          <div className="flex flex-col lg:flex-row items-center justify-between mt-2 gap-2">
-            <input
-              type="number"
-              value={minPrice}
-              onChange={handleMinInputChange}
-              className="w-full border border-gray-300 px-2 py-0.5 rounded text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <span className="text-gray-400 hidden lg:block">-</span>
-            <input
-              type="number"
-              value={maxPrice}
-              onChange={handleMaxInputChange}
-              className="w-full border border-gray-300 px-2 py-0.5 rounded text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-        </div>
-
-
         {/* Brand */}
         <div>
           <label className="block mb-1 font-medium text-left">Brand</label>
-          <select className="w-full border border-gray-300 px-3 py-0.5 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-center">
-            <option>All</option>
+          <select
+            onChange={(e) => updateFilter('productBrand', e.target.value)}
+            className="w-full border border-gray-300 px-3 py-0.5 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-center"
+          >
+            <option value="">All</option>
             <option>Nike</option>
             <option>Adidas</option>
             <option>Puma</option>
           </select>
         </div>
 
-        {/* Rating */}
-        <div>
-          <label className="block mb-1 font-medium text-left">Rating</label>
-          {[5, 4, 3, 2, 1].map((star) => (
-            <label key={star} className="flex items-center space-x-2 cursor-pointer hover:text-blue-600">
-              <input type="checkbox" className="h-2.5 w-2.5 text-blue-600 border-gray-300 rounded focus:ring-blue-500" />
-              <span className="flex items-center">
-                {Array.from({ length: star }).map((_, i) => <span key={i} className="text-yellow-400">★</span>)}
-                {Array.from({ length: 5 - star }).map((_, i) => <span key={i} className="text-gray-300">★</span>)}
-              </span>
-            </label>
-          ))}
+        {/* Price Range */}
+        <div className="text-left">
+          <label className="block mb-1 font-medium text-left">Price Range ($)</label>
+          <div className="relative h-5 my-4">
+            <div className="absolute top-1/2 -translate-y-1/2 w-full h-1 bg-gray-200 rounded-full"></div>
+            <div
+              className="absolute top-1/2 -translate-y-1/2 h-1 bg-blue-600 rounded-full"
+              style={{
+                left: `${(filters.minPrice / maxRange) * 100}%`,
+                right: `${100 - (filters.maxPrice / maxRange) * 100}%`,
+              }}
+            ></div>
+            <input
+              type="range"
+              min="0"
+              max={maxRange}
+              step="10"
+              value={filters.minPrice}
+              onChange={handleMinPriceChange}
+              className="absolute w-full h-1 top-1/2 -translate-y-1/2 appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto"
+            />
+            <input
+              type="range"
+              min="0"
+              max={maxRange}
+              step="10"
+              value={filters.maxPrice}
+              onChange={handleMaxPriceChange}
+              className="absolute w-full h-1 top-1/2 -translate-y-1/2 appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto"
+            />
+          </div>
+
+          <div className="flex flex-col lg:flex-row items-center justify-between mt-2 gap-2">
+            <input
+              type="number"
+              value={filters.minPrice}
+              onChange={handleMinPriceChange}
+              className="w-full border border-gray-300 px-2 py-0.5 rounded text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <span className="text-gray-400 hidden lg:block">-</span>
+            <input
+              type="number"
+              value={filters.maxPrice}
+              onChange={handleMaxPriceChange}
+              className="w-full border border-gray-300 px-2 py-0.5 rounded text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
         </div>
 
         {/* Size */}
@@ -150,14 +175,14 @@ const FilterViewAllDesktop = () => {
           <label className="block mb-1 font-medium text-left">Size</label>
           <div className="flex flex-wrap gap-2">
             {['S', 'M', 'L', 'XL', 'XXL'].map((size) => {
-              const isSelected = selectedSizes.includes(size);
+              const isSelected = filters.servingSize.includes(size);
               return (
                 <button
                   key={size}
                   onClick={() => handleSizeToggle(size)}
                   className={`border px-2 py-0 rounded text-xs transition-colors duration-150 ${isSelected
-                      ? 'bg-blue-600 text-white border-blue-600'
-                      : 'border-gray-300 hover:bg-gray-100'
+                    ? 'bg-blue-600 text-white border-blue-600'
+                    : 'border-gray-300 hover:bg-gray-100'
                     } focus:outline-none focus:ring-2 focus:ring-blue-500`}
                 >
                   {size}
@@ -165,6 +190,59 @@ const FilterViewAllDesktop = () => {
               );
             })}
           </div>
+        </div>
+
+        {/* Material */}
+        <div>
+          <label className="block mb-1 font-medium text-left">Material</label>
+          <select
+            onChange={(e) => updateFilter('material', e.target.value)}
+            className="w-full border border-gray-300 px-3 py-0.5 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-center"
+          >
+            <option value="">All</option>
+            <option>Cotton</option>
+            <option>Polyester</option>
+            <option>Leather</option>
+          </select>
+        </div>
+
+        {/* Gender */}
+        <div>
+          <label className="block mb-1 font-medium text-left">Gender</label>
+          <select
+            onChange={(e) => updateFilter('gender', e.target.value)}
+            className="w-full border border-gray-300 px-3 py-0.5 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-center"
+          >
+            <option value="">All</option>
+            <option>Men</option>
+            <option>Women</option>
+            <option>Unisex</option>
+          </select>
+        </div>
+
+        {/* Fit */}
+        <div>
+          <label className="block mb-1 font-medium text-left">Fit</label>
+          <select
+            onChange={(e) => updateFilter('fit', e.target.value)}
+            className="w-full border border-gray-300 px-3 py-0.5 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-center"
+          >
+            <option value="">All</option>
+            <option>Regular</option>
+            <option>Slim</option>
+            <option>Loose</option>
+          </select>
+        </div>
+
+        {/* Weight */}
+        <div>
+          <label className="block mb-1 font-medium text-left">Weight (g)</label>
+          <input
+            type="number"
+            placeholder="Enter weight"
+            onChange={(e) => updateFilter('weight', e.target.value)}
+            className="w-full border border-gray-300 px-3 py-0.5 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
         </div>
 
         {/* Colors */}
@@ -175,6 +253,8 @@ const FilterViewAllDesktop = () => {
               <label key={name} className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="checkbox"
+                  checked={filters.color.includes(name)}
+                  onChange={() => handleColorToggle(name)}
                   className="h-2.5 w-2.5 border-gray-300 rounded focus:ring-blue-500"
                   style={{ accentColor: colorValue }}
                 />
@@ -184,30 +264,31 @@ const FilterViewAllDesktop = () => {
           </div>
         </div>
 
-        {/* Stock */}
-        <div>
-          <label className="block mb-1 font-medium text-left">Availability</label>
-          <label className="flex items-center space-x-2 cursor-pointer">
-            <input type="checkbox" className="h-2.5 w-2.5 text-blue-600 border-gray-300 rounded focus:ring-blue-500" />
-            <span>In Stock Only</span>
-          </label>
-        </div>
-
-        {/* Discount */}
-        <div>
-          <label className="block mb-1 font-medium text-left">Discount</label>
-          <select className="w-full border border-gray-300 px-3 py-0.5 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-center">
-            <option>Any</option>
-            <option>10% or more</option>
-            <option>25% or more</option>
-            <option>50% or more</option>
-          </select>
-        </div>
-
-        {/* Clear Button */}
-        <button className="mt-4 w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500">
+        {/* Clear Filters */}
+        <button
+          onClick={() => {
+            const reset = {
+              productName: '',
+              productTags: [],
+              productCategory: '',
+              productBrand: '',
+              servingSize: [],
+              weight: '',
+              material: '',
+              gender: '',
+              fit: '',
+              color: [],
+              minPrice: 0,
+              maxPrice: 1000,
+            };
+            setFilters(reset);
+            onFilterChange(reset);
+          }}
+          className="mt-4 w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
           Clear Filters
         </button>
+
       </div>
     </aside>
   );

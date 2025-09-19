@@ -23,6 +23,7 @@ export const fetchProducts = createAsyncThunk(
           color: params.color,
           page: params.page || 1,
           limit: params.limit || 10,
+          sort:params.sort
         },
       });
 

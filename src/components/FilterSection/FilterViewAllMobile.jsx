@@ -1,122 +1,217 @@
 import React, { useState } from 'react';
 
-const FilterViewAllMobile = () => {
+const FilterViewAllMobile = ({ onFilterChange }) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  // State for all filters
-  const [category, setCategory] = useState('All');
-  const [minPrice, setMinPrice] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(1000);
-  const [brand, setBrand] = useState('All');
-  const [selectedSizes, setSelectedSizes] = useState([]);
-  const [selectedColors, setSelectedColors] = useState([]);
-  const [selectedRatings, setSelectedRatings] = useState([]);
-  const [inStockOnly, setInStockOnly] = useState(false);
-  const [discount, setDiscount] = useState('Any');
-
-  const priceGap = 50;
   const maxRange = 1000;
+  const priceGap = 50;
 
-  const toggleFilter = () => {
-    setIsOpen(!isOpen);
+  const [filters, setFilters] = useState({
+    productName: '',
+    productTags: [],
+    productCategory: '',
+    productBrand: '',
+    servingSize: [],
+    weight: '',
+    material: '',
+    gender: '',
+    fit: '',
+    color: [],
+    minPrice: 0,
+    maxPrice: 1000,
+  });
+
+  const updateFilter = (key, value) => {
+    const updated = { ...filters, [key]: value };
+    setFilters(updated);
+    onFilterChange?.(updated);
+  };
+
+  const toggleFilter = () => setIsOpen((v) => !v);
+
+  // Price handlers (same logic as desktop)
+  const handleMinPriceChange = (e) => {
+    const value = Number(e.target.value);
+    if (value >= 0 && value <= filters.maxPrice - priceGap) {
+      updateFilter('minPrice', value);
+    }
+  };
+
+  const handleMaxPriceChange = (e) => {
+    const value = Number(e.target.value);
+    if (value <= maxRange && value >= filters.minPrice + priceGap) {
+      updateFilter('maxPrice', value);
+    }
+  };
+
+  // thumb-drag handlers (range inputs)
+  const handleMinDrag = (e) => {
+    const value = Math.min(Number(e.target.value), filters.maxPrice - priceGap);
+    updateFilter('minPrice', value);
+  };
+
+  const handleMaxDrag = (e) => {
+    const value = Math.max(Number(e.target.value), filters.minPrice + priceGap);
+    updateFilter('maxPrice', value);
+  };
+
+  // Size toggle
+  const handleSizeToggle = (size) => {
+    const next = filters.servingSize.includes(size)
+      ? filters.servingSize.filter((s) => s !== size)
+      : [...filters.servingSize, size];
+    updateFilter('servingSize', next);
+  };
+
+  // Color toggle
+  const handleColorToggle = (color) => {
+    const next = filters.color.includes(color)
+      ? filters.color.filter((c) => c !== color)
+      : [...filters.color, color];
+    updateFilter('color', next);
   };
 
   const colorMap = {
-    Red: '#dc2626',   
-    Blue: '#2563eb',   
-    Black: '#000000',  
-    White: '#ffffff',  
-    Green: '#16a34a', 
+    Red: '#dc2626',
+    Blue: '#2563eb',
+    Black: '#000000',
+    White: '#ffffff',
+    Green: '#16a34a',
   };
 
-  const handleSizeToggle = (size) => {
-    setSelectedSizes((prev) =>
-      prev.includes(size)
-        ? prev.filter((s) => s !== size)
-        : [...prev, size]
-    );
+  const clearAll = () => {
+    const reset = {
+      productName: '',
+      productTags: [],
+      productCategory: '',
+      productBrand: '',
+      servingSize: [],
+      weight: '',
+      material: '',
+      gender: '',
+      fit: '',
+      color: [],
+      minPrice: 0,
+      maxPrice: 1000,
+    };
+    setFilters(reset);
+    onFilterChange?.(reset);
   };
 
-  const handleColorToggle = (color) => {
-    setSelectedColors((prev) =>
-      prev.includes(color)
-        ? prev.filter((c) => c !== color)
-        : [...prev, color]
-    );
-  };
-
-  const handleRatingToggle = (rating) => {
-    setSelectedRatings((prev) =>
-      prev.includes(rating)
-        ? prev.filter((r) => r !== rating)
-        : [...prev, rating]
-    );
-  };
-
-  const handleMinChange = (e) => {
-    const value = Math.min(Number(e.target.value), maxPrice - priceGap);
-    setMinPrice(value);
-  };
-
-  const handleMaxChange = (e) => {
-    const value = Math.max(Number(e.target.value), minPrice + priceGap);
-    setMaxPrice(value);
-  };
-
-  const handleMinInputChange = (e) => {
-    const value = Number(e.target.value);
-    if (value >= 0 && value <= maxPrice - priceGap) {
-      setMinPrice(value);
-    }
-  };
-
-  const handleMaxInputChange = (e) => {
-    const value = Number(e.target.value);
-    if (value <= maxRange && value >= minPrice + priceGap) {
-      setMaxPrice(value);
-    }
-  };
+  // (Optional) active filter count for the button badge
+  const activeCount = (() => {
+    let c = 0;
+    const f = filters;
+    if (f.productName) c++;
+    if (f.productTags.length) c++;
+    if (f.productCategory) c++;
+    if (f.productBrand) c++;
+    if (f.servingSize.length) c++;
+    if (f.weight) c++;
+    if (f.material) c++;
+    if (f.gender) c++;
+    if (f.fit) c++;
+    if (f.color.length) c++;
+    if (f.minPrice !== 0 || f.maxPrice !== 1000) c++;
+    return c;
+  })();
 
   return (
-    <div className='text-left'>
-      {/* Button */}
+    <div className="text-left">
+      {/* Trigger */}
       <button
         onClick={toggleFilter}
-        className="w-full md:hidden bg-blue-600 text-white px-4 py-1.5 rounded text-sm"
+        className="w-full md:hidden bg-blue-600 text-white px-4 py-1.5 rounded text-sm flex items-center justify-center gap-2"
       >
         Filter
+        {activeCount > 0 && (
+          <span className="inline-flex items-center justify-center text-xs bg-white text-blue-600 rounded-full px-2 py-0.5">
+            {activeCount}
+          </span>
+        )}
       </button>
 
-      {/* Overlay / Drawer */}
+      {/* Drawer */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-40 bg-gray-900/50 flex justify-center items-center p-4"
+          className="fixed inset-0 z-40 bg-gray-900/50"
           onClick={toggleFilter}
         >
           <div
-            className="w-full max-w-[280px] bg-white p-4 rounded-lg overflow-y-auto shadow-lg max-h-[90vh]"
+            className="absolute right-0 top-0 h-full w-full max-w-[320px] bg-white p-4 rounded-l-xl shadow-lg overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold">Filters</h2>
-              <button onClick={toggleFilter} className="text-red-600 font-bold text-xl">×</button>
+            {/* Header */}
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-lg font-semibold">Filters</h2>
+              <button
+                onClick={toggleFilter}
+                className="text-red-600 font-bold text-2xl leading-none"
+                aria-label="Close"
+              >
+                ×
+              </button>
             </div>
 
-            {/* Repeat filters from desktop */}
             <div className="space-y-4 text-sm text-gray-700">
+              {/* Product Name */}
+              <div>
+                <label className="block mb-1 font-medium">Product Name</label>
+                <input
+                  type="text"
+                  value={filters.productName}
+                  onChange={(e) => updateFilter('productName', e.target.value)}
+                  className="w-full border border-gray-300 px-3 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              {/* Product Tags */}
+              <div>
+                <label className="block mb-1 font-medium">Product Tags</label>
+                <input
+                  type="text"
+                  placeholder="Comma-separated"
+                  value={filters.productTags.join(', ')}
+                  onChange={(e) =>
+                    updateFilter(
+                      'productTags',
+                      e.target.value
+                        .split(',')
+                        .map((t) => t.trim())
+                        .filter(Boolean)
+                    )
+                  }
+                  className="w-full border border-gray-300 px-3 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
 
               {/* Category */}
               <div>
                 <label className="block mb-1 font-medium">Category</label>
                 <select
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  className="w-full border border-gray-300 px-3 py-0.5 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-center text-xs"
+                  value={filters.productCategory}
+                  onChange={(e) => updateFilter('productCategory', e.target.value)}
+                  className="w-full border border-gray-300 px-3 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
                 >
-                  <option>All</option>
+                  <option value="">All</option>
                   <option>Apparel</option>
                   <option>Nutrition</option>
                   <option>Equipment</option>
+                </select>
+              </div>
+
+              {/* Brand */}
+              <div>
+                <label className="block mb-1 font-medium">Brand</label>
+                <select
+                  value={filters.productBrand}
+                  onChange={(e) => updateFilter('productBrand', e.target.value)}
+                  className="w-full border border-gray-300 px-3 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
+                >
+                  <option value="">All</option>
+                  <option>Nike</option>
+                  <option>Adidas</option>
+                  <option>Puma</option>
                 </select>
               </div>
 
@@ -128,59 +223,46 @@ const FilterViewAllMobile = () => {
                   <div
                     className="absolute top-1/2 -translate-y-1/2 h-1 bg-blue-600 rounded-full"
                     style={{
-                      left: `${(minPrice / maxRange) * 100}%`,
-                      right: `${100 - (maxPrice / maxRange) * 100}%`,
+                      left: `${(filters.minPrice / maxRange) * 100}%`,
+                      right: `${100 - (filters.maxPrice / maxRange) * 100}%`,
                     }}
-                  ></div>
-                  <input
-                    type="range"
-                    min="0"
-                    max={maxRange}
-                    step="10"
-                    value={minPrice}
-                    onChange={handleMinChange}
-                    className="absolute mt-0.75 w-full h-1 top-1/2 -translate-y-1/2 appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-moz-range-thumb]:pointer-events-auto"
                   />
                   <input
                     type="range"
                     min="0"
                     max={maxRange}
                     step="10"
-                    value={maxPrice}
-                    onChange={handleMaxChange}
-                    className="absolute mt-0.75 w-full h-1 top-1/2 -translate-y-1/2 appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-moz-range-thumb]:pointer-events-auto"
+                    value={filters.minPrice}
+                    onChange={handleMinDrag}
+                    className="absolute w-full h-1 top-1/2 -translate-y-1/2 appearance-none bg-transparent pointer-events-none
+                               [&::-webkit-slider-thumb]:pointer-events-auto [&::-moz-range-thumb]:pointer-events-auto"
+                  />
+                  <input
+                    type="range"
+                    min="0"
+                    max={maxRange}
+                    step="10"
+                    value={filters.maxPrice}
+                    onChange={handleMaxDrag}
+                    className="absolute w-full h-1 top-1/2 -translate-y-1/2 appearance-none bg-transparent pointer-events-none
+                               [&::-webkit-slider-thumb]:pointer-events-auto [&::-moz-range-thumb]:pointer-events-auto"
                   />
                 </div>
-                <div className="flex flex-col sm:flex-row items-center justify-between mt-2 gap-2">
+                <div className="flex items-center justify-between gap-2">
                   <input
                     type="number"
-                    value={minPrice}
-                    onChange={handleMinInputChange}
-                    className="w-full sm:flex-1 border border-gray-300 px-2 py-0.5 rounded text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    value={filters.minPrice}
+                    onChange={handleMinPriceChange}
+                    className="w-full border border-gray-300 px-2 py-1 rounded text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
-                  <span className="text-gray-400 hidden sm:block">-</span>
+                  <span className="text-gray-400">-</span>
                   <input
                     type="number"
-                    value={maxPrice}
-                    onChange={handleMaxInputChange}
-                    className="w-full sm:flex-1 border border-gray-300 px-2 py-0.5 rounded text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    value={filters.maxPrice}
+                    onChange={handleMaxPriceChange}
+                    className="w-full border border-gray-300 px-2 py-1 rounded text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
-              </div>
-
-              {/* Brand */}
-              <div>
-                <label className="block mb-1 font-medium">Brand</label>
-                <select
-                  value={brand}
-                  onChange={(e) => setBrand(e.target.value)}
-                  className="w-full border border-gray-300 px-3 py-0.5 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-center text-xs"
-                >
-                  <option>All</option>
-                  <option>Nike</option>
-                  <option>Adidas</option>
-                  <option>Puma</option>
-                </select>
               </div>
 
               {/* Size */}
@@ -188,15 +270,17 @@ const FilterViewAllMobile = () => {
                 <label className="block mb-1 font-medium">Size</label>
                 <div className="flex flex-wrap gap-2">
                   {['S', 'M', 'L', 'XL', 'XXL'].map((size) => {
-                    const isSelected = selectedSizes.includes(size);
+                    const isSelected = filters.servingSize.includes(size);
                     return (
                       <button
                         key={size}
+                        type="button"
                         onClick={() => handleSizeToggle(size)}
-                        className={`border px-2 py-0 rounded text-xs transition-colors duration-150 ${isSelected
+                        className={`border px-2 py-0.5 rounded text-xs transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                          isSelected
                             ? 'bg-blue-600 text-white border-blue-600'
                             : 'border-gray-300 hover:bg-gray-100'
-                          } focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                        }`}
                       >
                         {size}
                       </button>
@@ -205,7 +289,64 @@ const FilterViewAllMobile = () => {
                 </div>
               </div>
 
-              {/* Colors */}
+              {/* Material */}
+              <div>
+                <label className="block mb-1 font-medium">Material</label>
+                <select
+                  value={filters.material}
+                  onChange={(e) => updateFilter('material', e.target.value)}
+                  className="w-full border border-gray-300 px-3 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
+                >
+                  <option value="">All</option>
+                  <option>Cotton</option>
+                  <option>Polyester</option>
+                  <option>Leather</option>
+                </select>
+              </div>
+
+              {/* Gender */}
+              <div>
+                <label className="block mb-1 font-medium">Gender</label>
+                <select
+                  value={filters.gender}
+                  onChange={(e) => updateFilter('gender', e.target.value)}
+                  className="w-full border border-gray-300 px-3 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
+                >
+                  <option value="">All</option>
+                  <option>Men</option>
+                  <option>Women</option>
+                  <option>Unisex</option>
+                </select>
+              </div>
+
+              {/* Fit */}
+              <div>
+                <label className="block mb-1 font-medium">Fit</label>
+                <select
+                  value={filters.fit}
+                  onChange={(e) => updateFilter('fit', e.target.value)}
+                  className="w-full border border-gray-300 px-3 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
+                >
+                  <option value="">All</option>
+                  <option>Regular</option>
+                  <option>Slim</option>
+                  <option>Loose</option>
+                </select>
+              </div>
+
+              {/* Weight */}
+              <div>
+                <label className="block mb-1 font-medium">Weight (g)</label>
+                <input
+                  type="number"
+                  placeholder="Enter weight"
+                  value={filters.weight}
+                  onChange={(e) => updateFilter('weight', e.target.value)}
+                  className="w-full border border-gray-300 px-3 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              {/* Color */}
               <div>
                 <label className="block mb-1 font-medium">Color</label>
                 <div className="flex flex-wrap gap-x-4 gap-y-2">
@@ -213,9 +354,11 @@ const FilterViewAllMobile = () => {
                     <label key={name} className="flex items-center gap-2 cursor-pointer">
                       <input
                         type="checkbox"
-                        checked={selectedColors.includes(name)}
+                        checked={filters.color.includes(name)}
                         onChange={() => handleColorToggle(name)}
-                        className={`h-2.5 w-2.5 border-gray-300 rounded focus:ring-blue-500 ${name === 'White' ? 'border-gray-400' : ''}`}
+                        className={`h-3 w-3 border-gray-300 rounded focus:ring-blue-500 ${
+                          name === 'White' ? 'border-gray-400' : ''
+                        }`}
                         style={{ accentColor: colorValue }}
                       />
                       <span>{name}</span>
@@ -224,52 +367,21 @@ const FilterViewAllMobile = () => {
                 </div>
               </div>
 
-              {/* Ratings */}
-              <div>
-                <label className="block mb-1 font-medium">Rating</label>
-                {[5, 4, 3, 2, 1].map((star) => (
-                  <label key={star} className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={selectedRatings.includes(star)}
-                      onChange={() => handleRatingToggle(star)}
-                      className="h-2.5 w-2.5 text-blue-600 border-gray-300 rounded focus:ring-blue-500" />
-                    <span>{star} Stars & up</span>
-                  </label>
-                ))}
-              </div>
-
-              {/* Stock */}
-              <div>
-                <label className="block mb-1 font-medium">Availability</label>
-                <label className="flex items-center space-x-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={inStockOnly}
-                    onChange={(e) => setInStockOnly(e.target.checked)}
-                    className="h-2.5 w-2.5 text-blue-600 border-gray-300 rounded focus:ring-blue-500" />
-                  <span>In Stock Only</span>
-                </label>
-              </div>
-
-              {/* Discount */}
-              <div>
-                <label className="block mb-1 font-medium">Discount</label>
-                <select
-                  value={discount}
-                  onChange={(e) => setDiscount(e.target.value)}
-                  className="w-full border border-gray-300 px-3 py-0.5 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-center text-xs"
+              {/* Actions */}
+              <div className="flex items-center gap-3 pt-2">
+                <button
+                  onClick={() => setIsOpen(false)} // values are already synced via updateFilter
+                  className="flex-1 bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors text-sm"
                 >
-                  <option>Any</option>
-                  <option>10% or more</option>
-                  <option>25% or more</option>
-                  <option>50% or more</option>
-                </select>
+                  Apply Filters
+                </button>
+                <button
+                  onClick={clearAll}
+                  className="px-3 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100 text-sm"
+                >
+                  Clear
+                </button>
               </div>
-
-              <button className="mt-6 w-2/3 mx-auto block bg-blue-600 text-white py-1.5 rounded hover:bg-blue-700 text-sm">
-                Apply Filters
-              </button>
             </div>
           </div>
         </div>
