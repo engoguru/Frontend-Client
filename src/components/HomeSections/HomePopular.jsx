@@ -5,17 +5,17 @@ function HomePopular() {
   const popularCategories = [
     {
       title: 'Nutrition',
-      image: 'https://via.placeholder.com/300x200?text=Nutrition',
+      image: 'https://content.jdmagicbox.com/comp/raipur-chhattisgarh/m9/9999px771.x771.200614175529.u5m9/catalogue/he-man-s-nutrition-raipur-chhattisgarh-0jwj6f3wfx.jpg',
       description: 'Top supplements and health boosters.',
     },
     {
       title: 'Apparel',
-      image: 'https://via.placeholder.com/300x200?text=Apparel',
+      image: 'https://cdn.mos.cms.futurecdn.net/2UYUXcj9Sk6ASGEytcQvLa.jpg',
       description: 'Train in style with performance gear.',
     },
     {
       title: 'Equipment',
-      image: 'https://via.placeholder.com/300x200?text=Equipment',
+      image: 'https://m.media-amazon.com/images/I/61nON0-SZhL.jpg',
       description: 'Durable tools for your fitness goals.',
     },
   ];
