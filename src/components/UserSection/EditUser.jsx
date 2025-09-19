@@ -46,7 +46,7 @@ function EditUser() {
 
   return (
     // Add a wrapper to control margin on smaller screens
-    <div className="px-4 md:px-0">
+    <div className="w-full min-h-screen bg-gray-50 p-6 space-y-10">
       <div className="w-full max-w-2xl bg-white shadow-md rounded-lg p-6">
         <h2 className="text-2xl font-semibold text-gray-700 mb-6">Edit Profile</h2>
         <form onSubmit={handleSubmit} className="space-y-6" noValidate>

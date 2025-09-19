@@ -47,7 +47,7 @@ function HomeFeature2() {
               <div key={index} className="snap-start w-full sm:w-1/2 md:w-1/3 lg:w-1/4 flex-shrink-0 px-3">
                 <div className="bg-white shadow-md rounded-lg p-4 transition-transform duration-300 hover:scale-105 hover:shadow-xl h-full flex flex-col">
                   <img
-                    src="https://via.placeholder.com/300x200"
+                    src="https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcScRk_590dlg14H1-9yVSxIa67j0_M6mRXlFGdywNIXTgA4oHtDH0D6z5XFqt_B3VGJuxjaTssacXdHP2bZNtawTL_gCZIh4fOQBL0JXZOjGpyq2F_6sEnKBg"
                     alt="Product"
                     className="w-full h-40 object-cover rounded-md"
                   />
