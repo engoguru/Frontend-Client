@@ -9,6 +9,8 @@ import contactReducer from './slice/contactSlice';
 
 import productReducer from './slice/productSlice';
 
+import selectionReducer from './slice/selectedSlice';
+
 const rootReducers = combineReducers({
   user: userReducer,
 
@@ -19,6 +21,8 @@ const rootReducers = combineReducers({
   contact:contactReducer, 
 
   product:productReducer,
+
+  selection:selectionReducer,
 
 });
 

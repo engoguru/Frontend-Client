@@ -1,8 +1,20 @@
-import React, { useRef } from 'react';
+import React, { useRef,useState,useEffect } from 'react';
 import { Link } from 'react-router-dom';
-
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchEquipmentProducts } from '../../store/slice/productSlice';
 function HomeFeature3() {
   const scrollContainerRef = useRef(null);
+
+
+
+
+  
+  const dispatch = useDispatch();
+
+  const { equipmentProducts, totalCount, totalPages, loading, error } = useSelector((state) => state.product);
+  useEffect(() => {
+    dispatch(fetchEquipmentProducts({ productCategory:'Equipment' }));
+  }, [dispatch]);
 
   const scroll = (direction) => {
     if (scrollContainerRef.current) {
@@ -43,7 +55,7 @@ function HomeFeature3() {
           {/* The scrollbar-hide class is a common utility; you may need to add it to your CSS if you don't have a plugin for it. */}
           <div ref={scrollContainerRef} className="flex overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-hide -mx-3">
             {/* Product Card */}
-            {Array.from({ length: 20 }).map((_, index) => (
+            {equipmentProducts?.map((equipment, index) => (
               <div key={index} className="snap-start w-full xs:w-1/2 md:w-1/3 lg:w-1/4 flex-shrink-0 px-3">
                 <div className="bg-white shadow-md rounded-lg p-4 transition-transform duration-300 hover:scale-105 hover:shadow-xl h-full flex flex-col">
                   <img
@@ -51,10 +63,10 @@ function HomeFeature3() {
                     alt="Product"
                     className="w-full h-40 object-cover rounded-md"
                   />
-                  <h2 className="text-lg font-semibold mt-3">Product Name</h2>
+                  <h2 className="text-lg font-semibold mt-3">{equipment?.productName}</h2>
                   <p className="text-gray-600 text-sm mt-1">Short product description goes here.</p>
                   <p className="text-red-600 font-bold mt-2">$29.99</p>
-                  <Link to={`/productDetail/${index + 1}`} className="mt-auto block focus:outline-none">
+                  <Link to={`/productDetail/${equipment?._id}`} className="mt-auto block focus:outline-none">
                     <button className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 text-sm">
                       Buy Now
                     </button>

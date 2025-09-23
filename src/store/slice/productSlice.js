@@ -35,9 +35,136 @@ export const fetchProducts = createAsyncThunk(
   }
 );
 
+// Async thunk to fetch products with filters and pagination
+export const fetchNutritionProducts = createAsyncThunk(
+  'products/fetchNutrition',
+  async (params, thunkAPI) => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/products/productList/search', {
+        params: {
+          query: params.search || '',
+          productName: params.productName,
+          productBrand: params.productBrand,
+          productCategory: params.productCategory,
+          productTags: params.productTags,
+          servingSize: params.servingSize,
+          weight: params.weight,
+          material: params.material,
+          gender: params.gender,
+          fit: params.fit,
+          minPrice: params.minPrice,
+          maxPrice: params.maxPrice,
+          color: params.color,
+          page: params.page || 1,
+          limit: params.limit || 10,
+          sort:params.sort
+        },
+      });
+
+      return response.data;
+
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data?.message || "Failed to fetch products");
+    }
+  }
+);
+
+
+
+// Async thunk to fetch products with filters and pagination
+export const fetchApparelProducts = createAsyncThunk(
+  'products/fetchApparel',
+  async (params, thunkAPI) => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/products/productList/search', {
+      params: {
+          query: params.search || '',
+          productName: params.productName,
+          productBrand: params.productBrand,
+          productCategory: params.productCategory,
+          productTags: params.productTags,
+          servingSize: params.servingSize,
+          weight: params.weight,
+          material: params.material,
+          gender: params.gender,
+          fit: params.fit,
+          minPrice: params.minPrice,
+          maxPrice: params.maxPrice,
+          color: params.color,
+          page: params.page || 1,
+          limit: params.limit || 10,
+          sort:params.sort
+        },
+      });
+
+      return response.data;
+
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data?.message || "Failed to fetch products");
+    }
+  }
+);
+
+
+
+// Async thunk to fetch products with filters and pagination
+export const fetchEquipmentProducts = createAsyncThunk(
+  'products/fetchEquipment',
+  async (params, thunkAPI) => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/products/productList/search', {
+         params: {
+          query: params.search || '',
+          productName: params.productName,
+          productBrand: params.productBrand,
+          productCategory: params.productCategory,
+          productTags: params.productTags,
+          servingSize: params.servingSize,
+          weight: params.weight,
+          material: params.material,
+          gender: params.gender,
+          fit: params.fit,
+          minPrice: params.minPrice,
+          maxPrice: params.maxPrice,
+          color: params.color,
+          page: params.page || 1,
+          limit: params.limit || 10,
+          sort:params.sort
+        },
+      });
+
+      return response.data;
+
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data?.message || "Failed to fetch products");
+    }
+  }
+);
+
+
+
+// findOne witg id 
+
+export const fetchSingleProduct=createAsyncThunk(
+  'product/fetchSingleProduct',
+  async(id,thunkAPI)=>{
+    try {
+        const response = await axios.get(`http://localhost:5000/api/products/productList//GetOne/${id}`);
+         return response.data;
+    } catch (error) {
+        
+       return thunkAPI.rejectWithValue(error.response?.data?.message || "Failed to fetch products");
+    }
+  }
+)
+
 // Initial state
 const initialState = {
   products: [],
+  nutritionProducts:[],
+  apparelProducts:[],
+  equipmentProducts:[],
+  singleProduct:null,
   loading: false,
   error: null,
   totalCount: 0,
@@ -59,6 +186,7 @@ const productSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+    // all products
       .addCase(fetchProducts.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -71,6 +199,71 @@ const productSlice = createSlice({
         state.totalPages = action.payload.totalPages;
       })
       .addCase(fetchProducts.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+
+
+          // all nuttrion products
+      .addCase(fetchNutritionProducts.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchNutritionProducts.fulfilled, (state, action) => {
+        state.loading = false;
+        state.nutritionProducts = action.payload.products;
+     
+      })
+      .addCase(fetchNutritionProducts.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+
+                // all apparel products
+      .addCase(fetchApparelProducts.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchApparelProducts.fulfilled, (state, action) => {
+        state.loading = false;
+        state.apparelProducts = action.payload.products;
+    
+      })
+      .addCase(fetchApparelProducts.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+                   // all equipment products
+      .addCase(fetchEquipmentProducts.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchEquipmentProducts.fulfilled, (state, action) => {
+        state.loading = false;
+        state.equipmentProducts = action.payload.products;
+        
+      })
+      .addCase(fetchEquipmentProducts.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+
+
+      // get single product
+          .addCase(fetchSingleProduct.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchSingleProduct.fulfilled, (state, action) => {
+        state.loading = false;
+        state.singleProduct = action.payload.data;
+        
+      })
+      .addCase(fetchSingleProduct.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

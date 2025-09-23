@@ -1,56 +1,130 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchCartByUserId } from '../../store/slice/cartSlice';
+import { Link } from 'react-router-dom';
+import { addItemToCart } from '../../store/slice/cartSlice';
 
 function ProductDetailPayment() {
-  const [quantity, setQuantity] = useState(1);
+  const dispatch = useDispatch();
   const [paymentMethod, setPaymentMethod] = useState('cod');
 
-  const productPrice = 1499;
+  const { loading, error, cartItems } = useSelector((state) => state?.cart);
+
+  useEffect(() => {
+    dispatch(fetchCartByUserId());
+  }, [dispatch]);
+
+  // Extract items from cartItems safely
+  const items = cartItems?.cart?.items || [];
+
+  const cartHasItems = items.length > 0;
+
+  // Calculate subtotal from cart items
+  const subtotal = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
   const shipping = 50;
-  const total = productPrice * quantity + shipping;
+  const total = subtotal + shipping;
 
   return (
     <div className="max-w-xl mx-auto bg-white shadow-lg rounded-lg p-6 space-y-6">
       <h2 className="text-xl font-bold text-gray-800 mb-4 text-left">Payment Summary</h2>
 
-      {/* Product Summary */}
-      <div className="flex items-center gap-4">
-        <img
-          src="https://www.100acress.com/amenities_image/basketball.webp"
-          alt="Product"
-          className="w-20 h-20 object-cover rounded"
-        />
-        <div>
-          <h3 className="font-semibold text-gray-800">Product Name</h3>
-          <p className="text-sm text-gray-500">Category / Short description</p>
-          <p className="text-red-600 font-bold mt-1">₹{productPrice}</p>
-        </div>
-      </div>
+      {/* Cart Items Summary (Top Section) */}
+    {items.map((item, idx) => (
+  <div key={idx} className="flex items-center gap-4 border-b pb-4 mb-4">
+    <img
+      src={item?.image || "https://via.placeholder.com/80"}
+      alt={item?.productName || "Product"}
+      className="w-20 h-20 object-cover rounded"
+    />
 
-      {/* Quantity */}
-      <div className="flex justify-between items-center border-t border-gray-200 pt-4">
-        <span className="font-medium text-gray-700">Quantity</span>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
-            className="px-2 py-1 border rounded text-gray-800 hover:bg-gray-100"
-          >
-            -
-          </button>
-          <span>{quantity}</span>
-          <button
-            onClick={() => setQuantity((prev) => prev + 1)}
-            className="px-2 py-1 border  text-gray-800 rounded hover:bg-gray-100"
-          >
-            +
-          </button>
-        </div>
-      </div>
+    <div className="flex-1">
+      <h3 className="font-semibold text-gray-800">{item?.productName}</h3>
+      <p className="text-sm text-gray-500">
+        {item?.category || 'Category'} / {item?.flavor}
+      </p>
+      <p className="text-red-600 font-bold mt-1">₹{item?.price}</p>
+
+      {/* Quantity Controls */}
+   {/* Quantity Controls */}
+<div className="flex items-center gap-2 mt-2">
+  <button
+    onClick={() =>
+      dispatch(
+        addItemToCart({
+          productId: item.productId,
+          size: item.size,
+          price: item.price,
+          color: item.color,
+          quantity: -1, // decrease by 1
+          flavor: item.flavor,
+          category: item.category,
+          discount: item.discount,
+          productName: item.productName,
+        })
+      )
+    }
+    className="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300"
+    disabled={item.quantity <= 1}
+  >
+    -
+  </button>
+
+  <span className="px-2">{item.quantity}</span>
+
+  <button
+    onClick={() =>
+      dispatch(
+        addItemToCart({
+          productId: item.productId,
+          size: item.size,
+          price: item.price,
+          color: item.color,
+          quantity: 1, // increase by 1
+          flavor: item.flavor,
+          category: item.category,
+          discount: item.discount,
+          productName: item.productName,
+        })
+      )
+    }
+    className="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300"
+  >
+    +
+  </button>
+</div>
+
+
+      {/* Remove Button */}
+  {/* Remove Button */}
+<button
+  onClick={() => 
+    dispatch(addItemToCart({
+      productId: item.productId,
+      size: item.size,
+      price: item.price,
+      color: item.color,
+      quantity: -item.quantity,  // Negative quantity to remove
+      flavor: item.flavor,
+      category: item.category,
+      discount: item.discount,
+      productName: item.productName,
+    }))
+  }
+  className="mt-2 text-sm text-red-500 hover:underline"
+>
+  Remove
+</button>
+
+    </div>
+  </div>
+))}
+
 
       {/* Price Breakdown */}
       <div className="border-t border-gray-200 pt-4 space-y-2 text-sm text-gray-700">
         <div className="flex justify-between text-gray-800">
           <span>Subtotal</span>
-          <span>₹{productPrice * quantity}</span>
+          <span>₹{subtotal}</span>
         </div>
         <div className="flex justify-between text-gray-800">
           <span>Shipping</span>
@@ -62,47 +136,39 @@ function ProductDetailPayment() {
         </div>
       </div>
 
-      {/* Payment Method */}
+      {/* Payment Method Selection */}
       <div className="border-t border-gray-200 pt-4">
         <h3 className="font-semibold mb-2 text-gray-800">Choose Payment Method</h3>
         <div className="space-y-2 text-gray-800">
-          <label className="flex items-center gap-2">
-            <input
-              type="radio"
-              name="payment"
-              value="cod"
-              checked={paymentMethod === 'cod'}
-              onChange={() => setPaymentMethod('cod')}
-            />
-            <span>Cash on Delivery</span>
-          </label>
-          <label className="flex items-center gap-2 text-gray-800">
-            <input
-              type="radio"
-              name="payment"
-              value="upi"
-              checked={paymentMethod === 'upi'}
-              onChange={() => setPaymentMethod('upi')}
-            />
-            <span>UPI</span>
-          </label>
-          <label className="flex items-center gap-2 text-gray-800">
-            <input
-              type="radio"
-              name="payment"
-              value="card"
-              checked={paymentMethod === 'card'}
-              onChange={() => setPaymentMethod('card')}
-            />
-            <span>Credit/Debit Card</span>
-          </label>
+          {['cod', 'upi', 'card'].map((method) => (
+            <label key={method} className="flex items-center gap-2">
+              <input
+                type="radio"
+                name="payment"
+                value={method}
+                checked={paymentMethod === method}
+                onChange={() => setPaymentMethod(method)}
+              />
+              <span className="capitalize">
+                {method === 'cod' ? 'Cash on Delivery' : method === 'upi' ? 'UPI' : 'Credit/Debit Card'}
+              </span>
+            </label>
+          ))}
         </div>
       </div>
 
       {/* Proceed Button */}
-      <button className="w-full bg-red-600 py-3 rounded hover:bg-red-700 font-semibold transition text-white">
+      <button
+        className={`w-full py-3 rounded font-semibold transition text-white ${
+          cartHasItems ? 'bg-red-600 hover:bg-red-700 cursor-pointer' : 'bg-gray-400 cursor-not-allowed'
+        }`}
+        disabled={!cartHasItems}
+      >
         Proceed to Pay ₹{total}
       </button>
+
+      {/* Detailed Cart Items (Bottom Section) */}
+ 
     </div>
   );
 }
