@@ -19,7 +19,7 @@ export const fetchCartByUserId = createAsyncThunk(
   "cart/fetchByUserId",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/products/productFeedback/cart`,{withCredentials: true});
+      const response = await axios.get(`http://localhost:5000/api/products/productFeedback/Usercart`,{withCredentials: true});
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Failed to fetch user cart");

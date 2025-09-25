@@ -11,6 +11,7 @@ import productReducer from './slice/productSlice';
 
 import selectionReducer from './slice/selectedSlice';
 
+import feedbackReducer from './slice/feedbackSlice';
 const rootReducers = combineReducers({
   user: userReducer,
 
@@ -23,6 +24,8 @@ const rootReducers = combineReducers({
   product:productReducer,
 
   selection:selectionReducer,
+
+  feedback:feedbackReducer
 
 });
 

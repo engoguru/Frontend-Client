@@ -158,6 +158,20 @@ export const fetchSingleProduct=createAsyncThunk(
   }
 )
 
+// fetch related products by category
+export const fetchRelatedProducts=createAsyncThunk(
+  'product/fetchRelatedProducts',
+  async(category,thunkAPI)=>{
+    try {
+        const response = await axios.get(`http://localhost:5000/api/products/productList/relevantProducts/${category}`);
+         return response.data;
+    } catch (error) {
+
+        return thunkAPI.rejectWithValue(error.response?.data?.message || "Failed to fetch products");
+    }
+  }
+)
+
 // Initial state
 const initialState = {
   products: [],
@@ -165,6 +179,8 @@ const initialState = {
   apparelProducts:[],
   equipmentProducts:[],
   singleProduct:null,
+  relatedProducts:[],
+
   loading: false,
   error: null,
   totalCount: 0,
@@ -264,6 +280,21 @@ const productSlice = createSlice({
         
       })
       .addCase(fetchSingleProduct.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+            // Related product
+          .addCase(fetchRelatedProducts.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchRelatedProducts.fulfilled, (state, action) => {
+        state.loading = false;
+        state.relatedProducts = action.payload.relevantProducts;
+        
+      })
+      .addCase(fetchRelatedProducts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

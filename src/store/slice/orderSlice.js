@@ -16,9 +16,26 @@ export const orderGetByUser = createAsyncThunk(
   }
 );
 
+
+export const createOrder = createAsyncThunk(
+  'order/createOrder',
+  async (orderData, thunkAPI) => {
+    try {
+      const response = await axios.post(`http://localhost:5000/api/order/orderRoutes/create`, orderData,{
+        withCredentials: true
+      });
+
+      return response.data.data; // or adjust based on your API response shape
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data?.message || "Failed to create order");
+    }
+  }
+);
+
 //Initial State
 const initialState = {
   orderUserSpecific: [],  // typo fixed from "orderUserSpciffic"
+  orderCreated: null,
   loading: false,
   error: null
 };
@@ -45,7 +62,23 @@ const orderSlice = createSlice({
       .addCase(orderGetByUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+
+
+      // order created cases
+      .addCase(createOrder.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createOrder.fulfilled, (state, action) => {
+        state.loading = false;
+        state.orderCreated = action.payload;
+      })
+      .addCase(createOrder.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
+
   }
 });
 
