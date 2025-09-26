@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import { createFeedback } from '../../store/slice/feedbackSlice';
 
 
-function ProductDetail({ productData = {}, reletedProduct, feedback,onCommentAdded  }) {
+function ProductDetail({ productData = {}, reletedProduct, feedback, onCommentAdded,onAddToCart }) {
   console.log(feedback, "k")
   const dispatch = useDispatch();
   const { meDetails, loading: userLoading } = useSelector((state) => state.user);
@@ -42,40 +42,40 @@ function ProductDetail({ productData = {}, reletedProduct, feedback,onCommentAdd
 
   // reviews adding
   const [newComment, setNewComment] = useState("");
-const [newRating, setNewRating] = useState(0);
-const [selectedImages, setSelectedImages] = useState([]);
-// for review
-const handleImageUpload = (e) => {
-  const files = Array.from(e.target.files);
-  setSelectedImages(files);
-};
+  const [newRating, setNewRating] = useState(0);
+  const [selectedImages, setSelectedImages] = useState([]);
+  // for review
+  const handleImageUpload = (e) => {
+    const files = Array.from(e.target.files);
+    setSelectedImages(files);
+  };
 
-const handleReviewSubmit = () => {
-  if (!newComment.trim() || newRating === 0) {
-    alert("Please add a rating and comment.");
-    return;
-  }
+  const handleReviewSubmit = () => {
+    if (!newComment.trim() || newRating === 0) {
+      alert("Please add a rating and comment.");
+      return;
+    }
 
-  // Create FormData if sending images to server
+    // Create FormData if sending images to server
     const formData = new FormData();
-  formData.append("comment", newComment);
-  formData.append("rating", newRating);
-  formData.append("productId",productData?._id);
-   selectedImages.forEach((file) => {
-    formData.append("feedbackImage", file); // note: name must match multer field name
-  });
+    formData.append("comment", newComment);
+    formData.append("rating", newRating);
+    formData.append("productId", productData?._id);
+    selectedImages.forEach((file) => {
+      formData.append("feedbackImage", file); // note: name must match multer field name
+    });
 
 
-  // Submit the review (mocked or API call)
-  dispatch(createFeedback(formData))
-  // setReviews(prev => [reviewData, ...prev]);
-onCommentAdded()
-toast.success("Your FeedBack Added")
-  // Clear form
-  setNewComment("");
-  setNewRating(0);
-  setSelectedImages([]);
-};
+    // Submit the review (mocked or API call)
+    dispatch(createFeedback(formData))
+    // setReviews(prev => [reviewData, ...prev]);
+    onCommentAdded()
+    toast.success("Your FeedBack Added")
+    // Clear form
+    setNewComment("");
+    setNewRating(0);
+    setSelectedImages([]);
+  };
 
 
 
@@ -191,6 +191,7 @@ toast.success("Your FeedBack Added")
     // Dispatch the payload
     dispatch(addItemToCart(payload));
     addCartLoading = false;
+    onAddToCart()
     toast.success('Item successfully added to your cart.');
 
   };
@@ -460,102 +461,102 @@ toast.success("Your FeedBack Added")
           </>
         )}
 
-{activeTab === "Reviews" && (
-  <div className="space-y-6">
-    {/* Display existing reviews */}
-    <div className="space-y-4">
-      {feedback?.feedbacks?.length === 0 ? (
-        <p className="text-gray-500 text-sm">No reviews yet.</p>
-      ) : (
-        feedback?.feedbacks?.map((review) => (
-          <div key={review._id} className="border-b pb-2">
-            <div className="flex items-center mb-1">
-              <div className="text-yellow-500 text-sm">
-                {"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}
-              </div>
-              <span className="text-gray-400 text-xs ml-2">
-                {new Date(review.createdAt).toLocaleDateString()}
-              </span>
-            </div>
-            <p className="text-black text-sm">{review.comment}</p>
+        {activeTab === "Reviews" && (
+          <div className="space-y-6">
+            {/* Display existing reviews */}
+            <div className="space-y-4">
+              {feedback?.feedbacks?.length === 0 ? (
+                <p className="text-gray-500 text-sm">No reviews yet.</p>
+              ) : (
+                feedback?.feedbacks?.map((review) => (
+                  <div key={review._id} className="border-b pb-2">
+                    <div className="flex items-center mb-1">
+                      <div className="text-yellow-500 text-sm">
+                        {"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}
+                      </div>
+                      <span className="text-gray-400 text-xs ml-2">
+                        {new Date(review.createdAt).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <p className="text-black text-sm">{review.comment}</p>
 
-            {review.feedbackImage?.length > 0 && (
-              <div className="flex mt-1 space-x-2">
-                {review.feedbackImage.map((img, idx) => (
-                  <img
-                    key={idx}
-                    src={img.url || img}
-                    alt={`Feedback ${idx + 1}`}
-                    className="w-15 h-15 object-cover rounded"
-                  />
+                    {review.feedbackImage?.length > 0 && (
+                      <div className="flex mt-1 space-x-2">
+                        {review.feedbackImage.map((img, idx) => (
+                          <img
+                            key={idx}
+                            src={img.url || img}
+                            alt={`Feedback ${idx + 1}`}
+                            className="w-15 h-15 object-cover rounded"
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* Review Submission Form */}
+            <div className=" pt-3">
+              <h3 className="text-sm font-semibold mb-2">Leave a Review</h3>
+
+              {/* Star Rating */}
+              <div className="flex items-center mb-2">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    type="button"
+                    onClick={() => setNewRating(star)}
+                    className="text-xl focus:outline-none"
+                  >
+                    {star <= newRating ? "★" : "☆"}
+                  </button>
                 ))}
               </div>
-            )}
+
+              {/* Comment Box */}
+              <textarea
+                rows={3}
+                className="w-full p-2 border rounded mb-2 text-sm"
+                placeholder="Write your reviews..."
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+              />
+
+              {/* Image Upload */}
+              <div className="flex items-center gap-2 mb-4">
+                <label
+                  htmlFor="imageUpload"
+                  className="px-1 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm cursor-pointer"
+                >
+                  + Add Image
+                </label>
+                <input
+                  id="imageUpload"
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                />
+                {selectedImages.length > 0 && (
+                  <span className="text-xs text-gray-600">
+                    {selectedImages.length} file(s) selected
+                  </span>
+                )}
+              </div>
+
+              {/* Submit Button */}
+              <button
+                onClick={handleReviewSubmit}
+                className="bg-black text-white text-sm px-2 py-1 rounded hover:bg-gray-800"
+              >
+                Submit Review
+              </button>
+            </div>
           </div>
-        ))
-      )}
-    </div>
-
-    {/* Review Submission Form */}
-    <div className=" pt-3">
-      <h3 className="text-sm font-semibold mb-2">Leave a Review</h3>
-
-      {/* Star Rating */}
-      <div className="flex items-center mb-2">
-        {[1, 2, 3, 4, 5].map((star) => (
-          <button
-            key={star}
-            type="button"
-            onClick={() => setNewRating(star)}
-            className="text-xl focus:outline-none"
-          >
-            {star <= newRating ? "★" : "☆"}
-          </button>
-        ))}
-      </div>
-
-      {/* Comment Box */}
-      <textarea
-        rows={3}
-        className="w-full p-2 border rounded mb-2 text-sm"
-        placeholder="Write your reviews..."
-        value={newComment}
-        onChange={(e) => setNewComment(e.target.value)}
-      />
-
-      {/* Image Upload */}
-      <div className="flex items-center gap-2 mb-4">
-        <label
-          htmlFor="imageUpload"
-          className="px-1 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm cursor-pointer"
-        >
-          + Add Image
-        </label>
-        <input
-          id="imageUpload"
-          type="file"
-          multiple
-          accept="image/*"
-          onChange={handleImageUpload}
-          className="hidden"
-        />
-        {selectedImages.length > 0 && (
-          <span className="text-xs text-gray-600">
-            {selectedImages.length} file(s) selected
-          </span>
         )}
-      </div>
-
-      {/* Submit Button */}
-      <button
-        onClick={handleReviewSubmit}
-        className="bg-black text-white text-sm px-2 py-1 rounded hover:bg-gray-800"
-      >
-        Submit Review
-      </button>
-    </div>
-  </div>
-)}
 
 
       </div>

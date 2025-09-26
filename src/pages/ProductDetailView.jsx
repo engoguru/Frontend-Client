@@ -11,10 +11,12 @@ import { useParams } from 'react-router-dom';
 
 import { fetchRelatedProducts } from '../store/slice/productSlice';
 import { fetchFeedbacks } from '../store/slice/feedbackSlice';
+import { fetchCartByUserId } from '../store/slice/cartSlice';
 function ProductDetailView() {
   const { id } = useParams()
   const dispatch = useDispatch();
 
+  const  [reloadCart,setReloadCart]=useState(false)
   const { singleProduct, loading, error } = useSelector((state) => state.product);
    const { relatedProducts, loading:reledtedLoading, error:reletedError } = useSelector((state) => state.product);
    const{items,status,error:feedbackError}=useSelector((state)=>state?.feedback)
@@ -28,6 +30,14 @@ const loadFeedbacks = (productId) => {
   console.log("sgh")
   dispatch(fetchFeedbacks(productId));
 };
+
+
+const loadCart=()=>{
+  
+   dispatch(fetchCartByUserId());
+   setReloadCart(true)
+   console.log(reloadCart,"p")
+}
 
 useEffect(() => {
   if (singleProduct) {
@@ -60,7 +70,7 @@ useEffect(() => {
               ) : error ? (
                 <p>Error loading product</p>
               ) : (
-                <ProductDetail productData={singleProduct} reletedProduct={relatedProducts} feedback={items}   onCommentAdded={() => loadFeedbacks(singleProduct._id)}/>
+                <ProductDetail productData={singleProduct} reletedProduct={relatedProducts} feedback={items}   onCommentAdded={() => loadFeedbacks(singleProduct._id)}   onAddToCart={()=>loadCart()}/>
               )}
             </div>
 
@@ -72,7 +82,7 @@ useEffect(() => {
               ) : error ? (
                 <p>Error loading product</p>
               ) : (
-                 <ProductDetailPayment productData={singleProduct} />
+                 <ProductDetailPayment productData={singleProduct}  onAddToCart={reloadCart}/>
               )}
             </div>
           </div>

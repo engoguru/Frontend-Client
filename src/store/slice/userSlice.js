@@ -110,6 +110,22 @@ export const setNewPasswword = createAsyncThunk(
 )
 
 
+export const updateAddress = createAsyncThunk(
+  'user/updateAddress',
+  async (addressData, thunkAPI) => {  
+    try {
+      const response = await axios.put("http://localhost:5000/api/users/account/updateUserAddress", {
+        data: addressData
+      }, {
+        withCredentials: true
+      });
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error?.response?.data?.message || error.message);
+    }
+  }
+)
+
 const initialState = {
 
   users: [],
@@ -123,6 +139,8 @@ const initialState = {
 
   forgetPassword_Store: null,
   newPasswword: null,
+
+  updateAddress_Store: null,
 
   loading: false,
   error: null
@@ -223,18 +241,34 @@ const createUserSlice = createSlice({
       })
 
       // set new Password 
-      .addCase(setNewPasswword.pending, (state) => {
+          .addCase(setNewPasswword.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+          })
+          .addCase(setNewPasswword.fulfilled, (state, action) => {
+            state.loading = false;
+            state.meDetails = action.payload?.user || action.payload || null;
+          })
+          .addCase(setNewPasswword.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload || "Registration failed";
+          })
+
+      // update Address
+      .addCase(updateAddress.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(setNewPasswword.fulfilled, (state, action) => {
+      .addCase(updateAddress.fulfilled, (state, action) => {
         state.loading = false;
+        state.updateAddress_Store = action.payload?.user || action.payload || null;
         state.meDetails = action.payload?.user || action.payload || null;
       })
-      .addCase(setNewPasswword.rejected, (state, action) => {
+      .addCase(updateAddress.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Registration failed";
+        state.error = action.payload || "Update address failed";
       })
+
   }
 });
 
