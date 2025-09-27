@@ -15,11 +15,13 @@ import ProductDetailView from './pages/ProductDetailView'
 import ProtectedRoutes from './utils/ProtectedRoutes'
 import { getMeDetails } from './store/slice/userSlice'
 import NotFound from './pages/NotFound'
+import UserAddress from './pages/UserAddress'
+import UserOrderHistory from './pages/UserOrderHistory'
 function App() {
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(getMeDetails());
-  }, [dispatch]);
+  }, []);
 
   return (
     <>
@@ -38,8 +40,10 @@ function App() {
         {/* Protected routes */}
         <Route element={<ProtectedRoutes />}>
           <Route path="/user" element={<UserDashboard />} />
+              <Route path="/user/address" element={<UserAddress />} />
+                 <Route path="/user/order" element={<UserOrderHistory />} />
           {/* Add more protected routes here */}
-        </Route>
+        </Route>0
 
         <Route path='*' element={<NotFound />} />
       </Routes>

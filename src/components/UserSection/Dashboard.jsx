@@ -53,23 +53,23 @@ console.log(cartItems,"jh")
         </tr>
       </thead>
       <tbody className="divide-y divide-gray-100">
-        {cartItems?.cart.map((item) => (
+        {cartItems?.cart?.items?.map((item) => (
           <tr key={item._id}>
             <td className="px-4 py-2">{item.productId}</td>
-            <td className="px-4 py-2">{item.productDetails.productName}</td>
-            <td className="px-4 py-2">{item.productDetails.productBrand}</td>
+            <td className="px-4 py-2">{item.productName}</td>
+            <td className="px-4 py-2">{item.productCategory}</td>
             <td className="px-4 py-2">{item.quantity}</td>
             <td className="px-4 py-2">{item.size}</td>
             <td className="px-4 py-2">
               {/* Assuming color is an index referring to productVarient */}
-              {(() => {
+              {/* {(() => {
                 const colorIndex = item.color;
                 const variant = item.productDetails.productVarient[colorIndex];
                 return variant?.color?.[0] || 'N/A';
-              })()}
+              })()} */}
             </td>
-            <td className="px-4 py-2">${item.price.toFixed(2)}</td>
-            <td className="px-4 py-2">{item.productDetails.productDiscount}</td>
+            {/* <td className="px-4 py-2">${item.price.toFixed(2)}</td>
+            <td className="px-4 py-2">{item.productDetails.productDiscount}</td> */}
           </tr>
         ))}
       </tbody>

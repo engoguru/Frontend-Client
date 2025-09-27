@@ -16,11 +16,12 @@ function OrderHistory() {
 
   // Fetch orders when user ID is available
   useEffect(() => {
-    if (meDetails?.id) {
+    if (meDetails?._id) {
 
-      dispatch(orderGetByUser(meDetails.id));
+      dispatch(orderGetByUser(meDetails._id));
     }
   }, [ meDetails]);
+
 
   console.log(orderUserSpecific,"dghjghrodhvvo9irtj")
   return (
@@ -36,7 +37,7 @@ function OrderHistory() {
       <p>No orders found.</p>
     ) : (
       <div className="space-y-6">
-        {orderUserSpecific.map((order) => (
+     {orderUserSpecific.slice().reverse().map((order) => (
           <div
             key={order._id}
             className="bg-white shadow-md rounded-lg p-6 border border-gray-100"

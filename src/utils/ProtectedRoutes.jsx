@@ -2,48 +2,50 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Navigate, Outlet } from 'react-router-dom';
 import { getMeDetails } from '../store/slice/userSlice';
-import LoginModal from '../components/UserSection/Login'; // assuming you have this component
+import LoginModal from '../components/UserSection/Login';
 
 function ProtectedRoutes() {
   const dispatch = useDispatch();
 
-  const [activeModal, setActiveModal] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   const { meDetails, loading, error } = useSelector((state) => state.user);
 
+  // Fetch user details once
   useEffect(() => {
-    if (!meDetails?.email) {
+    if (!meDetails?.email && !loading) {
       dispatch(getMeDetails());
     }
-  }, [dispatch, meDetails?.email]);
+  }, [dispatch, meDetails?.email, loading]);
 
+  // Show login modal if user is not authenticated
   useEffect(() => {
-    // If not logged in or error, open the login modal
-    if ((!meDetails?.email || error) && !activeModal) {
-    // alert("First login")
-      setActiveModal('login');
+    if (!meDetails?.email && !loading) {
+      setShowModal(true);
+    } else {
+      setShowModal(false);
     }
-  }, [meDetails, error, activeModal]);
+  }, [meDetails?.email, loading]);
 
   if (loading) return <div>Loading...</div>;
 
-  if (activeModal === 'login') {
-
-    return (
-      <LoginModal
-        isOpen={true}
-        setIsOpen={() => setActiveModal()}
-      />
-    );
-  }
-
-  // If we get here and user is not logged in (no email), just redirect
-  if (!meDetails?.email || error) {
+  // If user not authenticated and modal is not being used, fallback redirect
+  if (!meDetails?.email && !showModal) {
     return <Navigate to="/" replace />;
   }
 
-  // Otherwise, render the child routes
-  return <Outlet />;
+  return (
+    <>
+      {showModal && (
+        <LoginModal
+          isOpen={showModal}
+          setIsOpen={(val) => setShowModal(val)}
+        />
+      )}
+      {/* If logged in, show route */}
+      {meDetails?.email && <Outlet />}
+    </>
+  );
 }
 
 export default ProtectedRoutes;
