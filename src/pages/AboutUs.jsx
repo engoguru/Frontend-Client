@@ -112,7 +112,7 @@ function AboutUs() {
       <NavbarBottom />
 
       {/* Banner */}
-      <section className="relative w-full h-64 md:h-96 mt-16 md:mt-28">
+      <section className="relative w-full h-64 md:h-96" style={{ marginTop: 'var(--navbar-height, 64px)' }}>
         <img
           src="https://red-parts.react.themeforest.scompiler.ru/themes/red/images/finder.jpg"
           alt="About Us Banner"

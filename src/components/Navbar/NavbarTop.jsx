@@ -20,6 +20,7 @@ import { logoutUser } from "../../store/slice/userSlice";
 export default function NavbarTop() {
   const desktopSearchRef = useRef();
   const mobileSearchRef = useRef();
+  const navbarRef = useRef(null);
   const profileRef = useRef(null); // 👈 profile wrapper ref
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -33,6 +34,7 @@ export default function NavbarTop() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [isAccount, setIsAcount] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
+  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
@@ -106,6 +108,23 @@ export default function NavbarTop() {
     };
   }, []);
 
+  // Dynamically set navbar height for content padding
+  useEffect(() => {
+    const updateNavbarHeight = () => {
+      if (navbarRef.current) {
+        const height = navbarRef.current.offsetHeight;
+        document.documentElement.style.setProperty('--navbar-height', `${height}px`);
+      }
+    };
+
+    updateNavbarHeight();
+    window.addEventListener('resize', updateNavbarHeight);
+
+    return () => {
+      window.removeEventListener('resize', updateNavbarHeight);
+    };
+  }, []);
+
   const menuItems = [
     {
       label: "Apparel",
@@ -151,7 +170,7 @@ export default function NavbarTop() {
   ];
 
   return (
-    <nav className="w-full py-2 bg-white fixed top-0 left-0 right-0 z-20 border-b border-red-700">
+    <nav ref={navbarRef} className="w-full py-2 bg-white fixed top-0 left-0 right-0 z-20 border-b border-red-700">
       <div className="flex flex-wrap xsm:flex-nowrap justify-between items-center px-4 md:px-8">
         {/* Logo */}
         <Link
@@ -197,7 +216,15 @@ export default function NavbarTop() {
 
         </div>
         {/* Mobile Hamburger */}
-        <div className="md:hidden flex items-center order-2 xsm:order-3">
+        <div className="md:hidden flex items-center order-2 xsm:order-3 gap-4">
+          {/* Mobile Cart Icon */}
+          <div
+            className="cursor-pointer"
+            onClick={() => navigate("/cart")}
+          >
+            <FiShoppingCart size={25} className="text-gray-700" />
+          </div>
+
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             className="text-black focus:outline-none relative z-30"
@@ -225,17 +252,27 @@ export default function NavbarTop() {
             ref={desktopSearchRef}
             className="flex items-center w-full max-w-xl bg-[#d5baba3b] rounded-full border border-transparent focus-within:border-red-500 transition-colors duration-300"
           >
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="bg-[#ffd226] text-black font-semibold text-sm pl-4 pr-2 py-2 rounded-l-full focus:outline-none appearance-none"
-            >
-              <option value="">All</option>
-              <option value="Apparel">Apparel</option>
-              <option value="Equipment">Equipment</option>
-              <option value="Nutrition">Nutrition</option>
-            </select>
-            {/* <div className="w-px h-full bg-gray-400 mx-0"></div> Vertical Separator */}
+            <div className="relative flex items-center">
+              <select
+                value={selectedCategory}
+                onFocus={() => setIsCategoryDropdownOpen(true)}
+                onBlur={() => setIsCategoryDropdownOpen(false)}
+                onChange={(e) => {
+                  setSelectedCategory(e.target.value);
+                  setIsCategoryDropdownOpen(false); // Rotate icon back on selection
+                }}
+                className="bg-[#ffd226] text-black font-semibold text-sm pl-4 pr-8 py-2 rounded-l-full focus:outline-none appearance-none cursor-pointer"
+              >
+                <option value="">All</option>
+                <option value="Apparel">Apparel</option>
+                <option value="Equipment">Equipment</option>
+                <option value="Nutrition">Nutrition</option>
+              </select>
+              <FiChevronDown
+                className={`absolute right-2.5 top-1/2 -translate-y-1/2 text-black pointer-events-none transition-transform duration-300 ${isCategoryDropdownOpen ? "rotate-180" : "rotate-0"}`}
+              />
+            </div>
+
             <div className="relative flex-1">
               <input
                 type="text"
