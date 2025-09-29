@@ -45,7 +45,7 @@ const dispatch=useDispatch();
   ];
 
   return (
-    <div className="w-full py-10 bg-white">
+    <div className="w-full py-10 bg-white relative z-0">
       <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-10 text-center">
         Popular Products
       </h2>
@@ -99,4 +99,3 @@ const dispatch=useDispatch();
 }
 
 export default HomePopular;
-

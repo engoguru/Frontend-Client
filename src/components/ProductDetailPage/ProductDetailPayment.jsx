@@ -82,7 +82,7 @@ function ProductDetailPayment({onAddToCart}) {
       // ✅ Refresh cart after clearing
       dispatch(fetchCartByUserId());
       // items null
-        items=null
+       // items=null
       navigate('/user/order')
     } catch (error) {
       console.error(error);

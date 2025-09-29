@@ -97,9 +97,15 @@ const handleResetPassword = async () => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4"
+      onClick={() => setIsOpen(false)}
+    >
       {/* Modal Content */}
-      <div className="relative w-full max-w-md bg-white rounded-lg shadow-lg p-6 animate-fadeIn">
+      <div
+        className="relative w-full max-w-md bg-white rounded-lg shadow-lg p-6 animate-fadeIn"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Close Button */}
         <button
           onClick={() => setIsOpen(false)}

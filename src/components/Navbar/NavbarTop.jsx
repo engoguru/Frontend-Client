@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import LoginModal from "../UserSection/Login";
 import Register from "../UserSection/Register";
@@ -11,15 +11,18 @@ import {
   FiKey,
   FiLogOut,
   FiChevronDown,
+  FiShoppingBag,
   FiPhone,
 } from "react-icons/fi";
 import { PiUserCircle } from "react-icons/pi";
+import { logoutUser } from "../../store/slice/userSlice";
 
 export default function NavbarTop() {
   const desktopSearchRef = useRef();
   const mobileSearchRef = useRef();
   const profileRef = useRef(null); // 👈 profile wrapper ref
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { meDetails } = useSelector((state) => state.user);
 
   const [menuOpen, setMenuOpen] = useState(false);
@@ -75,6 +78,11 @@ export default function NavbarTop() {
 
   const toggleSubMenu = (menuName) => {
     setOpenSubMenu(openSubMenu === menuName ? null : menuName);
+  };
+
+  const logoutHandler = () => {
+    dispatch(logoutUser());
+    setMenuOpen(false);
   };
 
   // 👇 Close dropdown when clicking outside
@@ -135,40 +143,40 @@ export default function NavbarTop() {
     {
       label: "Account",
       subItems: [
-        { name: "Dashboard", path: "/user" },
-        { name: "Profile", path: "/user" },
-        { name: "Track Order", path: "/user" },
+        { name: "My Profile", path: { pathname: "/user", state: { section: "dashboard" } } },
+        { name: "Cart", path: "/cart" },
+        { name: "Orders", path: { pathname: "/user", state: { section: "orders" } } },
       ],
     },
   ];
 
   return (
     <nav className="w-full py-2 bg-white fixed top-0 left-0 right-0 z-20 border-b border-red-700">
-      <div className="flex justify-between items-center px-4 md:px-8">
+      <div className="flex flex-wrap xsm:flex-nowrap justify-between items-center px-4 md:px-8">
         {/* Logo */}
         <Link
           to="/"
-          className="flex-shrink-0 text-black font-bold text-base md:text-lg lg:text-xl no-underline transition-all duration-300"
+          className="flex-shrink-0 text-black font-bold text-lg sm:text-xl no-underline transition-all duration-300"
           onClick={() => window.scrollTo(0, 0)}
         >
           <span className="text-black">SPORT</span>
-          <span className="text-red-700">DUNIYA</span>
+          <span className="text-red-700">EXPRESS</span>
         </Link>
 
-        {/* Mobile Search + Hamburger */}
-        <div className="md:hidden flex items-center space-x-2 ml-4">
-          <div ref={mobileSearchRef} className="relative">
+        {/* Mobile Search (moves below on <425px screens) */}
+        <div className="w-full xsm:w-auto xsm:flex-1 order-3 xsm:order-2 mt-2 xsm:mt-0 flex justify-center px-2 md:hidden">
+          <div ref={mobileSearchRef} className="relative w-full max-w-sm bg-[#d5baba3b] rounded-full border border-transparent focus-within:border-red-500 transition-colors duration-300">
             <input
               type="text"
               placeholder="Search..."
-              className="w-full px-3 py-1 bg-[#d5baba3b] border border-transparent placeholder:text-black placeholder:opacity-50 text-sm focus:outline-none pr-8 transition-all rounded-md"
+              className="w-full px-3 py-2 bg-transparent border-none placeholder:text-black placeholder:opacity-50 text-sm focus:outline-none pr-8"
               value={searchQuery}
               onChange={handleSearchChange}
               onKeyDown={handleKeyDown}
             />
             <button
               onClick={handleSearchSubmit}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-700"
+              className="absolute right-1.5 top-1/2 transform -translate-y-1/2 p-1.5 rounded-full text-gray-700 hover:bg-red-600 hover:text-white transition-colors duration-300"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -187,10 +195,12 @@ export default function NavbarTop() {
             </button>
           </div>
 
-          {/* Hamburger */}
+        </div>
+        {/* Mobile Hamburger */}
+        <div className="md:hidden flex items-center order-2 xsm:order-3">
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="ml-2 text-black focus:outline-none relative z-30"
+            className="text-black focus:outline-none relative z-30"
             aria-label="Open menu"
           >
             <svg
@@ -213,23 +223,24 @@ export default function NavbarTop() {
         <div className="hidden md:flex flex-1 items-center justify-center px-6">
           <div
             ref={desktopSearchRef}
-            className="flex items-center w-full max-w-xl space-x-2"
+            className="flex items-center w-full max-w-xl bg-[#d5baba3b] rounded-full border border-transparent focus-within:border-red-500 transition-colors duration-300"
           >
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="bg-[#ffd226] text-black font-semibold text-sm px-1 py-2 rounded-md focus:outline-none"
+              className="bg-[#ffd226] text-black font-semibold text-sm pl-4 pr-2 py-2 rounded-l-full focus:outline-none appearance-none"
             >
               <option value="">All</option>
               <option value="Apparel">Apparel</option>
               <option value="Equipment">Equipment</option>
               <option value="Nutrition">Nutrition</option>
             </select>
+            {/* <div className="w-px h-full bg-gray-400 mx-0"></div> Vertical Separator */}
             <div className="relative flex-1">
               <input
                 type="text"
                 placeholder="Enter Your Search Keywords"
-                className="w-full px-4 py-2 bg-[#d5baba3b] border border-transparent placeholder:text-black placeholder:opacity-50 text-sm focus:outline-none pr-10 transition-all rounded-md"
+                className="w-full px-4 py-2 bg-transparent border-none placeholder:text-black placeholder:opacity-50 text-sm focus:outline-none pr-10"
                 value={searchQuery}
                 onChange={handleSearchChange}
                 onKeyDown={handleKeyDown}
@@ -237,7 +248,7 @@ export default function NavbarTop() {
               />
               <button
                 onClick={handleSearchSubmit}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-700"
+                className="absolute right-1.5 top-1/2 transform -translate-y-1/2 p-1.5 rounded-full text-gray-700 hover:bg-red-600 hover:text-white transition-colors duration-300"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -273,13 +284,12 @@ export default function NavbarTop() {
               setIsAcount(false);
               setIsHovering(false);
             }}
-            className={`relative pb-2 flex items-center transition-all duration-300 ease-in-out rounded-md px-2 py-1 ${
-              isHovering
-                ? meDetails
-                  ? "bg-gray-100 border border-gray-300"
-                  : "bg-blue-600 border border-blue-600"
-                : "bg-transparent border border-transparent"
-            }`}
+            className={`relative pb-2 flex items-center transition-all duration-300 ease-in-out rounded-md px-2 py-1 ${isHovering
+              ? meDetails
+                ? "bg-gray-100 border border-gray-300"
+                : "bg-blue-600 border border-blue-600"
+              : "bg-transparent border border-transparent"
+              }`}
           >
             <div
               onClick={() => {
@@ -290,42 +300,38 @@ export default function NavbarTop() {
             >
               <PiUserCircle
                 size={25}
-                className={`transition-colors duration-300 ${
-                  isHovering && !meDetails ? "text-white" : "text-gray-700"
-                }`}
+                className={`transition-colors duration-300 ${isHovering && !meDetails ? "text-white" : "text-gray-700"
+                  }`}
               />
               <p
-                className={`text-base transition-colors duration-300 ${
-                  isHovering && !meDetails ? "text-white" : "text-black"
-                }`}
+                className={`text-base transition-colors duration-300 ${isHovering && !meDetails ? "text-white" : "text-black"
+                  }`}
               >
                 {meDetails?.name ? meDetails.name.split(" ")[0] : "Login"}
               </p>
 
               <FiChevronDown
                 size={15}
-                className={`transition-transform duration-300 transform ${
-                  isHovering ? "rotate-180" : "rotate-0"
-                } ${
-                  isHovering && !meDetails ? "text-white" : "text-gray-700"
-                }`}
+                className={`transition-transform duration-300 transform ${isHovering ? "rotate-180" : "rotate-0"
+                  } ${isHovering && !meDetails ? "text-white" : "text-gray-700"
+                  }`}
               />
             </div>
 
             {/* Account Dropdown */}
             <ul
-              className={`absolute top-full left-0 bg-white shadow-lg rounded-md w-48 z-50 transform transition-all duration-300 ease-in-out ${
-                isAccount
-                  ? "opacity-100 scale-100 visible"
-                  : "opacity-0 scale-95 invisible"
-              }`}
+              className={`absolute top-full left-0 bg-white shadow-lg rounded-md w-48 z-50 border border-gray-200 transform transition-all duration-300 ease-in-out ${isAccount
+                ? "opacity-100 scale-100 visible"
+                : "opacity-0 scale-95 invisible"
+                }`}
             >
               {/* My Profile always visible */}
-              <Link to="/user">
-                <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b border-gray-200 flex items-center gap-3 transition-colors duration-200">
-                  <PiUserCircle /> My Profile
-                </li>
-              </Link>
+              <li
+                className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b border-gray-200 flex items-center gap-3 transition-colors duration-200"
+                onClick={() => navigate("/user", { state: { section: "dashboard" } })}
+              >
+                <PiUserCircle size={18} /> My Profile
+              </li>
 
               {/* If logged in */}
               {meDetails ? (
@@ -334,10 +340,16 @@ export default function NavbarTop() {
                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b border-gray-200 flex items-center gap-3 transition-colors duration-200"
                     onClick={() => navigate("/cart")}
                   >
-                    <FiShoppingCart /> Cart
+                    <FiShoppingCart size={18} /> Cart
                   </li>
-                  <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b border-gray-200 flex items-center gap-3 transition-colors duration-200">
-                    <FiLogOut /> Logout
+                  <li
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b border-gray-200 flex items-center gap-3 transition-colors duration-200"
+                    onClick={() => navigate("/user", { state: { section: "orders" } })}
+                  >
+                    <FiShoppingBag size={18} /> Orders
+                  </li>
+                  <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b border-gray-200 flex items-center gap-3 transition-colors duration-200" onClick={logoutHandler}>
+                    <FiLogOut size={18} /> Logout
                   </li>
                 </>
               ) : (
@@ -346,25 +358,31 @@ export default function NavbarTop() {
                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b border-gray-200 flex items-center gap-3 transition-colors duration-200"
                     onClick={() => setActiveModal("login")}
                   >
-                    <FiLogIn /> Login
+                    <FiLogIn size={18} /> Login
                   </li>
                   <li
                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b border-gray-200 flex items-center gap-3 transition-colors duration-200"
                     onClick={() => setActiveModal("register")}
                   >
-                    <FiUserPlus /> Register
+                    <FiUserPlus size={18} /> Register
                   </li>
                   <li
                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b border-gray-200 flex items-center gap-3 transition-colors duration-200"
                     onClick={() => navigate("/cart")}
                   >
-                    <FiShoppingCart /> Cart
+                    <FiShoppingCart size={18} /> Cart
+                  </li>
+                  <li
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b border-gray-200 flex items-center gap-3 transition-colors duration-200"
+                    onClick={() => navigate("/user", { state: { section: "orders" } })}
+                  >
+                    <FiShoppingBag size={18} /> Orders
                   </li>
                   <li
                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b border-gray-200 flex items-center gap-3 transition-colors duration-200"
                     onClick={() => setActiveModal("forgetPasswword")}
                   >
-                    <FiKey /> Forget Password
+                    <FiKey size={18} /> Forget Password
                   </li>
                 </>
               )}
@@ -395,13 +413,12 @@ export default function NavbarTop() {
 
       {/* Mobile Sidebar */}
       <div
-        className={`md:hidden fixed top-0 left-0 w-4/5 max-w-sm h-full bg-white shadow-xl flex flex-col z-50 transition-transform duration-300 ease-in-out ${
-          menuOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`md:hidden fixed top-0 left-0 w-4/5 max-w-sm h-full bg-white shadow-xl flex flex-col z-50 transition-transform duration-300 ease-in-out ${menuOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         {/* Sidebar Content */}
         <>
-          <div className="p-4 border-b flex justify-between items-center flex-shrink-0">
+          <div className="p-4 border-b border-gray-200 flex justify-between items-center flex-shrink-0">
             <h2 className="text-xl font-bold text-red-700">Menu</h2>
             <button
               onClick={() => setMenuOpen(false)}
@@ -426,25 +443,25 @@ export default function NavbarTop() {
           {/* Navigation Links */}
           <div className="flex-grow overflow-y-auto">
             <ul className="py-4">
-              {menuItems.map((item, index) => (
-                <li key={index} className="border-b">
+              {menuItems.map((item, index) => ( // Changed border-b to border-b border-gray-200
+                <li key={index} className="border-b border-gray-200">
                   <div
                     className="px-4 py-3 flex justify-between items-center cursor-pointer"
                     onClick={() => toggleSubMenu(item.label)}
                   >
                     <span className="font-semibold">{item.label}</span>
                     <FiChevronDown
-                      className={`transition-transform duration-200 ${
-                        openSubMenu === item.label ? "rotate-180" : ""
-                      }`}
+                      className={`transition-transform duration-200 ${openSubMenu === item.label ? "rotate-180" : ""
+                        }`}
                     />
                   </div>
                   {openSubMenu === item.label && (
                     <ul className="pl-8 bg-gray-50">
-                      {item.subItems.map((subItem, subIndex) => (
-                        <li key={subIndex} className="border-t">
+                      {item.subItems.map((subItem, subIndex) => ( // Changed border-t to border-t border-gray-200
+                        <li key={subIndex} className="border-t border-gray-200">
                           <Link
-                            to={subItem.path}
+                            to={typeof subItem.path === "string" ? subItem.path : subItem.path.pathname}
+                            state={typeof subItem.path === "object" ? subItem.path.state : undefined}
                             className="block px-4 py-3 text-gray-700 hover:bg-gray-100"
                             onClick={() => setMenuOpen(false)}
                           >
@@ -457,27 +474,44 @@ export default function NavbarTop() {
                 </li>
               ))}
             </ul>
-            <hr className="my-2" />
             {meDetails ? (
-              <div className="px-4 py-3 cursor-pointer text-gray-800 font-semibold">
+              <div className="px-4 py-3 cursor-pointer text-gray-800 font-semibold hover:bg-gray-100"
+                onClick={logoutHandler}>
                 Logout
               </div>
             ) : (
-              <div
-                className="px-4 py-3 cursor-pointer text-gray-800 font-semibold"
-                onClick={() => setActiveModal("login")}
-              >
-                Login
-              </div>
+              <>
+                <div
+                  className="px-4 py-3 cursor-pointer text-gray-800 hover:text-red-700 font-semibold hover:bg-gray-100"
+                  onClick={() => { setActiveModal("login"); setMenuOpen(false); }}
+                >
+                  Login
+                </div>
+                <div
+                  className="px-4 py-3 cursor-pointer text-gray-800 hover:text-red-700 font-semibold hover:bg-gray-100"
+                  onClick={() => { setActiveModal("register"); setMenuOpen(false); }}
+                >
+                  Register
+                </div>
+                <div
+                  className="px-4 py-3 cursor-pointer text-gray-800 hover:text-red-700 font-semibold hover:bg-gray-100"
+                  onClick={() => { setActiveModal("forgetPasswword"); setMenuOpen(false); }}
+                >
+                  Forget Password
+                </div>
+              </>
             )}
-            <hr className="my-2" />
+            <hr className="my-2 border-gray-200" />
           </div>
 
           {/* Call Us Section */}
-          <div className="p-4 border-t bg-gray-100 flex items-center justify-center space-x-2">
+          <a
+            href="tel:+1234567890"
+            className="p-4 border-t border-gray-200 bg-gray-100 flex items-center justify-center space-x-2 transition-colors duration-200 "
+          >
             <FiPhone className="text-red-700" />
-            <span className="font-semibold text-gray-800">Call Us: +123-456-7890</span>
-          </div>
+            <span className="font-semibold text-gray-800 hover:text-red-700">Call Us: +123-456-7890</span>
+          </a>
         </>
       </div>
       {/* Backdrop for Mobile Sidebar */}

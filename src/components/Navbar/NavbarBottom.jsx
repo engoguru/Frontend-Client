@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { FiPhone } from 'react-icons/fi';
 
 const NavbarBottom = () => {
   const [openMenu, setOpenMenu] = useState(null);
@@ -92,9 +93,10 @@ const NavbarBottom = () => {
       <div className="flex-shrink-0 py-4">
         <a
           href="tel:1122334455"
-          className='text-red-700 font-bold whitespace-nowrap transition-transform duration-300 ease-in-out animate-pulse hover:scale-110 hover:animate-none'
+          className='flex items-center space-x-2 text-red-700 font-bold whitespace-nowrap transition-transform duration-300 ease-in-out animate-pulse hover:scale-110 hover:animate-none'
         >
-          Call Us - 1122334455
+          <FiPhone />
+          <span> +91 - 1122334455</span>
         </a>
       </div>
     </div>

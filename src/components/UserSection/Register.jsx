@@ -108,7 +108,7 @@ function Register({ isOpen, setIsOpen }) {
       <div className="bg-white p-6 rounded shadow-md w-full max-w-md relative">
         <button
           onClick={() => setIsOpen(false)}
-          className="text-red-500 absolute top-3 right-4 font-bold text-lg"
+          className="text-gray-500 absolute top-3 right-4 font-bold text-lg"
         >
           ✕
         </button>

@@ -152,6 +152,11 @@ const createUserSlice = createSlice({
   reducers: {
     clearUserInfo(state) {
       state.users = [];
+    },
+    logoutUser(state) {
+      state.meDetails = null;
+      state.token = null;
+      state.loggedInUser = null;
     }
   },
   extraReducers: (builder) => {
@@ -272,5 +277,5 @@ const createUserSlice = createSlice({
   }
 });
 
-export const { clearUserInfo } = createUserSlice.actions;
+export const { clearUserInfo, logoutUser } = createUserSlice.actions;
 export default createUserSlice.reducer;

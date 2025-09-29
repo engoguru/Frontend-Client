@@ -40,7 +40,8 @@
 
 // export default UserDashboard;
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import UserHeader from '../components/UserSection/UserHeader';
 import Address from '../components/UserSection/Address';
 import EditUser from '../components/UserSection/EditUser';
@@ -52,6 +53,16 @@ import FooterMain from '../components/Footer/FooterMain';
 
 function UserDashboard() {
   const [currentPage, setCurrentPage] = useState('Dashboard');
+  const location = useLocation();
+
+  useEffect(() => {
+    const section = location.state?.section;
+    if (section === 'orders') {
+      setCurrentPage('Order History');
+    } else {
+      setCurrentPage('Dashboard');
+    }
+  }, [location]);
 
   const renderPage = () => {
     switch (currentPage) {
