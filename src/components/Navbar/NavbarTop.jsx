@@ -34,6 +34,11 @@ export default function NavbarTop() {
   const [isAccount, setIsAcount] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
 
+  const { cartItems } = useSelector((state) => state.cart);
+
+  const items = cartItems?.cart?.items || [];
+  const cartHasItems = items.length > 0;
+  console.log(cartHasItems, "hoh")
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
   };
@@ -338,7 +343,7 @@ export default function NavbarTop() {
                 <>
                   <li
                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b border-gray-200 flex items-center gap-3 transition-colors duration-200"
-                    onClick={() => navigate("/cart")}
+                    onClick={() => navigate("/product/cart")}
                   >
                     <FiShoppingCart size={18} /> Cart
                   </li>
@@ -390,12 +395,25 @@ export default function NavbarTop() {
           </div>
 
           {/* Cart Icon + Text */}
-          <div
-            className="cursor-pointer flex items-center space-x-2 transition-all duration-300 ease-in-out"
-            onClick={() => navigate("/cart")}
-          >
-            <FiShoppingCart size={25} className="text-gray-700" />
-            <span className="text-black text-base">Cart</span>
+          <div className="relative group">
+            {!meDetails && (
+              <div className="absolute mt-5 -top-6 left-1/2 transform -translate-x-1/2 bg-red-700 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
+                Please log in
+              </div>
+            )}
+
+            <Link
+              to="/product/cart"
+              className="cursor-pointer flex items-center space-x-2 transition-all duration-300 ease-in-out relative"
+            >
+              <FiShoppingCart size={25} className="text-gray-700" />
+
+              {items?.length > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-100 text-red-700 text-xs font-bold rounded-full px-1.5 py-0.5">
+                  {items.length}
+                </span>
+              )}
+            </Link>
           </div>
         </div>
       </div>

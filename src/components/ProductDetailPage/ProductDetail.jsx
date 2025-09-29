@@ -145,8 +145,13 @@ function ProductDetail({ productData = {}, reletedProduct, feedback, onCommentAd
 
   // Robust handleSelect: works for mobile & desktop, handles undefineds, quantity, fallback
   // const {addCart,loading,error}=useSelector((state)=>state?.cart)
+ 
   let addCartLoading = false
   const handleSelect = (sizeArg = null) => {
+  if (!meDetails) {
+    toast.warning("Login first!");
+    return;
+  }
     addCartLoading = true
     const variants = Array.isArray(productData?.productVarient) ? productData.productVarient : [];
 
@@ -357,7 +362,7 @@ function ProductDetail({ productData = {}, reletedProduct, feedback, onCommentAd
           {/* Mobile & Tablet View: Quantity + Add to Cart */}
           <div className="mt-6 md:mt-8 flex items-center gap-3 lg:hidden">
             <div className="w-36 h-11 flex justify-between items-center border rounded overflow-hidden">
-              <button onClick={() => setQuantity((q) => Math.max(1, q - 1))} className="px-4 h-full text-lg text-gray-700 hover:bg-gray-100" aria-label="Decrease quantity">-</button>
+              <button onClick={() => setQuantity((q) => Math.max(q > 1 ? q - 1 : 1))} className="px-4 h-full text-lg text-gray-700 hover:bg-gray-100" aria-label="Decrease quantity">-</button>
               <div className="text-lg">{quantity}</div>
               <button onClick={() => setQuantity((q) => q + 1)} className="px-4 h-full text-lg text-gray-700 hover:bg-gray-100" aria-label="Increase quantity">+</button>
             </div>
@@ -366,7 +371,7 @@ function ProductDetail({ productData = {}, reletedProduct, feedback, onCommentAd
               onClick={() => handleSelect()} // mobile add to cart uses handleSelect
               className="w-36 h-11 flex items-center justify-center bg-red-600 text-white rounded hover:bg-red-700 font-semibold text-sm md:text-base"
             >
-              {addCartLoading === true ? <>Add to Cart</> : <>Wait...</>}
+            Add to Cart
             </button>
           </div>
 

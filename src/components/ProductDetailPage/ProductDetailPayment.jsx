@@ -5,9 +5,9 @@ import { createOrder } from '../../store/slice/orderSlice';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-function ProductDetailPayment({onAddToCart}) {
+function ProductDetailPayment({ onAddToCart }) {
   const dispatch = useDispatch();
-   const navigate = useNavigate();
+  const navigate = useNavigate();
   const [paymentMethod, setPaymentMethod] = useState('cod');
   const { meDetails } = useSelector((state) => state.user);
   const { cartItems } = useSelector((state) => state.cart);
@@ -23,10 +23,10 @@ function ProductDetailPayment({onAddToCart}) {
   useEffect(() => {
     dispatch(fetchCartByUserId());
   }, [dispatch]);
-    useEffect(() => {
+  useEffect(() => {
     dispatch(fetchCartByUserId());
-  }, [onAddToCart===true]);
-//  Mock payment simulation
+  }, [onAddToCart === true]);
+  //  Mock payment simulation
   const handleOnlinePayment = () => {
     toast.info("Redirecting to payment...");
     return new Promise((resolve) => {
@@ -82,7 +82,7 @@ function ProductDetailPayment({onAddToCart}) {
       // ✅ Refresh cart after clearing
       dispatch(fetchCartByUserId());
       // items null
-       // items=null
+      // items=null
       navigate('/user/order')
     } catch (error) {
       console.error(error);
@@ -129,15 +129,24 @@ function ProductDetailPayment({onAddToCart}) {
             {/* Quantity Controls */}
             <div className="flex items-center gap-2 mt-2">
               <button
-                onClick={() => dispatch(addItemToCart({ ...item, quantity: -1 }))}
+                onClick={async () => {
+                  await dispatch(addItemToCart({ ...item, quantity: -1 }));
+                  dispatch(fetchCartByUserId());
+                }}
                 className="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300"
                 disabled={item.quantity <= 1}
               >-</button>
               <span className="px-2">{item.quantity}</span>
               <button
-                onClick={() => dispatch(addItemToCart({ ...item, quantity: 1 }))}
+                onClick={async () => {
+                  await dispatch(addItemToCart({ ...item, quantity: 1 }));
+                  dispatch(fetchCartByUserId());
+                }}
                 className="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300"
-              >+</button>
+              >
+                +
+              </button>
+
             </div>
 
             {/* Remove Item */}
@@ -169,20 +178,28 @@ function ProductDetailPayment({onAddToCart}) {
         </div>
 
         {/* Pricing */}
-        <div className="space-y-2 pt-4 border-t border-gray-200">
-          <div className="flex justify-between">
-            <span>Subtotal</span>
-            <span>₹{subtotal}</span>
+        {cartHasItems && (
+          <div className="space-y-2 pt-4 border-t border-gray-200">
+
+            <div className="flex justify-between">
+              <span>Subtotal</span>
+              <span>₹{subtotal}</span>
+            </div>
+
+
+            <div className="flex justify-between" >
+              <span>Shipping</span>
+              <span>₹{shipping}</span>
+            </div>
+
+
+            <div className="border-t border-gray-200 pt-3 flex justify-between font-semibold text-base text-gray-900">
+              <span>Total</span>
+              <span>₹{total}</span>
+            </div>
+
           </div>
-          <div className="flex justify-between">
-            <span>Shipping</span>
-            <span>₹{shipping}</span>
-          </div>
-          <div className="border-t border-gray-200 pt-3 flex justify-between font-semibold text-base text-gray-900">
-            <span>Total</span>
-            <span>₹{total}</span>
-          </div>
-        </div>
+        )}
       </div>
 
       {/* 💳 Payment Method */}

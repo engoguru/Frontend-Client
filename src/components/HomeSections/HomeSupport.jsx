@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const supportItems = [
   {
@@ -15,6 +16,7 @@ const supportItems = [
     ),
   },
   {
+    url:"/contact",
     title: 'Support 24/7',
     description: 'Call us anytime',
     icon: (
@@ -26,6 +28,7 @@ const supportItems = [
     ),
   },
   {
+    url:"/contact",
     title: '100% Safety',
     description: 'Only secure payments',
     icon: (
@@ -39,6 +42,7 @@ const supportItems = [
     ),
   },
   {
+    url:"/contact",
     title: 'Hot Offers',
     description: 'Discounts up to 90%',
     icon: (
@@ -61,11 +65,13 @@ function HomeSupport() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {supportItems.map((item, index) => (
           <div key={index} className="flex items-center bg-white shadow-md rounded-lg p-5 gap-4 hover:shadow-lg transition-shadow">
+            <Link to={`${item?.url}`}>
             <div>{item.icon}</div>
             <div>
               <h3 className="text-md font-semibold text-gray-800">{item.title}</h3>
               <p className="text-sm text-gray-600">{item.description}</p>
             </div>
+            </Link>
           </div>
         ))}
       </div>

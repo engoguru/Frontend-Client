@@ -17,10 +17,14 @@ import { getMeDetails } from './store/slice/userSlice'
 import NotFound from './pages/NotFound'
 import UserAddress from './pages/UserAddress'
 import UserOrderHistory from './pages/UserOrderHistory'
+import ProductCartPage from './components/ProductDetailPage/ProductCartPage'
+import { fetchCartByUserId } from './store/slice/cartSlice'
 function App() {
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(getMeDetails());
+        // dispatch(fetchCartByUserId());
+        dispatch(fetchCartByUserId())
   }, []);
 
   return (
@@ -42,8 +46,9 @@ function App() {
           <Route path="/user" element={<UserDashboard />} />
               <Route path="/user/address" element={<UserAddress />} />
                  <Route path="/user/order" element={<UserOrderHistory />} />
+                 <Route path="/product/cart" element={<ProductCartPage />}/>
           {/* Add more protected routes here */}
-        </Route>0
+        </Route>
 
         <Route path='*' element={<NotFound />} />
       </Routes>
