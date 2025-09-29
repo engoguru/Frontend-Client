@@ -42,11 +42,11 @@ function ProductViewAll() {
 
   return (
 
-    <div className='pt-4'>
+    <div className='pt-4 text-center'>
       <NavbarTop />
       <NavbarBottom />
-      {/* Main content wrapper with top padding for navbars and consistent horizontal padding */}
-      <div className="w-full flex flex-col md:flex-row md:items-start px-6 pt-16 md:pt-28 pb-8 gap-6">
+      {/* Main content wrapper with dynamic top padding for navbars */}
+      <div className="w-full flex flex-col md:flex-row md:items-start px-6 pb-8 gap-6" style={{ paddingTop: 'calc(var(--navbar-height, 64px) + 1rem)' }}>
 
         {/* Sidebar for desktop */}
         <div className="hidden md:block md:w-1/5">
@@ -55,18 +55,19 @@ function ProductViewAll() {
 
         {/* Main Content */}
         <section className="w-full md:w-4/5">
-          {/* Mobile Controls Header */}
-          <div className="flex flex-col gap-y-4 sm:flex-row sm:justify-between items-center md:hidden mb-4">
-            <div className="w-auto">
+          {/* Mobile Controls Header - Stacks below 320px, row above */}
+          <div className="flex flex-col xxs:flex-row xxs:justify-between items-start gap-2 md:hidden mb-4 overflow-x-auto">
+            <div className="flex-shrink-0">
               <FilterViewAllMobile onFilterChange={handlefilterChange}
               />
             </div>
-            <div className="w-auto flex justify-end items-center gap-2">
+            <div className="flex-shrink-0 flex justify-end items-center gap-2">
               <label htmlFor="sort-mobile" className="text-gray-600 font-medium text-sm">Sort by:</label>
               <select
                 id="sort-mobile"
-                className="border rounded px-2 py-1.5 textocus:outline-none focus:ring-2 focus:ring-blue-500 text-center accent-blue-600"
-
+                value={sort}
+                onChange={(e) => setSort(e.target.value)}
+                className="border rounded px-1 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-center accent-blue-600 w-24 min-w-[6rem]"
               >
                 <option value="default">Default</option>
                 <option value="low-to-high">Price: Low to High</option>
@@ -82,7 +83,8 @@ function ProductViewAll() {
               <label htmlFor="sort" className="text-gray-600 font-medium">Sort by:</label>
               <select
                 id="sort"
-                className="border rounded px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-center accent-blue-600"
+                value={sort}
+                className="border rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-center sm:w-32 md:w-40"
                 onChange={(e) => setSort(e.target.value)}
               >
                 <option value="default">Default</option>
