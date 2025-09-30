@@ -107,7 +107,7 @@ function HomeFeature() {
           {/* The scrollbar-hide class is a common utility; you may need to add it to your CSS if you don't have a plugin for it. */}
           <div
             ref={scrollContainerRef}
-            className="flex overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-hide -mx-3"
+            className="flex overflow-x-auto overflow-y-hidden snap-x snap-mandatory scroll-smooth scrollbar-hide -mx-3"
             onTouchStart={onTouchStart}
             onTouchMove={onTouchMove}
             onTouchEnd={onTouchEnd}
