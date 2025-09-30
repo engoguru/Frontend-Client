@@ -27,10 +27,10 @@ function FooterMain() {
         <div>
           <h3 className="text-lg text-white  font-semibold mb-4">Account</h3>
           <ul className="space-y-2 text-sm">
-            <li><a href="/profile" className="hover:text-red-500">Profile</a></li>
-            <li><a href="/orders" className="hover:text-red-500">Order History</a></li>
-            <li><a href="/wishlist" className="hover:text-red-500">Wishlist</a></li>
-            <li><a href="/login" className="hover:text-red-500">Login / Register</a></li>
+            <li><a href="/user" className="hover:text-red-500">Profile</a></li>
+            <li><a href="/user" className="hover:text-red-500">Order History</a></li>
+            <li><a href="/cart" className="hover:text-red-500">Cart</a></li>
+            <li><a href="/privacy-policy" className="hover:text-red-500">Privacy Policy</a></li>
           </ul>
         </div>
 

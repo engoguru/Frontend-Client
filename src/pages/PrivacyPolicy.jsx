@@ -10,7 +10,8 @@ function PrivacyPolicy() {
       <NavbarBottom />
 
       {/* Hero Header */}
-      <section className="bg-gray-100 py-8" style={{ marginTop: 'var(--navbar-height, 64px)' }}>
+      {/* <section className="bg-gray-100 py-8" style={{ marginTop: 'var(--navbar-height, 64px)' }}> */}
+      <section className="bg-gray-100 py-8 pt-28 xsm:pt-15 md:pt-30">
         <div className="max-w-6xl mx-auto px-6 text-center">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-800">Privacy Policy</h1>
           <p className="text-gray-600 mt-4 text-sm md:text-base">

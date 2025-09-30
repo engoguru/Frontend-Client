@@ -1,3 +1,13 @@
+// import React, { use, useEffect, useState } from "react";
+// import FilterViewAllDesktop from "../components/FilterSection/FilterViewAllDesktop";
+// import NavbarTop from "../components/Navbar/NavbarTop";
+// import NavbarBottom from "../components/Navbar/NavbarBottom";
+// import FooterMain from "../components/Footer/FooterMain";
+// import FilterViewAllMobile from "../components/FilterSection/FilterViewAllMobile";
+// import { Link } from "react-router-dom";
+// import { useDispatch, useSelector } from "react-redux";
+// import { fetchProducts } from "../store/slice/productSlice";
+// import Pagination from "../components/Pagination/Pagination";
 
 import React, { use, useEffect, useState } from 'react';
 import FilterViewAllDesktop from '../components/FilterSection/FilterViewAllDesktop';
@@ -25,8 +35,9 @@ const navigate = useNavigate();
     = params.get('subCategory');
   const query = params.get('search')
 
-
-  const { products, totalCount, totalPages, loading, error } = useSelector((state) => state.product);
+  const { products, totalCount, totalPages, loading, error } = useSelector(
+    (state) => state.product
+  );
   const [currentPage, setCurrentPage] = useState(1);
 
 
@@ -36,10 +47,7 @@ const navigate = useNavigate();
     dispatch(fetchProducts({ page: currentPage, limit: 10, sort, productCategory: category, search: query ,subCategory:subCategory})); // Provide default pagination params
   }, [dispatch, currentPage, sort, category, query,subCategory]);
 
-
   const handlefilterChange = (filter) => {
-
-
     dispatch(fetchProducts({ page: 1, limit: 10, ...filter })); // Provide default pagination params
       // Update URL query parameters
   const searchParams = new URLSearchParams(location.search);
@@ -69,13 +77,12 @@ const navigate = useNavigate();
 
 
   return (
-
-    <div className='pt-4 text-center'>
+    <div className="pt-4 text-center">
       <NavbarTop />
       <NavbarBottom />
       {/* Main content wrapper with dynamic top padding for navbars */}
-      <div className="w-full flex flex-col md:flex-row md:items-start px-6 pb-8 gap-6" style={{ paddingTop: 'calc(var(--navbar-height, 64px) + 1rem)' }}>
-
+      {/* <div className="w-full flex flex-col md:flex-row md:items-start px-6 pb-8 gap-6" style={{ paddingTop: 'calc(var(--navbar-height, 64px) + 1rem)' }}> */}
+      <div className="w-full flex flex-col md:flex-row md:items-start px-6 pb-8 gap-6 pt-25 xsm:pt-15 md:pt-28">
         {/* Sidebar for desktop */}
         <div className="hidden md:block md:w-1/5">
           <FilterViewAllDesktop onFilterChange={handlefilterChange} />
@@ -86,11 +93,15 @@ const navigate = useNavigate();
           {/* Mobile Controls Header - Stacks below 320px, row above */}
           <div className="flex flex-col xxs:flex-row xxs:justify-between items-start gap-2 md:hidden mb-4 overflow-x-auto">
             <div className="flex-shrink-0">
-              <FilterViewAllMobile onFilterChange={handlefilterChange}
-              />
+              <FilterViewAllMobile onFilterChange={handlefilterChange} />
             </div>
             <div className="flex-shrink-0 flex justify-end items-center gap-2">
-              <label htmlFor="sort-mobile" className="text-gray-600 font-medium text-sm">Sort by:</label>
+              <label
+                htmlFor="sort-mobile"
+                className="text-gray-600 font-medium text-sm"
+              >
+                Sort by:
+              </label>
               <select
                 id="sort-mobile"
                 value={sort}
@@ -108,7 +119,9 @@ const navigate = useNavigate();
           <div className="hidden md:flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold text-gray-800">All</h2>
             <div className="flex items-center gap-2">
-              <label htmlFor="sort" className="text-gray-600 font-medium">Sort by:</label>
+              <label htmlFor="sort" className="text-gray-600 font-medium">
+                Sort by:
+              </label>
               <select
                 id="sort"
                 value={sort}
@@ -144,20 +157,35 @@ const navigate = useNavigate();
 
             {products?.map((product) => {
               const firstVariant = product.productVarient?.[0];
-              const firstImage = product.productImages?.[0]?.url || 'https://via.placeholder.com/300x200';
+              const firstImage =
+                product.productImages?.[0]?.url ||
+                "https://via.placeholder.com/300x200";
 
               return (
-                <div key={product._id} className="bg-white shadow-md rounded-lg p-4">
+                <div
+                  key={product._id}
+                  className="bg-white shadow-md rounded-lg p-4"
+                >
                   <img
                     src={firstImage}
                     alt={product?.productName}
                     className="w-full h-40 object-cover rounded-md"
                   />
-                  <h2 className="text-lg font-semibold mt-3">{product?.productName}{firstVariant?.color}</h2>
-                  <p className="text-gray-600 text-sm mt-1">{product?.productCategory}</p>
-                  <p className="text-gray-600 text-sm mt-1">{product?.productDescription}</p>
+                  <h2 className="text-lg font-semibold mt-3">
+                    {product?.productName}
+                    {firstVariant?.color}
+                  </h2>
+                  <p className="text-gray-600 text-sm mt-1">
+                    {product?.productCategory}
+                  </p>
+                  <p className="text-gray-600 text-sm mt-1">
+                    {product?.productDescription}
+                  </p>
                   <p className="text-red-600 font-bold mt-2">
-                    ₹{firstVariant?.price ? firstVariant.price.toFixed(2) : 'N/A'}
+                    ₹
+                    {firstVariant?.price
+                      ? firstVariant.price.toFixed(2)
+                      : "N/A"}
                   </p>
 
                   <Link to={`/productDetail/${product._id}`}>
@@ -168,7 +196,6 @@ const navigate = useNavigate();
                 </div>
               );
             })}
-
           </div>
           <div className="w-full flex justify-center mt-8">
             <Pagination
@@ -182,7 +209,6 @@ const navigate = useNavigate();
       </div>
 
       {/* Main Content */}
-
 
       <FooterMain />
     </div>

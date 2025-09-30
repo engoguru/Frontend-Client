@@ -33,7 +33,7 @@ const NavbarBottom = () => {
         { name: "Term-Conditions", path: "/TermCondition" }
       ]
     },
-    { label: "Account", subItems: ["Dashboard", "Profile", "Privacy", "Track"] },
+    // { label: "Account", subItems: ["Dashboard", "Profile", "Privacy", "Track"] },
   ];
 
   return (
