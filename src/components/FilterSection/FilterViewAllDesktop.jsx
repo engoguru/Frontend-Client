@@ -71,17 +71,17 @@ console.log(filters,"filters");
       <div className="space-y-6 text-sm text-gray-700">
 
         {/* Product Name */}
-        <div>
+        {/* <div>
           <label className="block mb-1 font-medium text-left">Product Name</label>
           <input
             type="text"
             onChange={(e) => updateFilter('productName', e.target.value)}
             className="w-full border border-gray-300 px-3 py-0.5 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-        </div>
+        </div> */}
 
         {/* Product Tags */}
-        <div>
+        {/* <div>
           <label className="block mb-1 font-medium text-left">Product Tags</label>
           <input
             type="text"
@@ -91,7 +91,7 @@ console.log(filters,"filters");
             }
             className="w-full border border-gray-300 px-3 py-0.5 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-        </div>
+        </div> */}
 
         {/* Category */}
         <div>

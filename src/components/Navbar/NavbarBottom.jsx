@@ -22,9 +22,9 @@ const NavbarBottom = () => {
   }, []);
 
   const menuItems = [
-    { label: "Apparel", subItems: ["Shirts", "Shorts", "Shoes"] },
-    { label: "Equipment", subItems: ["Balls", "Bats", "Gloves"] },
-    { label: "Nutrition", subItems: ["Protein", "Vitamins", "Snacks"] },
+    { label: "Apparel", subItems: ["Footwear", "Topwear", "Winterwear","Bottomwear","Innerwear/Loungewear","Gym-Wear"] },
+    { label: "Equipment", subItems: ["Balls", "Bats", "Gloves","Shoes","Bags","Leg-Gaurds","Protective Gear","Stumps"] },
+    { label: "Nutrition", subItems: ["Protein", "Weight Gainer", "Pre-Workout","Creatine","Vegan","Vitamin & Mineral Capsules"] },
     {
       label: "Pages", subItems: [
         { name: "About-US", path: "/about" },
@@ -76,7 +76,7 @@ const NavbarBottom = () => {
                         key={idx}
                         className="px-4 py-2 text-black hover:bg-gray-100 cursor-pointer text-sm border-b border-gray-200"
                       >
-                        <Link   to={`/productViewAll?category=${encodeURIComponent(subItem)}`} >
+                        <Link   to={`/productViewAll?subCategory=${encodeURIComponent(subItem)}`} >
                         {subItem}
                         </Link>
                         

@@ -5,7 +5,7 @@ import NavbarTop from '../components/Navbar/NavbarTop';
 import NavbarBottom from '../components/Navbar/NavbarBottom';
 import FooterMain from '../components/Footer/FooterMain';
 import FilterViewAllMobile from '../components/FilterSection/FilterViewAllMobile';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProducts } from '../store/slice/productSlice';
 import Pagination from '../components/Pagination/Pagination';
@@ -16,24 +16,52 @@ function ProductViewAll() {
   const dispatch = useDispatch();
   const [sort, setSort] = useState("default");
   const location = useLocation();
+  // Inside your component:
+const navigate = useNavigate();
+
   const params = new URLSearchParams(location.search);
   const category = params.get('category');
+   const subCategory
+    = params.get('subCategory');
   const query = params.get('search')
 
 
   const { products, totalCount, totalPages, loading, error } = useSelector((state) => state.product);
   const [currentPage, setCurrentPage] = useState(1);
 
+
+ 
   useEffect(() => {
 
-    dispatch(fetchProducts({ page: currentPage, limit: 10, sort, productCategory: category, search: query })); // Provide default pagination params
-  }, [dispatch, currentPage, sort, category, query]);
+    dispatch(fetchProducts({ page: currentPage, limit: 10, sort, productCategory: category, search: query ,subCategory:subCategory})); // Provide default pagination params
+  }, [dispatch, currentPage, sort, category, query,subCategory]);
 
 
   const handlefilterChange = (filter) => {
 
 
     dispatch(fetchProducts({ page: 1, limit: 10, ...filter })); // Provide default pagination params
+      // Update URL query parameters
+  const searchParams = new URLSearchParams(location.search);
+
+  // Set or update each filter key
+  Object.entries(filter).forEach(([key, value]) => {
+    if (value === null || value === undefined || value === '') {
+      searchParams.delete(key);
+    } else {
+      searchParams.set(key, value);
+    }
+  });
+
+  // Always reset page to 1 when filter changes
+  searchParams.set('page', '1');
+  searchParams.set('limit', '10');
+
+  // Push updated URL
+  navigate({
+    pathname: location.pathname,
+    search: `?${searchParams.toString()}`
+  });
 
   }
 

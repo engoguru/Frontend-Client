@@ -29,6 +29,7 @@ function ProductDetail({ productData = {}, reletedProduct, feedback, onCommentAd
 
   const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedSize, setSelectedSize] = useState(null);
+  console.log(selectedSize,"sddd")
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('Description');
   const thumbnailContainerRef = useRef(null);
@@ -187,7 +188,7 @@ function ProductDetail({ productData = {}, reletedProduct, feedback, onCommentAd
       color: finalColor,             // always present as array
       flavor: selectedVariant?.flavor ?? productData?.flavor ?? '',
       price: finalPrice,             // always present (fallback 0)
-      // originalPrice: intentionally removed per your request
+      // originalPrice: intentionally removed 
       discount: selectedVariant?.discount ?? productData?.discount ?? null,
       quantity: quantity ?? 1,
 
@@ -309,21 +310,31 @@ function ProductDetail({ productData = {}, reletedProduct, feedback, onCommentAd
             </div>
           )}
 
-          {productData?.productCategory === "Nutrition" && (
-            <div>
-              <h4 className="font-semibold mb-2 text-gray-800 md:text-sm lg:text-md">Flavors</h4>
-              <div className="flex gap-3">
-                {Array.isArray(productData?.productVarient) ? productData.productVarient.map((variant, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelected_Nutrition_flavor(index)}
-                    className={`border px-3 py-1 rounded text-sm hover:border-red-600 
-              ${selected_Nutrition_flavor === index ? 'bg-red-500 text-white border-red-600' : ''}`}>
-                    {variant?.flavor ?? '—'}</button>
-                )) : <span className="text-sm text-gray-500">No flavors</span>}
-              </div>
-            </div>
-          )}
+    {productData?.productCategory === "Nutrition" && (
+  <div>
+    <h4 className="font-semibold mb-2 text-gray-800 md:text-sm lg:text-md">Flavors</h4>
+    <div className="flex gap-3">
+      {(Array.isArray(
+          productData?.productVarient?.find((el) => el.size === selectedSize)?.flavor
+        )
+          ? productData.productVarient.find((el) => el.size === selectedSize)?.flavor
+          : productData?.productVarient?.find((el) => el.size === selectedSize)?.flavor
+          ? [productData?.productVarient?.find((el) => el.size === selectedSize)?.flavor]
+          : []
+      ).map((flavor, index) => (
+        <button
+          key={index}
+          onClick={() => setSelected_Nutrition_flavor(index)}
+          className={`border px-3 py-1 rounded text-sm hover:border-red-600 
+          ${selected_Nutrition_flavor === index ? 'bg-red-500 text-white border-red-600' : ''}`}
+        >
+          {flavor ?? '—'}
+        </button>
+      ))}
+    </div>
+  </div>
+)}
+
 
           {productData?.productCategory === "Equipment" && (
             <div>
