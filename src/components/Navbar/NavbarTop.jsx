@@ -14,6 +14,7 @@ import {
   FiShoppingBag,
   FiPhone,
 } from "react-icons/fi";
+import { MdOutlineHistory, MdTrendingUp } from "react-icons/md";
 import { PiUserCircle } from "react-icons/pi";
 import { logoutUser } from "../../store/slice/userSlice";
 
@@ -35,6 +36,8 @@ export default function NavbarTop() {
   const [isAccount, setIsAcount] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
+  const [recentSearches, setRecentSearches] = useState([]);
 
   const { cartItems } = useSelector((state) => state.cart);
 
@@ -43,7 +46,27 @@ export default function NavbarTop() {
   console.log(cartHasItems, "hoh")
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
+    // For a real-time search suggestion API, you would trigger a fetch here.
+    // For now, we'll just show the static suggestions.
   };
+
+  // Define fallback suggestions from menu items and trending keywords
+  const fallbackSuggestions = [
+    "Protein", "Footwear", "Bats", "Creatine", "Gym-Wear", "Bags", "Pre-Workout"
+  ];
+
+  // Effect to load recent searches for logged-in users from localStorage
+  useEffect(() => {
+    if (meDetails) {
+      const storedSearches = localStorage.getItem(`recentSearches_${meDetails._id}`);
+      if (storedSearches) {
+        setRecentSearches(JSON.parse(storedSearches));
+      }
+    } else {
+      // Clear recent searches if user logs out
+      setRecentSearches([]);
+    }
+  }, [meDetails]);
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -51,22 +74,56 @@ export default function NavbarTop() {
     }
   };
 
-  const handleSearchSubmit = () => {
+  const handleSearchSubmit = (query) => {
+    const finalQuery = typeof query === 'string' ? query : searchQuery;
     const category = encodeURIComponent(selectedCategory);
-    const search = encodeURIComponent(searchQuery.trim());
-    if (searchQuery.trim()) {
+    const search = encodeURIComponent(finalQuery.trim());
+    if (finalQuery.trim()) {
+      // For logged-in users, save the search term
+      if (meDetails) {
+        const updatedSearches = [finalQuery.trim(), ...recentSearches.filter(s => s !== finalQuery.trim())].slice(0, 8); // Keep last 8
+        setRecentSearches(updatedSearches);
+        localStorage.setItem(`recentSearches_${meDetails._id}`, JSON.stringify(updatedSearches));
+      }
       navigate(`/productViewAll?category=${category}&search=${search}`);
     } else {
       navigate(`/productViewAll?category=${category}`);
     }
+    setShowSuggestions(false); // Hide suggestions after search
   };
 
   const handleFocus = () => {
-    if (searchQuery.length === 0) {
-      setSuggestions(recentSearches);
+    let finalSuggestions = [];
+    if (meDetails && recentSearches.length > 0) {
+      // Start with recent searches, marking them as 'recent'
+      finalSuggestions = recentSearches.map(s => ({ value: s, type: 'recent' }));
     }
+
+    // Filter fallback suggestions to exclude any already in recent searches
+    const remainingFallback = fallbackSuggestions
+      .filter(s => !recentSearches.includes(s))
+      .map(s => ({ value: s, type: 'popular' })); // Mark them as 'popular'
+
+    // Combine and slice to a total of 8
+    finalSuggestions = [...finalSuggestions, ...remainingFallback].slice(0, 8);
+
+    setSuggestions(finalSuggestions);
     setShowSuggestions(true);
   };
+
+  // Effect to handle clicks outside the search bars to close suggestions
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        desktopSearchRef.current && !desktopSearchRef.current.contains(event.target) &&
+        mobileSearchRef.current && !mobileSearchRef.current.contains(event.target)
+      ) {
+        setShowSuggestions(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleRemoveSuggestion = (e, suggestionToRemove) => {
     e.stopPropagation();
@@ -74,9 +131,17 @@ export default function NavbarTop() {
       (s) => s !== suggestionToRemove
     );
     setRecentSearches(updatedRecent);
-    if (searchQuery.length === 0) {
+    localStorage.setItem(`recentSearches_${meDetails._id}`, JSON.stringify(updatedRecent));
+    // If the suggestions being displayed are the recent searches, update them in real-time
+    if (meDetails) {
       setSuggestions(updatedRecent);
     }
+  };
+
+  const handleSuggestionClick = (suggestion) => {
+    setSearchQuery(suggestion);
+    setShowSuggestions(false);
+    handleSearchSubmit(suggestion); // Pass suggestion directly to avoid state lag
   };
 
   const AccountDropdown = () => {
@@ -134,26 +199,37 @@ export default function NavbarTop() {
     {
       label: "Apparel",
       subItems: [
-        { name: "Shirts", path: "/productViewAll?category=shirts" },
-        { name: "Shorts", path: "/productViewAll?category=shorts" },
-        { name: "Shoes", path: "/productViewAll?category=shoes" },
-      ],
+        { name: "Footwear", path: "/productViewAll?subCategory=Footwear" },
+        { name: "Topwear", path: "/productViewAll?subCategory=Topwear" },
+        { name: "Winterwear", path: "/productViewAll?subCategory=Winterwear" },
+        { name: "Bottomwear", path: "/productViewAll?subCategory=Bottomwear" },
+        { name: "Innerwear/Loungewear", path: "/productViewAll?subCategory=Innerwear/Loungewear" },
+        { name: "Gym-Wear", path: "/productViewAll?subCategory=Gym-Wear" },
+      ]
     },
     {
       label: "Equipment",
       subItems: [
-        { name: "Balls", path: "/productViewAll?category=balls" },
-        { name: "Bats", path: "/productViewAll?category=bats" },
-        { name: "Gloves", path: "/productViewAll?category=gloves" },
-      ],
+        { name: "Balls", path: "/productViewAll?subCategory=Balls" },
+        { name: "Bats", path: "/productViewAll?subCategory=Bats" },
+        { name: "Gloves", path: "/productViewAll?subCategory=Gloves" },
+        { name: "Shoes", path: "/productViewAll?subCategory=Shoes" },
+        { name: "Bags", path: "/productViewAll?subCategory=Bags" },
+        { name: "Leg-Gaurds", path: "/productViewAll?subCategory=Leg-Gaurds" },
+        { name: "Protective Gear", path: "/productViewAll?subCategory=Protective Gear" },
+        { name: "Stumps", path: "/productViewAll?subCategory=Stumps" },
+      ]
     },
     {
       label: "Nutrition",
       subItems: [
-        { name: "Protein", path: "/productViewAll?category=protein" },
-        { name: "Vitamins", path: "/productViewAll?category=vitamins" },
-        { name: "Snacks", path: "/productViewAll?category=snacks" },
-      ],
+        { name: "Protein", path: "/productViewAll?subCategory=Protein" },
+        { name: "Weight Gainer", path: "/productViewAll?subCategory=Weight Gainer" },
+        { name: "Pre-Workout", path: "/productViewAll?subCategory=Pre-Workout" },
+        { name: "Creatine", path: "/productViewAll?subCategory=Creatine" },
+        { name: "Vegan", path: "/productViewAll?subCategory=Vegan" },
+        { name: "Vitamin & Mineral Capsules", path: "/productViewAll?subCategory=Vitamin & Mineral Capsules" },
+      ]
     },
     {
       label: "Pages",
@@ -189,18 +265,24 @@ export default function NavbarTop() {
 
         {/* Mobile Search (moves below on <425px screens) */}
         <div className="w-full xsm:w-auto xsm:flex-1 order-3 xsm:order-2 mt-2 xsm:mt-0 flex justify-center px-2 md:hidden">
-          <div ref={mobileSearchRef} className="relative w-full max-w-sm bg-[#d5baba3b] rounded-full border border-transparent focus-within:border-red-500 transition-colors duration-300">
+          <div ref={mobileSearchRef} className="relative w-full max-w-sm">
+            <div
+              className={`relative flex items-center w-full bg-white border border-gray-200 focus-within:border-gray-300 transition-colors duration-300 ${
+                showSuggestions && suggestions.length > 0 ? 'rounded-t-2xl' : 'rounded-full'
+              }`}
+            >
             <input
               type="text"
               placeholder="Search..."
               className="w-full px-3 py-2 bg-transparent border-none placeholder:text-black placeholder:opacity-50 text-sm focus:outline-none pr-8"
               value={searchQuery}
               onChange={handleSearchChange}
+              onFocus={handleFocus}
               onKeyDown={handleKeyDown}
             />
             <button
               onClick={handleSearchSubmit}
-              className="absolute right-1.5 top-1/2 transform -translate-y-1/2 p-1.5 rounded-full text-gray-700 hover:bg-red-600 hover:text-white transition-colors duration-300"
+              className="absolute right-1.5 top-1/2 transform -translate-y-1/2 p-1.5 rounded-full text-gray-700 hover:bg-red-600 hover:text-white transition-colors duration-300 cursor-pointer"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -217,6 +299,62 @@ export default function NavbarTop() {
                 />
               </svg>
             </button>
+            </div>
+            {/* Mobile Search Suggestions */}
+            {showSuggestions && suggestions.length > 0 && (
+              <div className="absolute top-full w-full bg-white rounded-b-2xl shadow-lg border-x border-b border-gray-300 z-30">
+                {/* Recent Searches Section */}
+                {suggestions.some(s => s.type === 'recent') && (
+                  <>
+                    <div className="p-2 border-b border-gray-200">
+                      <h3 className="text-xs font-semibold text-gray-500 flex items-center gap-2">
+                        <MdOutlineHistory /> Recent Searches
+                      </h3>
+                    </div>
+                    <ul>
+                      {suggestions.filter(s => s.type === 'recent').map((suggestion, index) => (
+                        <li
+                          key={`recent-${index}`}
+                          className="group px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm text-gray-800 flex justify-between items-center"
+                          onClick={() => handleSuggestionClick(suggestion.value)}
+                        >
+                          <span>{suggestion.value}</span>
+                          <button
+                            onClick={(e) => handleRemoveSuggestion(e, suggestion.value)}
+                            className="opacity-0 group-hover:opacity-100 text-black hover:text-gray-900 text-xs w-5 h-5 flex items-center justify-center rounded-full hover:bg-gray-200 transition-all duration-200"
+                            title="Remove"
+                          >
+                            ✕
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+
+                {/* Popular Suggestions Section */}
+                {suggestions.some(s => s.type === 'popular') && (
+                  <>
+                    <div className="p-2 border-b border-gray-200">
+                      <h3 className="text-xs font-semibold text-gray-500 flex items-center gap-2">
+                        <MdTrendingUp /> Popular Suggestions
+                      </h3>
+                    </div>
+                    <ul>
+                      {suggestions.filter(s => s.type === 'popular').map((suggestion, index) => (
+                        <li
+                          key={`popular-${index}`}
+                          className="group px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm text-gray-800 flex justify-between items-center"
+                          onClick={() => handleSuggestionClick(suggestion.value)}
+                        >
+                          <span>{suggestion.value}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+              </div>
+            )}
           </div>
 
         </div>
@@ -275,10 +413,14 @@ export default function NavbarTop() {
         {/* Desktop Search */}
         <div className="hidden md:flex flex-1 items-center justify-center px-6">
           <div
-            ref={desktopSearchRef}
-            className="flex items-center w-full max-w-xl bg-[#d5baba3b] rounded-full border border-transparent focus-within:border-red-500 transition-colors duration-300"
+            ref={desktopSearchRef} // This ref now points to the outer wrapper
+            className="relative w-full max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl"
           >
-            <div className="relative flex items-center">
+            <div // This div is the visible search bar area
+              className={`relative flex items-stretch w-full bg-white border border-gray-200 focus-within:border-gray-300 transition-colors duration-300 ${
+                showSuggestions && suggestions.length > 0 ? 'rounded-t-2xl' : 'rounded-full'
+              }`}
+            >
               <select
                 value={selectedCategory}
                 onFocus={() => setIsCategoryDropdownOpen(true)}
@@ -287,48 +429,104 @@ export default function NavbarTop() {
                   setSelectedCategory(e.target.value);
                   setIsCategoryDropdownOpen(false); // Rotate icon back on selection
                 }}
-                className="bg-[#ffd226] text-black font-semibold text-sm pl-4 pr-8 py-2 rounded-l-full focus:outline-none appearance-none cursor-pointer"
+                className={`bg-[#ffd226] text-black font-semibold text-sm px-4 py-2 focus:outline-none appearance-none cursor-pointer ${
+                  showSuggestions && suggestions.length > 0 ? 'rounded-tl-2xl' : 'rounded-l-full'
+                }`}
               >
                 <option value="">All</option>
                 <option value="Apparel">Apparel</option>
                 <option value="Equipment">Equipment</option>
                 <option value="Nutrition">Nutrition</option>
               </select>
-              <FiChevronDown
-                className={`absolute right-2.5 top-1/2 -translate-y-1/2 text-black pointer-events-none transition-transform duration-300 ${isCategoryDropdownOpen ? "rotate-180" : "rotate-0"}`}
-              />
+
+              <div className="relative flex-1">
+                <input
+                  type="text"
+                  placeholder="Search for products, brands and more..."
+                  className="w-full px-4 py-2 bg-transparent border-none placeholder:text-black placeholder:opacity-50 text-sm focus:outline-none pr-10"
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  onKeyDown={handleKeyDown}
+                  onFocus={handleFocus}
+                />
+                <button
+                  onClick={handleSearchSubmit}
+                  className="absolute right-1.5 top-1/2 transform -translate-y-1/2 p-1.5 rounded-full text-gray-700 hover:bg-red-600 hover:text-white transition-colors duration-300 cursor-pointer"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"
+                    />
+                  </svg>
+                </button>
+              </div>
             </div>
 
-            <div className="relative flex-1">
-              <input
-                type="text"
-                placeholder="Enter Your Search Keywords"
-                className="w-full px-4 py-2 bg-transparent border-none placeholder:text-black placeholder:opacity-50 text-sm focus:outline-none pr-10"
-                value={searchQuery}
-                onChange={handleSearchChange}
-                onKeyDown={handleKeyDown}
-                onFocus={handleFocus}
-              />
-              <button
-                onClick={handleSearchSubmit}
-                className="absolute right-1.5 top-1/2 transform -translate-y-1/2 p-1.5 rounded-full text-gray-700 hover:bg-red-600 hover:text-white transition-colors duration-300"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"
-                  />
-                </svg>
-              </button>
-            </div>
+            {/* Search Suggestions Dropdown */}
+            {showSuggestions && suggestions.length > 0 && (
+              <div className="absolute top-full w-full bg-white rounded-b-2xl shadow-lg border-x border-b border-gray-300 z-30">
+                {/* Recent Searches Section */}
+                {suggestions.some(s => s.type === 'recent') && (
+                  <>
+                    <div className="p-2 border-b border-gray-200">
+                      <h3 className="text-xs font-semibold text-gray-500 flex items-center gap-2">
+                        <MdOutlineHistory /> Recent Searches
+                      </h3>
+                    </div>
+                    <ul>
+                      {suggestions.filter(s => s.type === 'recent').map((suggestion, index) => (
+                        <li
+                          key={`recent-desktop-${index}`}
+                          className="group px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm text-gray-800 flex justify-between items-center"
+                          onClick={() => handleSuggestionClick(suggestion.value)}
+                        >
+                          <span>{suggestion.value}</span>
+                          <button
+                            onClick={(e) => handleRemoveSuggestion(e, suggestion.value)}
+                            className="opacity-0 group-hover:opacity-100 text-black hover:text-gray-900 text-xs w-5 h-5 flex items-center justify-center rounded-full hover:bg-gray-200 transition-all duration-200"
+                            title="Remove"
+                          >
+                            ✕
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+
+                {/* Popular Suggestions Section */}
+                {suggestions.some(s => s.type === 'popular') && (
+                  <>
+                    <div className="p-2 border-b border-gray-200">
+                      <h3 className="text-xs font-semibold text-gray-500 flex items-center gap-2">
+                        <MdTrendingUp /> Popular Suggestions
+                      </h3>
+                    </div>
+                    <ul>
+                      {suggestions.filter(s => s.type === 'popular').map((suggestion, index) => (
+                        <li
+                          key={`popular-desktop-${index}`}
+                          className="group px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm text-gray-800 flex justify-between items-center"
+                          onClick={() => handleSuggestionClick(suggestion.value)}
+                        >
+                          <span>{suggestion.value}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+              </div>
+            )}
+
           </div>
         </div>
 
@@ -347,12 +545,7 @@ export default function NavbarTop() {
               setIsAcount(false);
               setIsHovering(false);
             }}
-            className={`relative pb-2 flex items-center transition-all duration-300 ease-in-out rounded-md px-2 py-1 ${isHovering
-              ? meDetails
-                ? "bg-gray-100 border border-gray-300"
-                : "bg-blue-600 border border-blue-600"
-              : "bg-transparent border border-transparent"
-              }`}
+            className="relative py-2" // Added padding to create a hoverable area
           >
             <div
               onClick={() => {
@@ -361,37 +554,45 @@ export default function NavbarTop() {
               }}
               className="cursor-pointer flex items-center space-x-2 transition-all duration-300 ease-in-out"
             >
+              <div className={`flex items-center transition-all duration-300 ease-in-out rounded-md px-2 py-1 ${
+                isHovering 
+                  ? (meDetails ? "bg-gray-100" : "bg-blue-600") 
+                  : "bg-transparent"
+              }`}>
+
               <PiUserCircle
                 size={25}
-                className={`transition-colors duration-300 ${isHovering && !meDetails ? "text-white" : "text-gray-700"
-                  }`}
+                className={`transition-colors duration-300 ${isHovering && !meDetails ? "text-white" : "text-gray-700"}`}
               />
               <p
-                className={`text-base transition-colors duration-300 ${isHovering && !meDetails ? "text-white" : "text-black"
-                  }`}
+                className={`text-base transition-colors duration-300 ${isHovering && !meDetails ? "text-white" : "text-black"}`}
               >
                 {meDetails?.name ? meDetails.name.split(" ")[0] : "Login"}
               </p>
 
               <FiChevronDown
                 size={15}
-                className={`transition-transform duration-300 transform ${isHovering ? "rotate-180" : "rotate-0"
-                  } ${isHovering && !meDetails ? "text-white" : "text-gray-700"
-                  }`}
+                className={`transition-transform duration-300 transform ${
+                  isHovering ? "rotate-180" : "rotate-0"
+                } ${isHovering && !meDetails ? "text-white" : "text-gray-700"}`}
               />
+              </div>
             </div>
 
             {/* Account Dropdown */}
             <ul
-              className={`absolute top-full left-0 bg-white shadow-lg rounded-md w-48 z-50 border border-gray-200 transform transition-all duration-300 ease-in-out ${isAccount
-                ? "opacity-100 scale-100 visible"
-                : "opacity-0 scale-95 invisible"
+              className={`absolute top-full left-1/2 -translate-x-1/2 bg-white shadow-lg rounded-md w-48 z-50 border border-gray-200 transform transition-all duration-300 ease-in-out ${isAccount
+                ? "opacity-100 scale-100 visible translate-y-0"
+                : "opacity-0 scale-95 invisible -translate-y-2 pointer-events-none"
                 }`}
             >
               {/* My Profile always visible */}
               <li
                 className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b border-gray-200 flex items-center gap-3 transition-colors duration-200"
-                onClick={() => navigate("/user", { state: { section: "dashboard" } })}
+                onClick={() => {
+                  navigate("/user", { state: { section: "dashboard" } });
+                  window.scrollTo(0, 0);
+                }}
               >
                 <PiUserCircle size={18} /> My Profile
               </li>
@@ -401,17 +602,26 @@ export default function NavbarTop() {
                 <>
                   <li
                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b border-gray-200 flex items-center gap-3 transition-colors duration-200"
-                    onClick={() => navigate("/product/cart")}
+                    onClick={() => {
+                      navigate("/product/cart");
+                      window.scrollTo(0, 0);
+                    }}
                   >
                     <FiShoppingCart size={18} /> Cart
                   </li>
                   <li
                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b border-gray-200 flex items-center gap-3 transition-colors duration-200"
-                    onClick={() => navigate("/user", { state: { section: "orders" } })}
+                    onClick={() => {
+                      navigate("/user", { state: { section: "orders" } });
+                      window.scrollTo(0, 0);
+                    }}
                   >
                     <FiShoppingBag size={18} /> Orders
                   </li>
-                  <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b border-gray-200 flex items-center gap-3 transition-colors duration-200" onClick={logoutHandler}>
+                  <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b border-gray-200 flex items-center gap-3 transition-colors duration-200" onClick={() => {
+                    logoutHandler();
+                    window.scrollTo(0, 0);
+                  }}>
                     <FiLogOut size={18} /> Logout
                   </li>
                 </>
@@ -431,13 +641,19 @@ export default function NavbarTop() {
                   </li>
                   <li
                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b border-gray-200 flex items-center gap-3 transition-colors duration-200"
-                    onClick={() => navigate("/cart")}
+                    onClick={() => {
+                      navigate("/cart");
+                      window.scrollTo(0, 0);
+                    }}
                   >
                     <FiShoppingCart size={18} /> Cart
                   </li>
                   <li
                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b border-gray-200 flex items-center gap-3 transition-colors duration-200"
-                    onClick={() => navigate("/user", { state: { section: "orders" } })}
+                    onClick={() => {
+                      navigate("/user", { state: { section: "orders" } });
+                      window.scrollTo(0, 0);
+                    }}
                   >
                     <FiShoppingBag size={18} /> Orders
                   </li>

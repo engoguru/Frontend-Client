@@ -57,14 +57,20 @@ const NavbarBottom = () => {
               {item.label}
             </p>
 
-            {openMenu === item.label && (
-              <div className="absolute top-full -left-10 mt-2 w-48 bg-white border border-gray-200 shadow-lg rounded-md z-20">
+            <div
+              className={`absolute top-full -left-10 mt-2 w-48 bg-white border border-gray-200 shadow-lg rounded-md z-20 transform transition-all duration-300 ease-in-out ${
+                openMenu === item.label
+                  ? 'opacity-100 scale-100 visible translate-y-0'
+                  : 'opacity-0 scale-95 invisible -translate-y-2 pointer-events-none'
+              }`}
+            >
                 <ul>
                   {item.label === "Pages"
                     ? item.subItems.map((subItem, idx) => (
                       <li key={idx}>
                         <Link
                           to={subItem.path}
+                          onClick={() => window.scrollTo(0, 0)}
                           className="block px-4 py-2 text-black hover:bg-gray-100 cursor-pointer text-sm border-b border-gray-200"
                         >
                           {subItem.name}
@@ -76,7 +82,7 @@ const NavbarBottom = () => {
                         key={idx}
                         className="px-4 py-2 text-black hover:bg-gray-100 cursor-pointer text-sm border-b border-gray-200"
                       >
-                        <Link   to={`/productViewAll?subCategory=${encodeURIComponent(subItem)}`} >
+                        <Link to={`/productViewAll?subCategory=${encodeURIComponent(subItem)}`} onClick={() => window.scrollTo(0, 0)}>
                         {subItem}
                         </Link>
                         
@@ -84,8 +90,7 @@ const NavbarBottom = () => {
                     ))
                   }
                 </ul>
-              </div>
-            )}
+            </div>
           </div>
         ))}
       </div>
