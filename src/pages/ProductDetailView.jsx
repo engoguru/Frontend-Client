@@ -58,7 +58,7 @@ useEffect(() => {
       <NavbarTop />
       <NavbarBottom />
 
-      <main className="pt-16 md:pt-28">
+      <main className="pt-28 sm:pt-20 md:pt-28">
         {/* Page container with max-width and centering */}
         <div className="max-w-[1200px] mx-auto">
           {/* Product Detail and Payment Card */}

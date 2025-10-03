@@ -252,7 +252,7 @@ export default function NavbarTop() {
 
   return (
     <nav ref={navbarRef} className="w-full py-2 bg-white fixed top-0 left-0 right-0 z-20 border-b border-red-700">
-      <div className="flex flex-wrap xsm:flex-nowrap justify-between items-center px-4 md:px-8">
+      <div className="flex flex-wrap sm:flex-nowrap justify-between items-center px-4 md:px-8">
         {/* Logo */}
         <Link
           to="/"
@@ -264,8 +264,8 @@ export default function NavbarTop() {
         </Link>
 
         {/* Mobile Search (moves below on <425px screens) */}
-        <div className="w-full xsm:w-auto xsm:flex-1 order-3 xsm:order-2 mt-2 xsm:mt-0 flex justify-center px-2 md:hidden">
-          <div ref={mobileSearchRef} className="relative w-full max-w-sm">
+        <div className="w-full sm:w-auto sm:flex-1 order-3 sm:order-2 mt-2 sm:mt-0 flex justify-center px-2 md:hidden">
+          <div ref={mobileSearchRef} className="relative w-full max-w-md">
             <div
               className={`relative flex items-center w-full bg-white border border-gray-200 focus-within:border-gray-300 transition-colors duration-300 ${
                 showSuggestions && suggestions.length > 0 ? 'rounded-t-2xl' : 'rounded-full'
@@ -273,8 +273,8 @@ export default function NavbarTop() {
             >
             <input
               type="text"
-              placeholder="Search..."
-              className="w-full px-3 py-2 bg-transparent border-none placeholder:text-black placeholder:opacity-50 text-sm focus:outline-none pr-8"
+              placeholder="Search for products, brands and more"
+              className="w-full px-3 py-2.5 bg-transparent border-none placeholder:text-black placeholder:opacity-50 text-sm sm:text-base focus:outline-none pr-8"
               value={searchQuery}
               onChange={handleSearchChange}
               onFocus={handleFocus}
@@ -307,21 +307,21 @@ export default function NavbarTop() {
                 {suggestions.some(s => s.type === 'recent') && (
                   <>
                     <div className="p-2 border-b border-gray-200">
-                      <h3 className="text-xs font-semibold text-gray-500 flex items-center gap-2">
-                        <MdOutlineHistory /> Recent Searches
+                      <h3 className="text-xs sm:text-sm font-semibold text-gray-500 flex items-center gap-2">
+                        <MdOutlineHistory className="text-base sm:text-lg" /> Recent Searches
                       </h3>
                     </div>
                     <ul>
                       {suggestions.filter(s => s.type === 'recent').map((suggestion, index) => (
                         <li
                           key={`recent-${index}`}
-                          className="group px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm text-gray-800 flex justify-between items-center"
+                          className="group px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm sm:text-base text-gray-800 flex justify-between items-center"
                           onClick={() => handleSuggestionClick(suggestion.value)}
                         >
                           <span>{suggestion.value}</span>
                           <button
                             onClick={(e) => handleRemoveSuggestion(e, suggestion.value)}
-                            className="opacity-0 group-hover:opacity-100 text-black hover:text-gray-900 text-xs w-5 h-5 flex items-center justify-center rounded-full hover:bg-gray-200 transition-all duration-200"
+                            className="opacity-0 group-hover:opacity-100 text-black hover:text-gray-900 text-xs sm:text-sm w-5 h-5 flex items-center justify-center rounded-full hover:bg-gray-200 transition-all duration-200"
                             title="Remove"
                           >
                             ✕
@@ -336,15 +336,15 @@ export default function NavbarTop() {
                 {suggestions.some(s => s.type === 'popular') && (
                   <>
                     <div className="p-2 border-b border-gray-200">
-                      <h3 className="text-xs font-semibold text-gray-500 flex items-center gap-2">
-                        <MdTrendingUp /> Popular Suggestions
+                      <h3 className="text-xs sm:text-sm font-semibold text-gray-500 flex items-center gap-2">
+                        <MdTrendingUp className="text-base sm:text-lg" /> Popular Suggestions
                       </h3>
                     </div>
                     <ul>
                       {suggestions.filter(s => s.type === 'popular').map((suggestion, index) => (
                         <li
                           key={`popular-${index}`}
-                          className="group px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm text-gray-800 flex justify-between items-center"
+                          className="group px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm sm:text-base text-gray-800 flex justify-between items-center"
                           onClick={() => handleSuggestionClick(suggestion.value)}
                         >
                           <span>{suggestion.value}</span>
@@ -359,7 +359,7 @@ export default function NavbarTop() {
 
         </div>
         {/* Mobile Hamburger */}
-        <div className="md:hidden flex items-center order-2 xsm:order-3 gap-4">
+        <div className="md:hidden flex items-center order-2 sm:order-3 gap-4">
           {/* Mobile Cart Icon */}
           {/* <div
             className="cursor-pointer"
@@ -421,29 +421,34 @@ export default function NavbarTop() {
                 showSuggestions && suggestions.length > 0 ? 'rounded-t-2xl' : 'rounded-full'
               }`}
             >
-              <select
-                value={selectedCategory}
-                onFocus={() => setIsCategoryDropdownOpen(true)}
-                onBlur={() => setIsCategoryDropdownOpen(false)}
-                onChange={(e) => {
-                  setSelectedCategory(e.target.value);
-                  setIsCategoryDropdownOpen(false); // Rotate icon back on selection
-                }}
-                className={`bg-[#ffd226] text-black font-semibold text-sm px-4 py-2 focus:outline-none appearance-none cursor-pointer ${
-                  showSuggestions && suggestions.length > 0 ? 'rounded-tl-2xl' : 'rounded-l-full'
-                }`}
-              >
-                <option value="">All</option>
-                <option value="Apparel">Apparel</option>
-                <option value="Equipment">Equipment</option>
-                <option value="Nutrition">Nutrition</option>
-              </select>
+              <div className="relative flex">
+                <select
+                  value={selectedCategory}
+                  onFocus={() => setIsCategoryDropdownOpen(true)}
+                  onBlur={() => setIsCategoryDropdownOpen(false)}
+                  onChange={(e) => {
+                    setSelectedCategory(e.target.value);
+                    setIsCategoryDropdownOpen(false); // Rotate icon back on selection
+                  }}
+                  className={`bg-[#ffd226] text-black font-semibold text-sm pl-4 pr-8 py-2.5 focus:outline-none appearance-none cursor-pointer ${
+                    showSuggestions && suggestions.length > 0 ? 'rounded-tl-2xl' : 'rounded-l-full'
+                  }`}
+                >
+                  <option value="">All</option>
+                  <option value="Apparel">Apparel</option>
+                  <option value="Equipment">Equipment</option>
+                  <option value="Nutrition">Nutrition</option>
+                </select>
+                <FiChevronDown
+                  className={`absolute right-2.5 top-1/2 -translate-y-1/2 text-black pointer-events-none transition-transform duration-300 ${isCategoryDropdownOpen ? "rotate-180" : "rotate-0"}`}
+                />
+              </div>
 
               <div className="relative flex-1">
                 <input
                   type="text"
-                  placeholder="Search for products, brands and more..."
-                  className="w-full px-4 py-2 bg-transparent border-none placeholder:text-black placeholder:opacity-50 text-sm focus:outline-none pr-10"
+                  placeholder="Search for products, brands and more"
+                  className="w-full px-4 py-2.5 bg-transparent border-none placeholder:text-black placeholder:opacity-50 text-base focus:outline-none pr-10"
                   value={searchQuery}
                   onChange={handleSearchChange}
                   onKeyDown={handleKeyDown}
@@ -478,21 +483,21 @@ export default function NavbarTop() {
                 {suggestions.some(s => s.type === 'recent') && (
                   <>
                     <div className="p-2 border-b border-gray-200">
-                      <h3 className="text-xs font-semibold text-gray-500 flex items-center gap-2">
-                        <MdOutlineHistory /> Recent Searches
+                      <h3 className="text-sm font-semibold text-gray-500 flex items-center gap-2">
+                        <MdOutlineHistory className="text-lg" /> Recent Searches
                       </h3>
                     </div>
                     <ul>
                       {suggestions.filter(s => s.type === 'recent').map((suggestion, index) => (
                         <li
                           key={`recent-desktop-${index}`}
-                          className="group px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm text-gray-800 flex justify-between items-center"
+                          className="group px-4 py-2 hover:bg-gray-100 cursor-pointer text-base text-gray-800 flex justify-between items-center"
                           onClick={() => handleSuggestionClick(suggestion.value)}
                         >
                           <span>{suggestion.value}</span>
                           <button
                             onClick={(e) => handleRemoveSuggestion(e, suggestion.value)}
-                            className="opacity-0 group-hover:opacity-100 text-black hover:text-gray-900 text-xs w-5 h-5 flex items-center justify-center rounded-full hover:bg-gray-200 transition-all duration-200"
+                            className="opacity-0 group-hover:opacity-100 text-black hover:text-gray-900 text-sm w-5 h-5 flex items-center justify-center rounded-full hover:bg-gray-200 transition-all duration-200"
                             title="Remove"
                           >
                             ✕
@@ -507,15 +512,15 @@ export default function NavbarTop() {
                 {suggestions.some(s => s.type === 'popular') && (
                   <>
                     <div className="p-2 border-b border-gray-200">
-                      <h3 className="text-xs font-semibold text-gray-500 flex items-center gap-2">
-                        <MdTrendingUp /> Popular Suggestions
+                      <h3 className="text-sm font-semibold text-gray-500 flex items-center gap-2">
+                        <MdTrendingUp className="text-lg" /> Popular Suggestions
                       </h3>
                     </div>
                     <ul>
                       {suggestions.filter(s => s.type === 'popular').map((suggestion, index) => (
                         <li
                           key={`popular-desktop-${index}`}
-                          className="group px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm text-gray-800 flex justify-between items-center"
+                          className="group px-4 py-2 hover:bg-gray-100 cursor-pointer text-base text-gray-800 flex justify-between items-center"
                           onClick={() => handleSuggestionClick(suggestion.value)}
                         >
                           <span>{suggestion.value}</span>

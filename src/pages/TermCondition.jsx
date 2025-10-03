@@ -10,8 +10,7 @@ function TermCondition() {
       <NavbarBottom />
 
       {/* Hero Section */}
-      {/* <section className="bg-gray-100 py-8" style={{ marginTop: 'var(--navbar-height, 64px)' }}> */}
-      <section className="bg-gray-100 py-8 pt-28 xsm:pt-15 md:pt-30">
+      <section className="bg-gray-100 py-8 pt-30 sm:pt-18 md:pt-32">
         <div className="max-w-6xl mx-auto px-6 text-center">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-800">Terms & Conditions</h1>
           <p className="text-gray-600 mt-4 text-sm md:text-base">

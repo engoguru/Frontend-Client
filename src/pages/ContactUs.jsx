@@ -58,7 +58,7 @@ function ContactUs() {
       <NavbarBottom />
 
       {/* Hero Header */}
-      <section className="bg-gray-100 py-8 pt-30 xsm:pt-18 md:pt-34">
+      <section className="bg-gray-100 py-8 pt-30 sm:pt-18 md:pt-34">
         <div className="max-w-6xl mx-auto px-6 text-center">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-800">Contact Us</h1>
           <p className="text-gray-600 mt-4 text-sm md:text-base">
