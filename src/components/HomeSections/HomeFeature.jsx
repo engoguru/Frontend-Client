@@ -12,7 +12,7 @@ function HomeFeature() {
 
 
 
-  console.log(nutritionProducts, "hh")
+  // console.log(nutritionProducts, "hh")
 
   // Swipe logic
   const [touchStart, setTouchStart] = useState(null);

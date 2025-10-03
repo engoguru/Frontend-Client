@@ -9,7 +9,10 @@ function FooterMain() {
           <h3 className="text-lg text-white font-semibold mb-4">Contact Us</h3>
           <p className="text-sm">123 Fitness St, Gym City, USA</p>
           <p className="text-sm mt-2">Email: support@example.com</p>
-          <p className="text-sm mt-2">Phone: (123) 456-7890</p>
+         <p className="text-sm mt-2">
+  Phone: <a href="tel:+919251150085" className="text-blue-500 hover:underline">+91-9251150085</a>
+</p>
+
         </div>
 
         {/* 2. Information */}

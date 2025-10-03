@@ -6,8 +6,12 @@ export const addItemToCart = createAsyncThunk(
   "cart/addItem",
   async (item, { rejectWithValue }) => {
     try {
-      const response = await axios.post("http://localhost:5000/api/products/productFeedback/cart", item,{ withCredentials: true,});
-      return response.data;
+      const response = await axios.post("http://localhost:5000/api/products/productFeedback/cart", item, { withCredentials: true, });
+      // console.log(response,"cartdata")
+      return {
+        status: response.status,     // ✅ Include status
+        data: response.data          // ✅ Include response body
+      };
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Failed to add item to cart");
     }
@@ -19,7 +23,7 @@ export const fetchCartByUserId = createAsyncThunk(
   "cart/fetchByUserId",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/products/productFeedback/Usercart`,{withCredentials: true});
+      const response = await axios.get(`http://localhost:5000/api/products/productFeedback/Usercart`, { withCredentials: true });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Failed to fetch user cart");
@@ -30,7 +34,7 @@ export const fetchCartByUserId = createAsyncThunk(
 //  Initial state
 const initialState = {
   addCart: null,
-  cartItems:null,
+  cartItems: null,
   loading: false,
   error: null,
 };
@@ -41,7 +45,7 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     clearCart(state) {
-      state.cartItems =null;
+      state.cartItems = null;
     },
   },
   extraReducers: (builder) => {
@@ -53,8 +57,12 @@ const cartSlice = createSlice({
       })
       .addCase(addItemToCart.fulfilled, (state, action) => {
         state.loading = false;
-        state.addCart=action.payload;
+        state.addCart = {
+          status: action.payload.status,
+          data: action.payload.data
+        };
       })
+
       .addCase(addItemToCart.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;

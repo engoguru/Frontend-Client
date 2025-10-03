@@ -83,7 +83,10 @@ function PrivacyPolicy() {
             <br />
             Email: support@example.com
             <br />
-            Phone: (123) 456-7890
+            Phone: 
+   <a href="tel:+919251150085" className="text-blue-500 hover:underline">+91-9251150085</a>
+
+
           </p>
         </div>
       </section>

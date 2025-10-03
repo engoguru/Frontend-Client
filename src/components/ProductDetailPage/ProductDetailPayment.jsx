@@ -108,7 +108,7 @@ function ProductDetailPayment({ onAddToCart }) {
       }
     }
   };
-
+  console.log(meDetails, "gn")
   return (
     <div className="max-w-xl mx-auto bg-white shadow-lg rounded-lg p-6 space-y-6">
       <h2 className="text-xl font-bold text-gray-800 mb-4 text-left">Payment Summary</h2>
@@ -170,9 +170,24 @@ function ProductDetailPayment({ onAddToCart }) {
         <div className="flex justify-between items-start text-gray-800">
           <span className="font-medium">Address</span>
           <div className="text-right space-y-1">
-            <p>{meDetails?.address?.[0] || 'No address provided'}</p>
+            {meDetails?.address?.[0] ? (
+              <div>
+                <p>{meDetails.address[0].name}</p>
+                <p>{meDetails.address[0].phone}</p>
+                <p>{meDetails.address[0].address_line1}</p>
+                {meDetails.address[0].address_line2 && <p>{meDetails.address[0].address_line2}</p>}
+                <p>
+                  {meDetails.address[0].city}, {meDetails.address[0].state} - {meDetails.address[0].pincode}
+                </p>
+                <p>{meDetails.address[0].country}</p>
+                <p>Type: {meDetails.address[0].address_type}</p>
+              </div>
+            ) : (
+              <p>No address provided</p>
+            )}
+
             <Link to="/user/address" className="text-blue-600 hover:underline text-sm">
-              {meDetails?.address ? 'Change' : 'Add New Address'}
+              {meDetails?.address[0] ? 'Change' : 'Add New Address'}
             </Link>
           </div>
         </div>

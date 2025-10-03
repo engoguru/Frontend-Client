@@ -92,11 +92,11 @@ const NavbarBottom = () => {
 
       <div className="flex-shrink-0 py-4">
         <a
-          href="tel:1122334455"
+          href="tel:9251150085"
           className='flex items-center space-x-2 text-red-700 font-bold whitespace-nowrap transition-transform duration-300 ease-in-out animate-pulse hover:scale-110 hover:animate-none'
         >
           <FiPhone />
-          <span> +91 - 1122334455</span>
+          <span> +91-9251150085</span>
         </a>
       </div>
     </div>

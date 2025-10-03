@@ -90,7 +90,8 @@ function ContactUs() {
               <p>📍 123 Fitness Avenue</p>
               <p>🏙️ Muscle Town, NY 10001</p>
               <p>🇺🇸 United States</p>
-              <p>📞 Phone: (123) 456-7890</p>
+              <p>📞 Phone:<a href="tel:+919251150085" className="text-blue-500 hover:underline">+91-9251150085</a>
+</p>
               <p>✉️ Email: support@fitstore.com</p>
             </div>
           </div>

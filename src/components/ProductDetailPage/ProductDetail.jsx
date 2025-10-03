@@ -9,7 +9,7 @@ import { createFeedback } from '../../store/slice/feedbackSlice';
 
 
 function ProductDetail({ productData = {}, reletedProduct, feedback, onCommentAdded,onAddToCart }) {
-  console.log(feedback, "k")
+  // console.log(feedback, "k")
   const dispatch = useDispatch();
   const { meDetails, loading: userLoading } = useSelector((state) => state.user);
 
@@ -29,7 +29,7 @@ function ProductDetail({ productData = {}, reletedProduct, feedback, onCommentAd
 
   const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedSize, setSelectedSize] = useState(null);
-  console.log(selectedSize,"sddd")
+  // console.log(selectedSize,"sddd")
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('Description');
   const thumbnailContainerRef = useRef(null);
@@ -148,6 +148,7 @@ function ProductDetail({ productData = {}, reletedProduct, feedback, onCommentAd
   // const {addCart,loading,error}=useSelector((state)=>state?.cart)
  
   let addCartLoading = false
+  const{addCart,loaading,error}=useSelector((state)=>state.cart)
   const handleSelect = (sizeArg = null) => {
   if (!meDetails) {
     toast.warning("Login first!");
@@ -196,9 +197,12 @@ function ProductDetail({ productData = {}, reletedProduct, feedback, onCommentAd
 
     // Dispatch the payload
     dispatch(addItemToCart(payload));
+    if(addCart?.status){
     addCartLoading = false;
     onAddToCart()
     toast.success('Item successfully added to your cart.');
+    }
+   
 
   };
 

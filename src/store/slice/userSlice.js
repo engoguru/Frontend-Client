@@ -102,7 +102,10 @@ export const setNewPasswword = createAsyncThunk(
       const response = await axios.post("http://localhost:5000/api/users/account/setPassword", {
         data
       })
-      return response.data;
+      return{
+        status: response.status,
+        data: response.data
+      };
     } catch (error) {
       return thunkAPI.rejectWithValue(error?.response?.data?.message || error.message)
     }
@@ -112,24 +115,32 @@ export const setNewPasswword = createAsyncThunk(
 
 export const updateAddress = createAsyncThunk(
   'user/updateAddress',
-  async (addressData, thunkAPI) => {  
+  async (addressData, thunkAPI) => {
     try {
-      const response = await axios.put("http://localhost:5000/api/users/account/updateUserAddress", {
-        data: addressData
-      }, {
-        withCredentials: true
-      });
-      return response.data;
+      const response = await axios.put(
+        "http://localhost:5000/api/users/account/updateUserAddress",
+        { data: addressData },
+        { withCredentials: true }
+      );
+
+      // console.log(  response.status, response.data, "ressss");
+
+      //  Return both status and data
+      return {
+        status: response.status,
+        data: response.data
+      };
     } catch (error) {
       return thunkAPI.rejectWithValue(error?.response?.data?.message || error.message);
     }
   }
-)
+);
+
 
 const initialState = {
 
   users: [],
-  
+
   registerUser: null,
   meDetails: null,
   loggedInUser: null,     // ✅ to store user info after login
@@ -246,33 +257,44 @@ const createUserSlice = createSlice({
       })
 
       // set new Password 
-          .addCase(setNewPasswword.pending, (state) => {
-            state.loading = true;
-            state.error = null;
-          })
-          .addCase(setNewPasswword.fulfilled, (state, action) => {
-            state.loading = false;
-            state.meDetails = action.payload?.user || action.payload || null;
-          })
-          .addCase(setNewPasswword.rejected, (state, action) => {
-            state.loading = false;
-            state.error = action.payload || "Registration failed";
-          })
-
-      // update Address
-      .addCase(updateAddress.pending, (state) => {
+      .addCase(setNewPasswword.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateAddress.fulfilled, (state, action) => {
+      .addCase(setNewPasswword.fulfilled, (state, action) => {
         state.loading = false;
-        state.updateAddress_Store = action.payload?.user || action.payload || null;
         state.meDetails = action.payload?.user || action.payload || null;
       })
-      .addCase(updateAddress.rejected, (state, action) => {
+      .addCase(setNewPasswword.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Update address failed";
+        state.error = action.payload || "Registration failed";
       })
+
+    // Update Address Thunk Cases
+.addCase(updateAddress.pending, (state) => {
+  state.loading = true;
+  state.error = null;
+})
+
+.addCase(updateAddress.fulfilled, (state, action) => {
+  state.loading = false;
+
+  const { status, data } = action.payload || {};
+  
+  state.updateAddress_Store = {
+    status,
+    data,
+  };
+
+  // Optional: If you want to update meDetails with user data (if returned)
+  // state.meDetails = data?.user || null;
+})
+
+.addCase(updateAddress.rejected, (state, action) => {
+  state.loading = false;
+  state.error = action.payload || "Update address failed";
+})
+
 
   }
 });

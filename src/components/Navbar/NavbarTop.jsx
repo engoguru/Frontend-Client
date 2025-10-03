@@ -40,7 +40,7 @@ export default function NavbarTop() {
 
   const items = cartItems?.cart?.items || [];
   const cartHasItems = items.length > 0;
-  console.log(cartHasItems, "hoh")
+
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
   };

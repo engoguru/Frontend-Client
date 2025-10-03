@@ -27,7 +27,7 @@ function ProductDetailView() {
 
 
 const loadFeedbacks = (productId) => {
-  console.log("sgh")
+
   dispatch(fetchFeedbacks(productId));
 };
 
@@ -36,7 +36,7 @@ const loadCart=()=>{
   
    dispatch(fetchCartByUserId());
    setReloadCart(true)
-   console.log(reloadCart,"p")
+  
 }
 
 useEffect(() => {

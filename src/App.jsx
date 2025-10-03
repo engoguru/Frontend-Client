@@ -19,6 +19,7 @@ import UserAddress from './pages/UserAddress'
 import UserOrderHistory from './pages/UserOrderHistory'
 import ProductCartPage from './components/ProductDetailPage/ProductCartPage'
 import { fetchCartByUserId } from './store/slice/cartSlice'
+import Bot from './components/chatBot/Bot'
 function App() {
   const dispatch = useDispatch()
   useEffect(() => {
@@ -31,6 +32,7 @@ function App() {
     <>
       {/* <Home/> */}
       <Routes>
+        <Route path='/chat' element={<Bot/>}/>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/contact" element={<ContactUs />} />
