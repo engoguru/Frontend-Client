@@ -82,7 +82,7 @@ const navigate = useNavigate();
       <NavbarBottom />
       {/* Main content wrapper with dynamic top padding for navbars */}
       {/* <div className="w-full flex flex-col md:flex-row md:items-start px-6 pb-8 gap-6" style={{ paddingTop: 'calc(var(--navbar-height, 64px) + 1rem)' }}> */}
-      <div className="w-full flex flex-col md:flex-row md:items-start px-6 pb-8 gap-6 pt-25 xsm:pt-15 md:pt-28">
+      <div className="w-full flex flex-col md:flex-row md:items-start px-6 pb-8 gap-6 pt-26 sm:pt-15 md:pt-28">
         {/* Sidebar for desktop */}
         <div className="hidden md:block md:w-1/5">
           <FilterViewAllDesktop onFilterChange={handlefilterChange} />

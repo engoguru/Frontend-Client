@@ -17,7 +17,7 @@ function UserAddress() {
  
   <NavbarTop/>
     <NavbarBottom/>
-    <div className="w-full min-h-screen bg-white pt-16 md:pt-28">
+    <div className="w-full min-h-screen bg-white" style={{ paddingTop: 'var(--navbar-height, 112px)' }}>
       {/* Flex Layout: Column on mobile, Row on desktop */}
       <div className="flex flex-col md:flex-row w-full h-full">
         

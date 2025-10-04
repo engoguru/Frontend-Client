@@ -24,7 +24,8 @@ function ProductDetail({ productData = {}, reletedProduct, feedback, onCommentAd
     'https://via.placeholder.com/300x200/FF00FF',
     'https://via.placeholder.com/300x200/00FFFF',
   ];
-
+console.log(productData?.productImages
+,"uigguih")
   const [selected_Nutrition_flavor, setSelected_Nutrition_flavor] = useState(0)
 
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -52,6 +53,9 @@ function ProductDetail({ productData = {}, reletedProduct, feedback, onCommentAd
   };
 
   const handleReviewSubmit = () => {
+    if(!meDetails){
+      return toast.warning("Login before Comment")
+    }
     if (!newComment.trim() || newRating === 0) {
       alert("Please add a rating and comment.");
       return;
@@ -223,16 +227,16 @@ function ProductDetail({ productData = {}, reletedProduct, feedback, onCommentAd
                 className="flex transition-transform duration-300 ease-in-out"
                 style={{ transform: `translateX(-${currentSlide * 100}%)` }}
               >
-                {productImages.map((img, idx) => (
+                {productData?.productImages.map((img, idx) => (
                   <div key={idx} className="w-full flex-shrink-0">
-                    <img src={img} alt={`Product image ${idx + 1}`} className="w-full h-[300px] object-cover" />
+                    <img src={img?.url} alt={`Product image ${idx + 1}`} className="w-full h-[300px] object-cover" />
                   </div>
                 ))}
               </div>
             </div>
             {/* Dots */}
             <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 space-x-2">
-              {productImages.map((_, idx) => (
+              {productData?.productImages.map((_, idx) => (
                 <button
                   key={idx}
                   type="button"
@@ -257,10 +261,10 @@ function ProductDetail({ productData = {}, reletedProduct, feedback, onCommentAd
                 <svg className="w-6 h-6 text-gray-600 hover:text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7"></path></svg>
               </button>
               <div ref={thumbnailContainerRef} className="flex flex-col gap-3 overflow-y-auto scroll-smooth scrollbar-hide h-[288px]">
-                {productImages.map((img, idx) => (
+                {productData?.productImages.map((img, idx) => (
                   <img
                     key={idx}
-                    src={img}
+                    src={img?.url}
                     alt={`Thumbnail ${idx + 1}`}
                     className={`w-12 h-12 object-cover rounded-lg cursor-pointer border-2 flex-shrink-0 ${currentSlide === idx ? 'border-red-600' : 'border-gray-300'}`}
                     onClick={() => setCurrentSlide(idx)}
@@ -278,7 +282,7 @@ function ProductDetail({ productData = {}, reletedProduct, feedback, onCommentAd
             </div>
             {/* Main Image */}
             <div>
-              <img src={productImages[currentSlide]} alt="Main Product" className="w-full h-auto md:aspect-[4/5] object-cover rounded-lg" />
+              <img src={productData?.productImages[currentSlide]?.url} alt="Main Product" className="w-full h-auto md:aspect-[4/5] object-cover rounded-lg" />
             </div>
           </div>
         </div>

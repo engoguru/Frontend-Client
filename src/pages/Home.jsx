@@ -10,7 +10,7 @@ import HomeSupport from '../components/HomeSections/HomeSupport';
 import FooterMain from '../components/Footer/FooterMain';
 function Home() {
   return (
-    <div className="pt-16 md:pt-28"> {/* Added padding-top to account for fixed navbars */}
+    <div className="pt-23 xxs:pt-20 sm:pt-25 md:pt-30"> {/* Added padding-top to account for fixed navbars */}
       <NavbarTop />
       <NavbarBottom />
       <HomeBanner />

@@ -108,7 +108,7 @@ function ProductDetailPayment({ onAddToCart }) {
       }
     }
   };
-  console.log(meDetails, "gn")
+  console.log(cartItems, "gn")
   return (
     <div className="max-w-xl mx-auto bg-white shadow-lg rounded-lg p-6 space-y-6">
       <h2 className="text-xl font-bold text-gray-800 mb-4 text-left">Payment Summary</h2>
@@ -117,7 +117,7 @@ function ProductDetailPayment({ onAddToCart }) {
       {items.map((item, idx) => (
         <div key={idx} className="flex items-center gap-4 border-b pb-4 mb-4">
           <img
-            src={item.image || "https://via.placeholder.com/80"}
+            src={item.productImages || "https://via.placeholder.com/80"}
             alt={item.productName || "Product"}
             className="w-20 h-20 object-cover rounded"
           />

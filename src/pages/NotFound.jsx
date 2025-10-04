@@ -10,7 +10,7 @@ function NotFound() {
       <NavbarTop />
       <NavbarBottom />
 
-      <div className="flex flex-col items-center justify-center text-center py-24 px-6 bg-white min-h-[70vh]">
+      <div className="flex flex-col items-center justify-center text-center py-24 px-6 pt-23 xxs:pt-25 sm:pt-12 md:pt-20 bg-white min-h-[70vh]">
         <h1 className="text-8xl font-extrabold text-red-700 mb-4">404</h1>
         <h2 className="text-2xl md:text-3xl font-semibold text-gray-800 mb-2">Page Not Found</h2>
         <p className="text-gray-600 mb-6 max-w-md">

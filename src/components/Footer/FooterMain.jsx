@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 function FooterMain() {
   return (
@@ -19,10 +20,10 @@ function FooterMain() {
         <div>
           <h3 className="text-lg text-white font-semibold mb-4">Information</h3>
           <ul className="space-y-2 text-sm">
-            <li><a href="/" className="hover:text-red-500">Home</a></li>
-            <li><a href="/shop" className="hover:text-red-500">Shop</a></li>
-            <li><a href="/about" className="hover:text-red-500">About Us</a></li>
-            <li><a href="/contact" className="hover:text-red-500">Contact</a></li>
+            <li><Link to="/" onClick={() => window.scrollTo(0, 0)} className="inline-block transition-all duration-300 hover:text-red-500 hover:-translate-y-0.5">Home</Link></li>
+            <li><Link to="/productViewAll" onClick={() => window.scrollTo(0, 0)} className="inline-block transition-all duration-300 hover:text-red-500 hover:-translate-y-0.5">Shop</Link></li>
+            <li><Link to="/about" onClick={() => window.scrollTo(0, 0)} className="inline-block transition-all duration-300 hover:text-red-500 hover:-translate-y-0.5">About Us</Link></li>
+            <li><Link to="/contact" onClick={() => window.scrollTo(0, 0)} className="inline-block transition-all duration-300 hover:text-red-500 hover:-translate-y-0.5">Contact</Link></li>
           </ul>
         </div>
 
@@ -30,10 +31,10 @@ function FooterMain() {
         <div>
           <h3 className="text-lg text-white  font-semibold mb-4">Account</h3>
           <ul className="space-y-2 text-sm">
-            <li><a href="/user" className="hover:text-red-500">Profile</a></li>
-            <li><a href="/user" className="hover:text-red-500">Order History</a></li>
-            <li><a href="/cart" className="hover:text-red-500">Cart</a></li>
-            <li><a href="/privacy-policy" className="hover:text-red-500">Privacy Policy</a></li>
+            <li><Link to="/user" state={{ section: 'dashboard' }} onClick={() => window.scrollTo(0, 0)} className="inline-block transition-all duration-300 hover:text-red-500 hover:-translate-y-0.5">Profile</Link></li>
+            <li><Link to="/user" state={{ section: 'orders' }} onClick={() => window.scrollTo(0, 0)} className="inline-block transition-all duration-300 hover:text-red-500 hover:-translate-y-0.5">Order History</Link></li>
+            <li><Link to="/product/cart" onClick={() => window.scrollTo(0, 0)} className="inline-block transition-all duration-300 hover:text-red-500 hover:-translate-y-0.5">Cart</Link></li>
+            <li><Link to="/privacy-policy" onClick={() => window.scrollTo(0, 0)} className="inline-block transition-all duration-300 hover:text-red-500 hover:-translate-y-0.5">Privacy Policy</Link></li>
           </ul>
         </div>
 
