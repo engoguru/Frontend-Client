@@ -17,6 +17,7 @@ import {
 import { MdOutlineHistory, MdTrendingUp } from "react-icons/md";
 import { PiUserCircle } from "react-icons/pi";
 import { logoutUser } from "../../store/slice/userSlice";
+import axios from "axios";
 
 export default function NavbarTop() {
   const desktopSearchRef = useRef();
@@ -152,10 +153,22 @@ export default function NavbarTop() {
     setOpenSubMenu(openSubMenu === menuName ? null : menuName);
   };
 
-  const logoutHandler = () => {
-    dispatch(logoutUser());
-    setMenuOpen(false);
-  };
+const logoutHandler = async () => {
+  try {
+    const res = await axios.get('http://localhost:5000/api/users/account/out', {
+      withCredentials: true,
+    });
+
+    dispatch(logoutUser()); // Clear auth state
+    setMenuOpen(false);     // Close dropdown or menu
+    // Redirect user if needed
+    toast.success("Logged out successfully.");
+  } catch (error) {
+    console.error("Logout failed:", error);
+    toast.error("Logout failed.");
+  }
+};
+
 
   // 👇 Close dropdown when clicking outside
   useEffect(() => {

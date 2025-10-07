@@ -20,7 +20,7 @@ function Dashboard() {
   //     dispatch(getMeDetails());
   //   }
   // }, []);
-console.log(cartItems,"jh")
+// console.log(cartItems,"jh")
   return (
     <div className="w-full min-h-screen bg-gray-50 p-6 space-y-10">
       <div className="flex justify-center items-center h-64 bg-white shadow rounded">
@@ -55,7 +55,7 @@ console.log(cartItems,"jh")
       <tbody className="divide-y divide-gray-100">
         {cartItems?.cart?.items?.map((item) => (
           <tr key={item._id}>
-            <td className="px-4 py-2">{item.productId}</td>
+            <td className="px-4 py-2"><img src={item?.productId?.productImages?.[0]?.url} alt=""width={"30px"} height={"20px"}/></td>
             <td className="px-4 py-2">{item.productName}</td>
             <td className="px-4 py-2">{item.productCategory}</td>
             <td className="px-4 py-2">{item.quantity}</td>
