@@ -816,11 +816,11 @@ const logoutHandler = async () => {
 
           {/* Call Us Section */}
           <a
-            href="tel:+1234567890"
+            href="tel:+919251150085"
             className="p-4 border-t border-gray-200 bg-gray-100 flex items-center justify-center space-x-2 transition-colors duration-200 "
           >
             <FiPhone className="text-red-700" />
-            <span className="font-semibold text-gray-800 hover:text-red-700">Call Us: +123-456-7890</span>
+            <span className="font-semibold text-gray-800 hover:text-red-700">Call Us: +91-9251150085</span>
           </a>
         </>
       </div>

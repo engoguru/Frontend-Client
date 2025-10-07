@@ -410,7 +410,7 @@ try {
                 onClick={() => setQuantity(q => (q > 1 ? q - 1 : 1))}
                 className="text-xl px-2 text-red-900 hover:bg-gray-200 transition font-bold"
                 aria-label="Decrease quantity"
-              >
+              > 
                 -
               </button>
               <span className="text-lg text-gray-700 px-4 font-semibold">{quantity}</span>

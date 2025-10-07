@@ -13,9 +13,10 @@ function Home() {
     <div className="pt-23 xxs:pt-20 sm:pt-25 md:pt-30"> {/* Added padding-top to account for fixed navbars */}
       <NavbarTop />
       <NavbarBottom />
-      <HomeBanner />
+      
       {/* Main content wrapper with horizontal padding */}
       <div className="px-6">
+        <HomeBanner />
         <HomePopular />
         <HomeFeature />
         <HomeFeature2 />
