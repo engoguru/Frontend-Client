@@ -137,13 +137,13 @@ function HomeFeature() {
               <div key={item._id} className="snap-start w-full sm:w-1/2 md:w-1/3 lg:w-1/4 flex-shrink-0 px-3">
                 <div className="bg-white shadow-md rounded-lg p-4 transition-transform duration-300 hover:scale-105 hover:shadow-xl h-full flex flex-col">
                   <img
-                    src={'https://m.media-amazon.com/images/I/71FCgsSTYLL._UF1000,1000_QL80_.jpg'} // Use actual image or fallback
+                    src={item.productImages?.[0]?.url || 'https://m.media-amazon.com/images/I/71FCgsSTYLL._UF1000,1000_QL80_.jpg'}
                     alt={item?.productName}
                     className="w-full h-40 object-cover rounded-md"
                   />
                   <h2 className="text-lg font-semibold mt-3">{item?.productName}</h2>
                   <p className="text-gray-600 text-sm mt-1">{item?.productDescription}</p>
-                  <p className="text-red-600 font-bold mt-2">${item?.productVarient?.[0]?.price || '29.99'}</p>
+                  <p className="text-red-600 font-bold mt-2">₹{item?.productVarient?.[0]?.price || '29.99'}</p>
 
                   <Link to={`/productDetail/${item._id}`} className="mt-auto block focus:outline-none">
                     <button className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 text-sm">
