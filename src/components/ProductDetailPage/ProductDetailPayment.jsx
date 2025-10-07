@@ -117,7 +117,7 @@ function ProductDetailPayment({ onAddToCart }) {
       {items.map((item, idx) => (
         <div key={idx} className="flex items-center gap-4 border-b pb-4 mb-4">
           <img
-            src={item.productImages || "https://via.placeholder.com/80"}
+            src={item.productImages?.[0]?.url || "https://via.placeholder.com/80"}
             alt={item.productName || "Product"}
             className="w-20 h-20 object-cover rounded"
           />

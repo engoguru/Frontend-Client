@@ -1,15 +1,16 @@
-
 import React, { useState, useEffect, useRef } from "react";
 
 const images = [
   "https://red-parts.react.themeforest.scompiler.ru/themes/red/images/slides/slide-3.jpg",
   "https://red-parts.react.themeforest.scompiler.ru/themes/red/images/slides/slide-2-mobile.jpg",
   "https://red-parts.react.themeforest.scompiler.ru/themes/red/images/slides/slide-1-mobile.jpg",
+
+  // "https://www.sixstarpro.com/cdn/shop/articles/protein-shakes-for-weight-gain.jpg?v=1739478537",
+  // "https://img.freepik.com/free-photo/young-happy-sportswoman-running-road-morning-copy-space_637285-3758.jpg?semt=ais_incoming&w=740&q=80",
+  // "https://images.stockcake.com/public/a/f/8/af822797-0b39-4d58-a012-52da1dc0ed63_large/cricket-gear-arranged-stockcake.jpg",
 ];
 
-
 function HomeBanner() {
-
   const [currentSlide, setCurrentSlide] = useState(0);
   const intervalRef = useRef(null);
 
@@ -48,15 +49,17 @@ function HomeBanner() {
       onMouseEnter={stopAutoSlide}
       onMouseLeave={startAutoSlide}
     >
-
       {/* Slides */}
-      <div className="flex transition-transform duration-700 ease-in-out w-full h-48 sm:h-64 md:h-80 lg:h-96 xl:h-[400px]" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
+      <div
+        className="flex transition-transform duration-700 ease-in-out w-full h-48 sm:h-64 md:h-80 lg:h-96 xl:h-[400px] object-contain"
+        style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+      >
         {images.map((src, index) => (
           <img
             key={index}
             src={src}
             alt={`Slide ${index + 1}`}
-            className="w-full h-full flex-shrink-0 object-cover"
+            className="w-full h-full flex-shrink-0"
           />
         ))}
       </div>
@@ -68,8 +71,9 @@ function HomeBanner() {
             key={index}
             onClick={() => goToSlide(index)}
             aria-label={`Go to slide ${index + 1}`}
-            className={`w-3 h-3 rounded-full cursor-pointer ${currentSlide === index ? "bg-red-600" : "bg-gray-400"
-              }`}
+            className={`w-3 h-3 rounded-full cursor-pointer ${
+              currentSlide === index ? "bg-red-600" : "bg-gray-400"
+            }`}
           ></button>
         ))}
       </div>
@@ -97,4 +101,4 @@ function HomeBanner() {
   );
 }
 
-export default HomeBanner
+export default HomeBanner;

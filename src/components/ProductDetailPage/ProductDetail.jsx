@@ -401,7 +401,7 @@ console.log(productData?.productImages
                 onClick={() => setQuantity(q => (q > 1 ? q - 1 : 1))}
                 className="text-xl px-2 text-red-900 hover:bg-gray-200 transition font-bold"
                 aria-label="Decrease quantity"
-              >
+              > 
                 -
               </button>
               <span className="text-lg text-gray-700 px-4 font-semibold">{quantity}</span>
@@ -594,8 +594,8 @@ console.log(productData?.productImages
             <Link to={`/productDetail/${item._id}`} key={idx}>
               <div className="bg-white shadow-md rounded-lg p-4 hover:shadow-lg transition">
                 <img
-                  src={`https://www.100acress.com/amenities_image/senior_citizen.webp`}
-                  alt={`Related Product ${idx + 1}`}
+                  src={item.productImages?.[0]?.url || 'https://via.placeholder.com/300x200'}
+                  alt={item?.productName || "Product"}
                   className="w-full h-40 object-cover rounded"
                 />
                 <h4 className="text-md font-semibold mt-2">{item?.productName}</h4>
