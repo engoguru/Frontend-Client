@@ -28,8 +28,8 @@ const LoginModal = ({ isOpen, setIsOpen }) => {
 
     try {
      const result= await dispatch(userLogin(payload)).unwrap();
-    //  console.log(result,"dffhfvv")
-     if(result?.user?.token){
+     console.log(result,"dffhfvv")
+     if(result?.token){
         dispatch(getMeDetails());
       toast.success('Login successful!');
       setIsOpen(false);
