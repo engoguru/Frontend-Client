@@ -45,7 +45,7 @@ function HomeBanner() {
     const fetchBanners = async () => {
       try {
         setLoading(true);
-        const { data } = await axios.get('http://localhost:5002/banner/getAll');
+        const { data } = await axios.get('http://localhost:5000/api/products/banner/getAll');
         // Define the desired order
         const categoryOrder = ['Apparel', 'Nutrition', 'Equipment'];
 
