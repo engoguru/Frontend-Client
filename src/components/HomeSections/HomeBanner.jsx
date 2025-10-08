@@ -1,42 +1,69 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
-const slides = [
-  {
-    image:
-      "https://red-parts.react.themeforest.scompiler.ru/themes/red/images/slides/slide-3.jpg",
-      // "https://img.freepik.com/free-photo/young-happy-sportswoman-running-road-morning-copy-space_637285-3758.jpg?semt=ais_incoming&w=740&q=80",
-      // "https://media.istockphoto.com/id/2153823097/photo/cheerful-athletic-couple-jogging-through-the-park.jpg?s=612x612&w=0&k=20&c=7ZDGNkOSuXWxEmJkKpbisVSvo5mM3d3VcHkVhLhSD1Q=",
-    category: "Apparel",
-    title: "Performance Apparel",
-    subtitle: "Look Good, Feel Good, Play Better.",
-    link: "/productViewAll?category=Apparel",
-  },
-  {
-    image:
-      // "https://red-parts.react.themeforest.scompiler.ru/themes/red/images/slides/slide-2-mobile.jpg",
-      // "https://media.istockphoto.com/id/533336742/photo/strongman-with-can-of-supplements.jpg?s=612x612&w=0&k=20&c=ckq9eDWfA9Fd6uPsIWun6hgw-w5aMAME-iHBGTrXlhc=",
-      "https://media.istockphoto.com/id/584213296/photo/taking-supplements.jpg?s=612x612&w=0&k=20&c=j2HgxEicMM2pk78BzLBnQJq9ymo5INGOULqBLXOT7aw=",
-    category: "Nutrition",
-    title: "Fuel Your Body",
-    subtitle: "Top-Quality Nutritions for Peak Performance.",
-    link: "/productViewAll?category=Nutrition",
-  },
-  {
-    image:
-      // "https://red-parts.react.themeforest.scompiler.ru/themes/red/images/slides/slide-1-mobile.jpg",
-      // "https://www.shutterstock.com/image-photo/young-8-years-old-indian-600nw-2627690837.jpg",
-      "https://media.istockphoto.com/id/1709373217/photo/kid-in-cricket-dress-holding-bat-and-helmet-celebrating-century-on-isolated-background-studio.jpg?s=612x612&w=0&k=20&c=ZeBcLIxzcAHHU9vKoVdB4gxzPMwry33qDWo5tmJvPSM=",
-    category: "Equipment",
-    title: "Gear Up for Glory",
-    subtitle: "The Best Equipment for Every Sport.",
-    link: "/productViewAll?category=Equipment",
-  },
-];
+// const slides = [
+//   {
+//     image:
+//       "https://red-parts.react.themeforest.scompiler.ru/themes/red/images/slides/slide-3.jpg",
+//       // "https://img.freepik.com/free-photo/young-happy-sportswoman-running-road-morning-copy-space_637285-3758.jpg?semt=ais_incoming&w=740&q=80",
+//       // "https://media.istockphoto.com/id/2153823097/photo/cheerful-athletic-couple-jogging-through-the-park.jpg?s=612x612&w=0&k=20&c=7ZDGNkOSuXWxEmJkKpbisVSvo5mM3d3VcHkVhLhSD1Q=",
+//     category: "Apparel",
+//     title: "Performance Apparel",
+//     subtitle: "Look Good, Feel Good, Play Better.",
+//     link: "/productViewAll?category=Apparel",
+//   },
+//   {
+//     image:
+//       // "https://red-parts.react.themeforest.scompiler.ru/themes/red/images/slides/slide-2-mobile.jpg",
+//       // "https://media.istockphoto.com/id/533336742/photo/strongman-with-can-of-supplements.jpg?s=612x612&w=0&k=20&c=ckq9eDWfA9Fd6uPsIWun6hgw-w5aMAME-iHBGTrXlhc=",
+//       "https://media.istockphoto.com/id/584213296/photo/taking-supplements.jpg?s=612x612&w=0&k=20&c=j2HgxEicMM2pk78BzLBnQJq9ymo5INGOULqBLXOT7aw=",
+//     category: "Nutrition",
+//     title: "Fuel Your Body",
+//     subtitle: "Top-Quality Nutritions for Peak Performance.",
+//     link: "/productViewAll?category=Nutrition",
+//   },
+//   {
+//     image:
+//       // "https://red-parts.react.themeforest.scompiler.ru/themes/red/images/slides/slide-1-mobile.jpg",
+//       // "https://www.shutterstock.com/image-photo/young-8-years-old-indian-600nw-2627690837.jpg",
+//       "https://media.istockphoto.com/id/1709373217/photo/kid-in-cricket-dress-holding-bat-and-helmet-celebrating-century-on-isolated-background-studio.jpg?s=612x612&w=0&k=20&c=ZeBcLIxzcAHHU9vKoVdB4gxzPMwry33qDWo5tmJvPSM=",
+//     category: "Equipment",
+//     title: "Gear Up for Glory",
+//     subtitle: "The Best Equipment for Every Sport.",
+//     link: "/productViewAll?category=Equipment",
+//   },
+// ];
 
 function HomeBanner() {
+  const [slides, setSlides] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
   const intervalRef = useRef(null);
+
+  useEffect(() => {
+    const fetchBanners = async () => {
+      try {
+        setLoading(true);
+        const { data } = await axios.get('http://localhost:5002/banner/getAll');
+        // Define the desired order
+        const categoryOrder = ['Apparel', 'Nutrition', 'Equipment'];
+
+        // Sort the banners based on the category order
+        const sortedBanners = (data.banners || []).sort((a, b) => {
+          return categoryOrder.indexOf(a.category) - categoryOrder.indexOf(b.category);
+        });
+
+        setSlides(sortedBanners);
+
+      } catch (error) {
+        console.error("Failed to fetch banners:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchBanners();
+  }, []);
 
   const goToSlide = (index) => {
     setCurrentSlide(index);
@@ -44,11 +71,13 @@ function HomeBanner() {
   };
 
   const goToPrev = () => {
+    if (slides.length === 0) return;
     setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
   };
 
   const goToNext = () => {
-    setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+    if (slides.length === 0) return;
+    setCurrentSlide((prev) => (prev >= slides.length - 1 ? 0 : prev + 1));
   };
 
   const startAutoSlide = () => {
@@ -64,30 +93,38 @@ function HomeBanner() {
 
   useEffect(() => {
     startAutoSlide();
-    return () => stopAutoSlide(); // Cleanup on unmount
-  }, []);
+    return () => stopAutoSlide();
+  }, [slides.length]); // Rerun if the number of slides changes
+
+  if (loading) {
+    return <div className="w-full h-64 sm:h-80 md:h-96 lg:h-[500px] xl:h-[550px] bg-gray-200 animate-pulse"></div>;
+  }
+
+  if (!slides || slides.length === 0) {
+    return null; // Or a placeholder saying "No banners available"
+  }
   return (
     // <div className="relative w-full  max-w-4xl mx-auto overflow-hidden rounded-lg">
     <div
-      className="relative w-full overflow-hidden rounded-none bg-gray-100"
+      className="relative w-full overflow-hidden rounded bg-gray-100"
       onMouseEnter={stopAutoSlide}
       onMouseLeave={startAutoSlide}
     >
       {/* Slides */}
       <div
-        className="flex transition-transform duration-700 ease-in-out w-full h-64 sm:h-80 md:h-96 lg:h-[500px] xl:h-[550px]"
+        className="flex transition-transform duration-700 ease-in-out w-full h-80 sm:h-80 md:h-96 lg:h-[500px] xl:h-[550px]"
         style={{ transform: `translateX(-${currentSlide * 100}%)` }}
       >
         {slides.map((slide, index) => (
           <Link
-            to={slide.link}
-            key={index}
+            to={`/productViewAll?category=${slide.category}`}
+            key={slide._id || index}
             className="group w-full h-full flex-shrink-0 relative text-white cursor-pointer"
           >
             {/* Image container */}
             <div className="absolute inset-0 bg-black">
               <img
-                src={slide.image}
+                src={slide.bannerImage.url}
                 alt={slide.title}
                 className="w-full h-full object-fill object-center"
               />
@@ -97,6 +134,11 @@ function HomeBanner() {
             <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent"></div>
 
             <div className="relative h-full w-full md:w-2/3 lg:w-1/2 xl:w-2/5 flex flex-col justify-center items-center xsm:items-start text-center xsm:text-left p-6 sm:p-8 md:p-12 lg:p-16">
+              {slide.offer && (
+                <p className="mb-2 text-lg sm:text-xl md:text-2xl font-bold text-yellow-400 drop-shadow-lg animate-pulse">
+                  {slide.offer}
+                </p>
+              )}
               <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold drop-shadow-lg">
                 {slide.title}
               </h2>

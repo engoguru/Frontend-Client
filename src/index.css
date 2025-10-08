@@ -67,4 +67,14 @@
       padding-right: 3rem !important;
     }
   }
+
+  .home-container {
+    padding-top: calc(var(--navbar-height, 92px) + 1rem); /* Default space for smaller screens */
+  }
+
+  @media (min-width: 768px) {
+    .home-container {
+      padding-top: calc(var(--navbar-height, 92px) + 4rem); /* 4rem space for screens >= 768px */
+    }
+  }
 }
