@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { userLogin } from '../../store/slice/userSlice';
+import { getMeDetails, userLogin } from '../../store/slice/userSlice';
 import { toast } from 'react-toastify';
 
 const LoginModal = ({ isOpen, setIsOpen }) => {
@@ -9,7 +9,7 @@ const LoginModal = ({ isOpen, setIsOpen }) => {
   const [contact, setContact] = useState('');
   const [password, setPassword] = useState('');
 
-  const { loading: userLoading, error: userError } = useSelector((state) => state.user);
+  const {meDetails,loading: userLoading, error: userError } = useSelector((state) => state.user);
 
   // Handle Login Form Submit
   const handleLogin = async (e) => {
@@ -28,9 +28,12 @@ const LoginModal = ({ isOpen, setIsOpen }) => {
 
     try {
      const result= await dispatch(userLogin(payload)).unwrap();
-     console.log(result,"dffhfvv")
+    //  console.log(result,"dffhfvv")
+     if(result?.user?.token){
+        dispatch(getMeDetails());
       toast.success('Login successful!');
-      setIsOpen(false); // close modal
+      setIsOpen(false);
+     } // close modal
     } catch (err) {
       console.error('Login failed:', err);
       toast.error('Invalid credentials. Please try again.',err);
@@ -100,7 +103,7 @@ const LoginModal = ({ isOpen, setIsOpen }) => {
           </button>
 
           {/* Error Message */}
-          {userError && <p className="text-red-500 text-sm">{userError}</p>}
+          {/* {userError && <p className="text-red-500 text-sm">{userError}</p>} */}
         </form>
       </div>
     </div>

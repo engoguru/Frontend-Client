@@ -18,6 +18,7 @@ import { MdOutlineHistory, MdTrendingUp } from "react-icons/md";
 import { PiUserCircle } from "react-icons/pi";
 import { logoutUser } from "../../store/slice/userSlice";
 import axios from "axios";
+import { toast } from 'react-toastify';
 
 export default function NavbarTop() {
   const desktopSearchRef = useRef();
