@@ -92,7 +92,7 @@ function OrderHistory() {
                     </span>
                   </p>
                   <p className="text-sm text-gray-600">
-                    <strong>Total Paid:</strong> ${order.totalPrice.toFixed(2)}
+                    <strong>Total Paid:</strong> ₹{order.totalPrice.toFixed(2)}
                   </p>
                 </div>
 
@@ -106,7 +106,7 @@ function OrderHistory() {
                             {item.productDetails?.productName || 'Unknown Product'}
                           </p>
                           <p className="text-sm text-gray-500">
-                            Quantity: {item.quantity} | Price: ${item.price.toFixed(2)}
+                            Quantity: {item.quantity} | Price: ₹{item.price.toFixed(2)}
                           </p>
                           <p className="text-xs text-gray-400 italic">
                             Brand: {item.productDetails?.productBrand} | Category:{' '}
