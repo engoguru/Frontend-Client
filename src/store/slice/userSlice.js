@@ -136,6 +136,24 @@ export const updateAddress = createAsyncThunk(
   }
 );
 
+export const updateUserProfile = createAsyncThunk(
+  'user/updateUserProfile',
+  async (userData, thunkAPI) => {
+    try {
+      const response = await axios.put(
+        "http://localhost:5000/api/users/account/updateProfile",
+        { data: userData },
+        { withCredentials: true }
+      );
+      // Add success flag for component-side logic
+      return { ...response.data, success: true };
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error?.response?.data || { message: 'An unknown error occurred' });
+    }
+  }
+);
+
+
 
 
 
@@ -297,7 +315,21 @@ const createUserSlice = createSlice({
   state.error = action.payload || "Update address failed";
 })
 
-
+      // Update User Profile
+      .addCase(updateUserProfile.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateUserProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        if (action.payload.user) {
+          state.meDetails = { ...state.meDetails, ...action.payload.user };
+        }
+      })
+      .addCase(updateUserProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload.message || 'Failed to update profile.';
+      })
   }
 });
 

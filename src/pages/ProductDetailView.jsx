@@ -62,27 +62,32 @@ useEffect(() => {
         {/* Page container with max-width and centering */}
         <div className="max-w-[1200px] mx-auto">
           {/* Product Detail and Payment Card */}
-          <div className="flex flex-col lg:flex-row items-start">
-            {/* Left: Product Detail */}
-            <div className="w-full lg:w-8/12">
-              {loading  && reledtedLoading? (
+          <div className="flex flex-col lg:flex-row items-start ">
+            {/* Main content area */}
+            <div className="w-full lg:w-8/12 ">
+              {loading && reledtedLoading ? (
                 <p>Loading product...</p> // Or a spinner
               ) : error ? (
                 <p>Error loading product</p>
               ) : (
-                <ProductDetail productData={singleProduct} reletedProduct={relatedProducts} feedback={items}   onCommentAdded={() => loadFeedbacks(singleProduct._id)}   onAddToCart={()=>loadCart()}/>
+                <ProductDetail
+                  productData={singleProduct}
+                  reletedProduct={relatedProducts}
+                  feedback={items}
+                  onCommentAdded={() => loadFeedbacks(singleProduct._id)}
+                  onAddToCart={() => loadCart()}
+                />
               )}
             </div>
 
-            {/* Right: Payment Card */}
+            {/* Right Sidebar: Payment Card (Visible only on large screens) */}
             <div className="hidden lg:block w-full lg:w-4/12 p-4 md:p-5 lg:pl-2">
-            
-                {loading ? (
-                <p>Loading product...</p> // Or a spinner
+              {loading ? (
+                <p>Loading product...</p>
               ) : error ? (
                 <p>Error loading product</p>
               ) : (
-                 <ProductDetailPayment productData={singleProduct}  onAddToCart={reloadCart}/>
+                <ProductDetailPayment productData={singleProduct} onAddToCart={reloadCart} />
               )}
             </div>
           </div>

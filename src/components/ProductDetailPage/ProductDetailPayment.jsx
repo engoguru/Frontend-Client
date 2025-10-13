@@ -253,7 +253,7 @@
 // export default ProductDetailPayment;
 
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useId } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCartByUserId, addItemToCart } from '../../store/slice/cartSlice';
 import { createOrder } from '../../store/slice/orderSlice';
@@ -264,6 +264,7 @@ function ProductDetailPayment({ onAddToCart }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [paymentMethod, setPaymentMethod] = useState('cod');
+  const paymentName = useId(); // Generate a unique ID for the radio button group
   const { meDetails } = useSelector((state) => state.user);
   const { cartItems } = useSelector((state) => state.cart);
 
@@ -366,144 +367,151 @@ function ProductDetailPayment({ onAddToCart }) {
 
 
   return (
-    <div className="max-w-xl mx-auto bg-white shadow-lg rounded-lg p-6 space-y-6">
+    <div className="max-w-2xl mx-auto bg-white shadow-lg rounded-lg p-6 space-y-6">
       <h2 className="text-xl font-bold text-gray-800 mb-4 text-left">Payment Summary</h2>
 
-      {/*  Cart Items */}
-      {items.map((item, idx) => (
-        <div key={idx} className="flex items-center gap-4 border-b pb-4 mb-4">
-          <img
-            src={item?.productId?.productImages?.[0]?.url}
-            alt={item.productName || "Product"}
-            className="w-20 h-20 object-cover rounded"
-          />
-          <div className="flex-1">
-            <h3 className="font-semibold text-gray-800">{item.productName}</h3>
-            <p className="text-sm text-gray-500">{item.category || 'Category'} / {item.flavor}</p>
-            <p className="text-red-600 font-bold mt-1">₹{item.price}</p>
+      {/* Responsive container for tablet layout */}
+      <div className="flex flex-col">
 
-            {/* Quantity Controls */}
-            <div className="flex items-center gap-2 mt-2">
-              <button
-                onClick={async () => {
-                  await dispatch(addItemToCart({ ...item, quantity: -1 }));
-                  dispatch(fetchCartByUserId());
-                }}
-                className="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300"
-                disabled={item.quantity <= 1}
-              >-</button>
-              <span className="px-2">{item.quantity}</span>
-              <button
-                onClick={async () => {
-                  await dispatch(addItemToCart({ ...item, quantity: 1 }));
-                  dispatch(fetchCartByUserId());
-                }}
-                className="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300"
-              >
-                +
-              </button>
+        {/* Left Side: Cart Items */}
+        <div className="w-full">
+          {[...items].reverse().map((item, idx) => (
+            <div key={idx} className="flex items-center gap-4 border-b pb-4 mb-4">
+              <Link to={`/productDetail/${item.productId?._id}`} className="flex items-start gap-4 flex-1 group cursor-pointer">
+                <img
+                  src={item?.productId?.productImages?.[0]?.url}
+                  alt={item.productName || "Product"}
+                  className="w-20 h-20 object-cover rounded"
+                />
+                <div className="flex-1">
+                  <h3 className="font-semibold text-gray-800 group-hover:text-blue-600 transition-colors">{item.productName}</h3>
+                  <p className="text-sm text-gray-500">
+                    {item.category || 'Category'}
+                    {item.category === 'Nutrition' && item.flavor ? ` / ${item.flavor}` : ''}
+                    {(item.category === 'Apparel' || item.category === 'Equipment') && item.color? ` / ${item.color}` : ''}
+                  </p>
+                  <p className="text-red-600 font-bold mt-1">₹{item.price}</p>
+                </div>
+              </Link>
 
-            </div>
+              <div className="flex flex-col items-end">
+                {/* Quantity Controls */}
+                <div className="flex items-center gap-2 mt-2">
+                  <button
+                    onClick={async () => {
+                      await dispatch(addItemToCart({ ...item, quantity: -1 }));
+                      dispatch(fetchCartByUserId());
+                    }}
+                    className="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 cursor-pointer"
+                    disabled={item.quantity <= 1}
+                  >-</button>
+                  <span className="px-2">{item.quantity}</span>
+                  <button
+                    onClick={async () => {
+                      await dispatch(addItemToCart({ ...item, quantity: 1 }));
+                      dispatch(fetchCartByUserId());
+                    }}
+                    className="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 cursor-pointer"
+                  >
+                    +
+                  </button>
+                </div>
 
-            {/* Remove Item */}
-        <button
-  onClick={async () => {
-    await dispatch(addItemToCart({ ...item, quantity: -item.quantity }));
-    await dispatch(fetchCartByUserId());
-    toast.success('Item removed from cart.');
-  }}
-  className="mt-2 text-sm text-red-500 hover:underline font-bold"
->
-  Remove
-</button>
-
-          </div>
-        </div>
-      ))}
-
-      {/* 💰 Price & Address */}
-      <div className="border-t border-gray-200 pt-6 space-y-4 text-sm text-gray-700">
-
-        {/* Address */}
-        <div className="flex justify-between items-start text-gray-800">
-          <span className="font-medium">Address</span>
-          <div className="text-right space-y-1">
-            {meDetails?.address?.[0] ? (
-              <div>
-                <p>{meDetails.address[0].name}</p>
-                <p>{meDetails.address[0].phone}</p>
-                <p>{meDetails.address[0].address_line1}</p>
-                {meDetails.address[0].address_line2 && <p>{meDetails.address[0].address_line2}</p>}
-                <p>
-                  {meDetails.address[0].city}, {meDetails.address[0].state} - {meDetails.address[0].pincode}
-                </p>
-                <p>{meDetails.address[0].country}</p>
-                <p>Type: {meDetails.address[0].address_type}</p>
+                {/* Remove Item */}
+                <button
+                  onClick={async () => {
+                    await dispatch(addItemToCart({ ...item, quantity: -item.quantity }));
+                    await dispatch(fetchCartByUserId());
+                    toast.success('Item removed from cart.');
+                  }}
+                  className="mt-2 text-sm text-red-500 hover:underline font-bold cursor-pointer"
+                >
+                  Remove
+                </button>
               </div>
-            ) : (
-              <p>No address provided</p>
-            )}
-
-            <Link to="/user/address" className="text-blue-600 hover:underline text-sm">
-              {meDetails?.address[0] ? 'Change' : 'Add New Address'}
-            </Link>
-          </div>
-        </div>
-
-        {/* Pricing */}
-        {cartHasItems && (
-          <div className="space-y-2 pt-4 border-t border-gray-200">
-
-            <div className="flex justify-between">
-              <span>Subtotal</span>
-              <span>₹{subtotal}</span>
             </div>
-
-
-            <div className="flex justify-between" >
-              <span>Shipping</span>
-              <span>₹{shipping}</span>
-            </div>
-
-
-            <div className="border-t border-gray-200 pt-3 flex justify-between font-semibold text-base text-gray-900">
-              <span>Total</span>
-              <span>₹{total}</span>
-            </div>
-
-          </div>
-        )}
-      </div>
-
-      {/* 💳 Payment Method */}
-      <div className="border-t border-gray-200 pt-4">
-        <h3 className="font-semibold mb-2 text-gray-800">Choose Payment Method</h3>
-        <div className="space-y-2 text-gray-800">
-          {['cod', 'upi', 'card'].map((method) => (
-            <label key={method} className="flex items-center gap-2">
-              <input
-                type="radio"
-                name="payment"
-                value={method}
-                checked={paymentMethod === method}
-                onChange={() => setPaymentMethod(method)}
-              />
-              <span className="capitalize">
-                {method === 'cod' ? 'Cash on Delivery' : method === 'upi' ? 'UPI' : 'Credit/Debit Card'}
-              </span>
-            </label>
           ))}
         </div>
-      </div>
 
-      {/* 🧾 Checkout Button */}
-      <button
-        onClick={handleCheckout}
-        className={`w-full py-3 rounded font-semibold transition text-white ${cartHasItems ? 'bg-red-600 hover:bg-red-700' : 'bg-gray-400 cursor-not-allowed'}`}
-        disabled={!cartHasItems}
-      >
-        {paymentMethod === 'cod' ? `Place Order (COD) ₹${total}` : `Pay & Place Order ₹${total}`}
-      </button>
+        {/* Right Side: Address, Pricing, and Payment */}
+        <div className="w-full">
+          {/* 💰 Price & Address */}
+          <div className="border-t border-gray-200 pt-6 space-y-4 text-sm text-gray-700">
+            {/* Address */}
+            <div className="flex justify-between items-start text-gray-800">
+              <span className="font-medium">Address</span>
+              <div className="text-right space-y-1">
+                {meDetails?.address?.[0] ? (
+                  <div>
+                    <p>{meDetails.address[0].name}</p>
+                    <p>{meDetails.address[0].phone}</p>
+                    <p>{meDetails.address[0].address_line1}</p>
+                    {meDetails.address[0].address_line2 && <p>{meDetails.address[0].address_line2}</p>}
+                    <p>
+                      {meDetails.address[0].city}, {meDetails.address[0].state} - {meDetails.address[0].pincode}
+                    </p>
+                    <p>{meDetails.address[0].country}</p>
+                    <p>Type: {meDetails.address[0].address_type}</p>
+                  </div>
+                ) : (
+                  <p>No address provided</p>
+                )}
+                <Link to="/user/address" className="text-blue-600 hover:underline text-sm">
+                  {meDetails?.address?.[0] ? 'Change' : 'Add New Address'}
+                </Link>
+              </div>
+            </div>
+
+            {/* Pricing */}
+            {cartHasItems && (
+              <div className="space-y-2 pt-4 border-t border-gray-200">
+                <div className="flex justify-between">
+                  <span>Subtotal</span>
+                  <span>₹{subtotal}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Shipping</span>
+                  <span>₹{shipping}</span>
+                </div>
+                <div className="border-t border-gray-200 pt-3 flex justify-between font-semibold text-base text-gray-900">
+                  <span>Total</span>
+                  <span>₹{total}</span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* 💳 Payment Method */}
+          <div className="border-t border-gray-200 pt-4 mt-4">
+            <h3 className="font-semibold mb-2 text-gray-800">Choose Payment Method</h3>
+            <div className="space-y-2 text-gray-800">
+              {['cod', 'upi', 'card'].map((method) => (
+                <label key={method} className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name={paymentName}
+                    value={method}
+                    checked={paymentMethod === method}
+                    onChange={() => setPaymentMethod(method)}
+                  />
+                  <span className="capitalize">
+                    {method === 'cod' ? 'Cash on Delivery' : method === 'upi' ? 'UPI' : 'Credit/Debit Card'}
+                  </span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* 🧾 Checkout Button */}
+          <button
+            onClick={handleCheckout}
+            className={`w-full py-3 rounded font-semibold transition text-white mt-4 ${cartHasItems ? 'bg-red-600 hover:bg-red-700 cursor-pointer' : 'bg-gray-400 cursor-not-allowed'}`}
+            disabled={!cartHasItems}
+          >
+            {paymentMethod === 'cod' ? `Place Order (COD) ₹${total}` : `Pay & Place Order ₹${total}`}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

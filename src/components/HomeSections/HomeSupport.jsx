@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 
 const supportItems = [
   {
+    url:"/contact",
     title: 'Free Shipping',
     description: 'For orders from $50',
     icon: (
@@ -65,7 +66,7 @@ function HomeSupport() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {supportItems.map((item, index) => (
           <div key={index} className="flex items-center bg-white shadow-md rounded-lg p-5 gap-4 hover:shadow-lg transition-shadow">
-            <Link to={`${item?.url}`}>
+            <Link to={`${item?.url}`} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
             <div>{item.icon}</div>
             <div>
               <h3 className="text-md font-semibold text-gray-800">{item.title}</h3>

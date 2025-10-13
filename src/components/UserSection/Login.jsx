@@ -28,11 +28,18 @@ const LoginModal = ({ isOpen, setIsOpen }) => {
 
     try {
      const result= await dispatch(userLogin(payload)).unwrap();
-     console.log(result,"dffhfvv")
-     if(result?.token){
+     
+     // Check if the user is an Admin
+     if (result?.user?.role === 'Admin') {
+        toast.error('Admin users cannot log in here. Please use the admin panel.');
+        // Optionally, you might want to clear any stored token if the backend sends one anyway
+        return; 
+     }
+
+     if(result?.token) {
         dispatch(getMeDetails());
-      toast.success('Login successful!');
-      setIsOpen(false);
+        toast.success('Login successful!');
+        setIsOpen(false);
      } // close modal
     } catch (err) {
       console.error('Login failed:', err);
