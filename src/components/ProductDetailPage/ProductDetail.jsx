@@ -191,7 +191,10 @@ try {
       category: productData?.productCategory ?? null,
       size: sizeToUse ?? null,        // always present (maybe null)
       color: finalColor,             // always present as array
-      flavor: selectedVariant?.flavor[selected_Nutrition_flavor] ?? productData?.flavor[selected_Nutrition_flavor] ?? '',
+      flavor:
+  selectedVariant?.flavor?.[selected_Nutrition_flavor] ??
+  productData?.flavor?.[selected_Nutrition_flavor] ??
+  '',
       price: finalPrice,             // always present (fallback 0)
       // originalPrice: intentionally removed 
       discount: selectedVariant?.discount ?? productData?.discount ?? null,

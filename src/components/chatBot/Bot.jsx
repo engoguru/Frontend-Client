@@ -84,7 +84,7 @@ function Bot() {
                 alignSelf: msg.sender === "user" ? "flex-end" : "flex-start",
                 display: "flex",
                 gap: "0.5rem",
-                fontFamily: "cursive",
+                fontFamily: "",
               }}
             >
               {msg.sender === "user" ? "" : "🤖"}

@@ -7,7 +7,7 @@ export const orderGetByUser = createAsyncThunk(
   "order/userOrderGet",
   async (id, thunkAPI) => {
     try {
-      console.log(id, "sdfiwef");
+   
       const response = await axios.get(
         `http://localhost:5000/api/order/orderRoutes/getUserOrder/${id}`
       ); // adjust URL
@@ -40,11 +40,49 @@ export const createOrder = createAsyncThunk(
     }
   }
 );
+export const getCoupon = createAsyncThunk(
+  "coupon/getCoupon",
+  async (_, thunkAPI) => {
+    try {
+     const res = await axios.get("http://localhost:5000/api/order/coupon/getCoupon",{withCredentials:true});
+console.log(res)
+      return res?.data; // or adjust based on your API response shape
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Failed to create order"
+      );
+    }
+  }
+);
+   
+export const updateCoupon=createAsyncThunk(
+  "coupon/updateCoupon",
+   async (couponId, thunkAPI) => {
+    console.log(couponId,"slive")
+    try {
+   const res = await axios.post(
+  `http://localhost:5000/api/order/coupon/updateCoupon/${couponId}`,
+  {},                       // empty data payload or your real data here
+  { withCredentials: true } // config object here!
+);
+
+
+      return res?.data; // or adjust based on your API response shape
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Failed to create order"
+      );
+    }
+  }
+  
+)
 
 //Initial State
 const initialState = {
   orderUserSpecific: [], // typo fixed from "orderUserSpciffic"
   orderCreated: null,
+  availableCoupon:[],
+  updateUsedCoupon:null,
   loading: false,
   error: null,
 };
@@ -80,12 +118,45 @@ const orderSlice = createSlice({
       })
       .addCase(createOrder.fulfilled, (state, action) => {
         state.loading = false;
-        state.orderCreated = action.payload;
+        state.updateUsedCoupon = action.payload;
       })
       .addCase(createOrder.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
+
+
+
+      // coupon get
+        .addCase(getCoupon.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getCoupon.fulfilled, (state, action) => {
+        state.loading = false;
+        state.availableCoupon = action.payload.data;
+      })
+      .addCase(getCoupon.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+
+
+         // coupon update
+        .addCase(updateCoupon.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateCoupon.fulfilled, (state, action) => {
+        state.loading = false;
+        state.availableCoupon = action.payload.data;
+      })
+      .addCase(updateCoupon.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      ;
   },
 });
 

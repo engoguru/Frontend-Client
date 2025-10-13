@@ -260,27 +260,86 @@ import { createOrder } from '../../store/slice/orderSlice';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { getCoupon,updateCoupon} from '../../store/slice/orderSlice';
 function ProductDetailPayment({ onAddToCart }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [paymentMethod, setPaymentMethod] = useState('cod');
   const { meDetails } = useSelector((state) => state.user);
   const { cartItems } = useSelector((state) => state.cart);
+  const {availableCoupon}=useSelector((state)=>state.order)
+
+  const [orderbtn, setOrderbtn] = useState(true)
+
+  const[isUserCoupon,setIsUserCoupon]=useState(false)
+
+ const [selectedCoupon, setSelectedCoupon] = useState(null);
+const [discountAmount, setDiscountAmount] = useState(0);
+
 
   const items = cartItems?.cart?.items || [];
   const cartHasItems = items.length > 0;
 
-  const subtotal = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+// console.log(availableCoupon,meDetails,"co")
+  const subtotal = Math.floor(
+    items.reduce((acc, item) =>
+      acc + (item.price * (100 - item?.discount) / 100) * item.quantity,
+      0)
+  );
+
   const shipping = 50;
   const total = subtotal + shipping;
 
   //  Fetch cart on mount and after order
   useEffect(() => {
     dispatch(fetchCartByUserId());
+    dispatch(getCoupon())
   }, [dispatch]);
   useEffect(() => {
     dispatch(fetchCartByUserId());
   }, [onAddToCart === true]);
+
+  // check coupon
+const [matchedCoupons, setMatchedCoupons] = useState([]);
+
+
+useEffect(() => {
+  if (!availableCoupon || !meDetails?._id) return;
+
+  const userId = meDetails._id;
+  const matched = [];
+
+  availableCoupon.forEach((coupon, index) => {
+    // console.log("yt");
+    if (coupon.allowedUsers.includes(userId)) {
+      // console.log("yt2");
+      matched.push({ index, coupon });
+    }
+  });
+
+  setMatchedCoupons(matched);         // ✅ Store matched coupons in state
+  setIsUserCoupon(matched.length > 0); // ✅ Update flag based on result
+
+}, [availableCoupon, meDetails]);
+const applyCoupon = (coupon) => {
+  setSelectedCoupon(coupon);
+
+
+  if (coupon.discountType === "percentage") {
+    const discount = (subtotal * coupon.discountValue) / 100;
+    setDiscountAmount(discount);
+  } else if (coupon.discountType === "fixed") {
+    setDiscountAmount(coupon.discountValue);
+  }
+};
+
+
+ // check coupon end
+
+
+
+
+
   //  Mock payment simulation
   const handleOnlinePayment = () => {
     toast.info("Redirecting to payment...");
@@ -333,7 +392,8 @@ function ProductDetailPayment({ onAddToCart }) {
       for (const item of items) {
         await dispatch(addItemToCart({ ...item, quantity: -item.quantity }));
       }
-
+      setOrderbtn(true)
+      dispatch(updateCoupon(selectedCoupon?._id))
       // ✅ Refresh cart after clearing
       dispatch(fetchCartByUserId());
       // items null
@@ -353,7 +413,7 @@ function ProductDetailPayment({ onAddToCart }) {
       toast.error("Cart is empty.");
       return;
     }
-
+    setOrderbtn(false)
     if (paymentMethod === 'cod') {
       await handleOrderSubmit();
     } else {
@@ -406,20 +466,21 @@ function ProductDetailPayment({ onAddToCart }) {
             </div>
 
             {/* Remove Item */}
-        <button
-  onClick={async () => {
-    await dispatch(addItemToCart({ ...item, quantity: -item.quantity }));
-    await dispatch(fetchCartByUserId());
-    toast.success('Item removed from cart.');
-  }}
-  className="mt-2 text-sm text-red-500 hover:underline font-bold"
->
-  Remove
-</button>
+            <button
+              onClick={async () => {
+                await dispatch(addItemToCart({ ...item, quantity: -item.quantity }));
+                await dispatch(fetchCartByUserId());
+                toast.success('Item removed from cart.');
+              }}
+              className="mt-2 text-sm text-red-500 hover:underline font-bold"
+            >
+              Remove
+            </button>
 
           </div>
         </div>
       ))}
+
 
       {/* 💰 Price & Address */}
       <div className="border-t border-gray-200 pt-6 space-y-4 text-sm text-gray-700">
@@ -450,6 +511,47 @@ function ProductDetailPayment({ onAddToCart }) {
           </div>
         </div>
 
+  {/* coupo */}
+{/* Coupons */}
+{matchedCoupons.length > 0 && (
+  <div className="mt-4">
+    <h3 className="font-semibold mb-2">Apply Coupon:</h3>
+
+    {matchedCoupons.map(({ coupon }, index) => (
+      <div
+        key={coupon._id}
+        className="flex items-center mb-2 justify-between border px-3 py-2 rounded"
+      >
+        <div className="text-sm">
+          <p className="font-medium">{coupon.code}</p>
+          <p className="text-xs text-gray-500">
+            {coupon.discountType === "percentage"
+              ? `${coupon.discountValue}% off`
+              : `₹${coupon.discountValue} off`}
+          </p>
+        </div>
+
+        {selectedCoupon?._id === coupon._id ? (
+          <button
+            className="bg-green-500 text-white text-sm px-3 py-1 rounded cursor-default"
+            disabled
+          >
+            Applied
+          </button>
+        ) : (
+          <button
+            onClick={() => applyCoupon(coupon)}
+            className="bg-blue-500 text-white text-sm px-3 py-1 rounded hover:bg-blue-600"
+          >
+            Save Extra
+          </button>
+        )}
+      </div>
+    ))}
+  </div>
+)}
+
+
         {/* Pricing */}
         {cartHasItems && (
           <div className="space-y-2 pt-4 border-t border-gray-200">
@@ -468,7 +570,7 @@ function ProductDetailPayment({ onAddToCart }) {
 
             <div className="border-t border-gray-200 pt-3 flex justify-between font-semibold text-base text-gray-900">
               <span>Total</span>
-              <span>₹{total}</span>
+                 <span>₹{(subtotal - discountAmount + shipping).toFixed(2)}</span>
             </div>
 
           </div>
@@ -496,13 +598,19 @@ function ProductDetailPayment({ onAddToCart }) {
         </div>
       </div>
 
-      {/* 🧾 Checkout Button */}
+      {/*  Checkout Button */}
       <button
         onClick={handleCheckout}
         className={`w-full py-3 rounded font-semibold transition text-white ${cartHasItems ? 'bg-red-600 hover:bg-red-700' : 'bg-gray-400 cursor-not-allowed'}`}
         disabled={!cartHasItems}
       >
-        {paymentMethod === 'cod' ? `Place Order (COD) ₹${total}` : `Pay & Place Order ₹${total}`}
+        {orderbtn === false
+          ? "Processing..."
+          : (paymentMethod === 'cod'
+            ? `Place Order (COD) ₹${subtotal - discountAmount + shipping}`
+            : `Pay & Place Order ₹${subtotal - discountAmount + shipping}`
+          )
+        }
       </button>
     </div>
   );
